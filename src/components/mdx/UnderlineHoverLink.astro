@@ -17,6 +17,7 @@ const { href } = Astro.props;
   }
 
   .styled-link {
+    font-family: var(--font-sans);
     cursor: pointer;
     position: relative;
     white-space: nowrap;
@@ -31,7 +32,7 @@ const { href } = Astro.props;
   }
 
   .styled-link::before {
-    content: '';
+    content: "";
     transform-origin: 50% 100%;
     background: var(--color-sea-blue);
     transition:
@@ -43,12 +44,34 @@ const { href } = Astro.props;
     top: 95%;
     left: 0;
     pointer-events: none;
-    clip-path: polygon(0% 0%, 0% 100%, 0 100%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%, 100% 100%, 100% 0%);
+    clip-path: polygon(
+      0% 0%,
+      0% 100%,
+      0 100%,
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 100%,
+      100% 100%,
+      100% 0%
+    );
   }
 
   .styled-link:hover::before {
     transform: translate3d(0, 2px, 0) scale3d(1, 2, 1);
-    clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 50% 0, 50% 0, 50% 100%, 50% 100%, 0 100%, 100% 100%, 100% 0%);
+    clip-path: polygon(
+      0% 0%,
+      0% 100%,
+      100% 100%,
+      50% 0,
+      50% 0,
+      50% 100%,
+      50% 100%,
+      0 100%,
+      100% 100%,
+      100% 0%
+    );
   }
 
   .styled-link span {
