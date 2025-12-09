@@ -1,0 +1,38 @@
+---
+interface Props {
+  size?: '2xs' | 'xs' | 'small' | 'large' | 'xl' | '2xl';
+}
+
+const { size } = Astro.props;
+
+const height =
+  size === '2xs'
+    ? 'var(--space-xs)'
+    : size === 'xs'
+      ? 'var(--space-m)'
+      : size === 'small'
+        ? 'var(--space-l)'
+        : size === 'large'
+          ? 'var(--space-xl)'
+          : size === 'xl'
+            ? 'calc(var(--space-xl) * 2)'
+            : size === '2xl'
+              ? 'calc(var(--space-xl) * 3)'
+              : 'var(--space-xxl)';
+---
+
+<div style={`height: ${height}`}></div>
+
+<style>
+  div {
+    display: block;
+  }
+
+  /* On mobile, cap spacer sizes to large */
+  @media (max-width: 768px) {
+    .spacer--xl,
+    .spacer--2xl {
+      height: var(--space-xl) !important;
+    }
+  }
+</style>

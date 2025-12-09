@@ -1,0 +1,78 @@
+---
+import Logo from '../../Logo.astro';
+import MainNavLinks from './MainNavLinks.astro';
+import MobileMenu from './MobileMenu.astro';
+import { Icon } from 'astro-icon/components';
+---
+
+<nav class="navbar" transition:persist>
+  <div class="brand">
+    <a href="/" aria-label="home">
+      <span class="visually-hidden">Home</span>
+      <Logo />
+    </a>
+    <div class="brand-text">
+      <div class="docked">Daniel Fridgren</div>
+      <div class="subtle">UX Designer based&nbsp;in Malmö&nbsp;Sweden</div>
+    </div>
+  </div>
+  <div class="right-hand-side">
+    <MainNavLinks />
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: var(--space-l) auto var(--space-l);
+    padding: 0 var(--space-l);
+    padding-right: calc(var(--space-l) * 1.4);
+    animation: fadeIn 0.5s 0.2s forwards;
+    opacity: 0;
+    background: transparent;
+    position: relative;
+    z-index: 1001;
+  }
+
+  .brand {
+    display: flex;
+    align-items: end;
+    flex-direction: row;
+    gap: var(--space-s);
+  }
+
+  .brand-text {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-s);
+  }
+
+  .right-hand-side {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .subtle {
+    color: var(--color-subtle);
+  }
+  @media screen and (max-width: 576px) {
+    .navbar {
+      padding: 0 var(--space-s);
+      margin-bottom: var(--space-m);
+    }
+
+    .brand-text {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+</style>

@@ -1,0 +1,59 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+  pathname?: string;
+  pubDate?: string;
+  keywords?: string[];
+  ogImage?: string;
+}
+
+const { title, description, pathname, pubDate, keywords, ogImage } = Astro.props as Props;
+
+const SITE = 'https://fridgren.se';
+const siteName = 'Daniel Fridgren — Senior UX Design';
+const url = pathname ? `${SITE}${pathname}` : SITE;
+let fullTitle: string;
+if (!pathname || pathname === '/') {
+  // Homepage: avoid duplicating site name
+  fullTitle = title || siteName;
+} else {
+  // Other pages: append site name
+  fullTitle = title ? `${title} — ${siteName}` : siteName;
+}
+const metaType = pubDate ? 'article' : 'website';
+
+// Site-wide fallback description
+const defaultDescription =
+  'Senior UX Design for product leaders. I help organisations build complex products with simple user flows — from discovery to final implementation.';
+const metaDescription = description || defaultDescription;
+---
+
+<head>
+  <title>{fullTitle}</title>
+
+  <!-- Always emit a meta description (page-specific or fallback) -->
+  <meta name="description" content={metaDescription} />
+
+  {Array.isArray(keywords) && keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+
+  <!-- canonical -->
+  <link rel="canonical" href={url} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={metaDescription} />
+  <meta property="og:url" content={url} />
+  <meta property="og:type" content={metaType} />
+  {ogImage && <meta property="og:image" content={ogImage} />}
+
+  <!-- Article published time -->
+  {pubDate && <meta property="article:published_time" content={pubDate} />}
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={metaDescription} />
+
+  <link rel="alternate" type="application/rss+xml" href="/rss.xml" />
+</head>

@@ -1,0 +1,47 @@
+<!-- set hyphenation config before loader — adjust languages as needed -->
+<script is:raw>
+  // ensure the config exists globally BEFORE loader runs
+  window.Hyphenopoly = window.Hyphenopoly || {};
+  window.Hyphenopoly.require = window.Hyphenopoly.require || { 'en-us': 'supercalifragilisticexpialidocious' };
+  window.Hyphenopoly.setup = window.Hyphenopoly.setup || { selectors: { body: {} } };
+
+  // small debug helper
+  console.info('[HyphenopolyClient] config in place, require keys:', Object.keys(window.Hyphenopoly.require || {}));
+</script>
+
+<!-- Hyphenopoly loader -->
+<script is:raw src="https://cdn.jsdelivr.net/npm/hyphenopoly@6.0.0/Hyphenopoly_Loader.js" defer></script>
+
+<!-- guard to re-run after router/nav or to inspect readiness -->
+<script is:raw>
+  (function () {
+    function tryRun() {
+      if (window.Hyphenopoly && typeof window.Hyphenopoly.run === 'function') {
+        try {
+          window.Hyphenopoly.run();
+          console.info('[HyphenopolyClient] run() invoked');
+        } catch (err) {
+          console.warn('[HyphenopolyClient] run() threw', err);
+        }
+      }
+    }
+
+    // run once on a short timeout after load (loader is async)
+    window.addEventListener('load', function () {
+      setTimeout(tryRun, 300);
+    });
+
+    // try a few times in case loader is slow
+    let attempts = 0;
+    const iv = setInterval(function () {
+      attempts++;
+      tryRun();
+      if (attempts > 8) clearInterval(iv);
+    }, 500);
+
+    // If you use an SPA router, call tryRun() after route changes.
+    // For example, if you use a client router, add a small hook there.
+    // Expose a helper on window so you can call it manually:
+    window.__hyphenopoly_try_run = tryRun;
+  })();
+</script>

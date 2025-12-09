@@ -1,0 +1,234 @@
+---
+import Layout from './Layout.astro';
+import PageWrapper from '../components/layouts/PageWrapper.astro';
+import Spacer from '../components/mdx/Spacer.astro';
+import SEO from '../components/seo.astro';
+import { visit } from 'unist-util-visit';
+
+export const remarkPlugins = [
+  () => (tree: any) => {
+    let first = false;
+
+    visit(tree, 'paragraph', (node) => {
+      if (!first) {
+        node.data = node.data || {};
+        node.data.hProperties = node.data.hProperties || {};
+        node.data.hProperties.class = 'lead';
+        first = true;
+      }
+    });
+  }
+];
+
+const { frontmatter, prev, next } = Astro.props;
+---
+
+<Layout>
+  <PageWrapper>
+    <Spacer size="large" />
+
+    <div class="blog-grid">
+      <aside class="blog-side">
+        <div class="post-date">{new Date(frontmatter.pubDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+      </aside>
+
+      <article class="blog-main">
+        <SEO title={frontmatter.title} description={frontmatter.description} pathname={`/blog/${frontmatter.slug ?? ''}`} pubDate={frontmatter.pubDate} />
+
+        <header class="blogpost-header">
+          <h1 class="big-title measure fadeup-st">{frontmatter.title}</h1>
+          <p class="blogpost-meta fadeup-st">
+            {frontmatter.readingTime ?? '—'} min read
+            <span class="meta-date-mobile">
+              • {new Date(frontmatter.pubDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </span>
+          </p>
+        </header>
+
+        <section class="blogpost-content measure fadeup-st">
+          <slot />
+        </section>
+
+        <footer class="blogpost-footer fadeup-st">
+          <p>Tags: {frontmatter.tags?.join(', ') ?? '—'}</p>
+        </footer>
+
+        <nav class="post-nav fadeup-st" aria-label="Post navigation">
+          <div class="post-nav-alt-inline">
+            {
+              prev && (
+                <a class="inline prev" href={prev.url} rel="prev">
+                  ← <span class="nav-title">{prev.title}</span>
+                </a>
+              )
+            }
+
+            {
+              next && (
+                <a class="inline next" href={next.url} rel="next">
+                  <span class="nav-title">{next.title}</span> →
+                </a>
+              )
+            }
+          </div>
+        </nav>
+      </article>
+    </div>
+    <Spacer size="large" />
+  </PageWrapper>
+</Layout>
+
+<style>
+  .post-date {
+    font-size: var(--fs-sm);
+    color: var(--color-muted);
+    text-align: right;
+    margin-bottom: 0;
+    letter-spacing: 0.02em;
+    justify-self: end;
+  }
+
+  .blogpost-meta {
+    color: var(--color-muted);
+    font-size: var(--fs-sm);
+    letter-spacing: 0.02em;
+    margin-top: var(--space-16);
+  }
+
+  /* Content column keeps readable measure (uses existing .measure helper) */
+  .blogpost-content {
+    margin-top: var(--space-8);
+  }
+
+  .blogpost-footer p {
+    margin-top: var(--space-xxl);
+    font-size: var(--fs-s);
+    color: var(--color-subtle);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 900px) {
+    .post-date {
+      justify-self: start;
+    }
+  }
+  @media (max-width: 640px) {
+    .blogpost-title {
+      font-size: clamp(2rem, 9vw, 3.5rem);
+      line-height: 1.02;
+    }
+  }
+
+  /* --- post-nav styles --- */
+  .post-nav-alt-inline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-8);
+  }
+  .post-nav-alt-inline .inline {
+    font-size: var(--fs-sm);
+    color: var(--color-muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .post-nav-alt-inline .inline .nav-title {
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  @media (max-width: 900px) {
+    .post-nav-alt-inline {
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+  }
+  @media (max-width: 640px) {
+    .post-nav-alt-inline {
+      flex-direction: column;
+      gap: var(--space-8);
+      align-items: stretch;
+    }
+    .post-nav-alt-inline .inline {
+      text-align: left;
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+
+  /* Hide blog-side on mobile */
+  @media (max-width: 900px) {
+    .blog-side {
+      display: none;
+    }
+  }
+
+  /* Mobile-only date inside meta */
+  .meta-date-mobile {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .meta-date-mobile {
+      display: inline;
+      color: var(--color-muted);
+      margin-left: 0.25em;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+
+  window['gsap'] = gsap;
+  (window as any).ScrollTrigger = ScrollTrigger;
+
+  gsap.registerPlugin(ScrollTrigger);
+</script>
+
+<script type="module">
+  (async () => {
+    try {
+      // register ScrollToPlugin if available (dynamic import) with CDN fallback
+      try {
+        const { ScrollToPlugin } = await import('gsap/ScrollToPlugin');
+        if (ScrollToPlugin && window.gsap) window.gsap.registerPlugin(ScrollToPlugin);
+      } catch (e) {
+        // CDN fallback for ScrollToPlugin
+        await new Promise((res) => {
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollToPlugin.min.js';
+          s.onload = res;
+          document.head.appendChild(s);
+        });
+        if (window.gsap && window.gsap.ScrollToPlugin) window.gsap.registerPlugin(window.gsap.ScrollToPlugin);
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      // Fade elements with fadeup-st class
+      const sections = gsap.utils.toArray('.fadeup-st');
+      sections.forEach((section, i) => {
+        gsap.from(section, {
+          opacity: 0,
+          y: 10,
+          duration: 1.25,
+          stagger: 0.05,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+            // markers: true, // enable to debug
+          },
+          delay: i * 0.15
+        });
+      });
+    } catch (err) {
+      console.error('GSAP init/import failed:', err);
+    }
+  })();
+</script>

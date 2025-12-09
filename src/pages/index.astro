@@ -1,0 +1,432 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Seo from '../components/seo.astro';
+import Spacer from '../components/mdx/Spacer.astro';
+import UnderlineHoverLink from '../components/mdx/UnderlineHoverLink.astro';
+import PageWrapper from '../components/layouts/PageWrapper.astro';
+import ContactSection from '../components/layouts/ContactSection.astro';
+import fs from 'fs';
+
+// gather SVG logos from public/images/logos at build time
+type LogoEntry = { name: string; svg: string };
+let logoSvgs: LogoEntry[] = [];
+try {
+	const logosDir = new URL('../../public/images/logos/', import.meta.url);
+	const items = fs.readdirSync(logosDir, { withFileTypes: true });
+	logoSvgs = items
+		.filter((d) => d.isFile() && d.name.toLowerCase().endsWith('.svg'))
+		.map((d) => {
+			const fileUrl = new URL(d.name, logosDir);
+			const svg = fs.readFileSync(fileUrl, 'utf8');
+			return { name: d.name, svg };
+		});
+} catch (err) {
+	logoSvgs = [];
+}
+---
+
+<script>
+	import '@mux/mux-player';
+</script>
+
+<Layout title="Daniel Fridgren">
+	<Seo
+		title="Daniel Fridgren — Senior UX Design for product leaders"
+		description="Senior design support for product leaders who need a strong partner. Helping organisations build complex products with simple user flows, from discovery to final implementation."
+		pathname={Astro.url.pathname}
+		keywords={[
+			'user experience',
+			'ux design',
+			'ui design',
+			'digital strategy',
+			'product design',
+			'digital transformation',
+			'digital consulting',
+			'customer experience',
+			'daniel fridgren'
+		]}
+	/>
+	<PageWrapper>
+		<section id="hero" class="hero-section">
+			<mux-player playback-id="heEyyMTCGulT0201qoOrDX4sj4mi6Kvw7Kc8ryw7MbviY" accent-color="#e6a92c" thumbnail-time="2" loop="true" autoplay="any"></mux-player>
+			<Spacer size="large" />
+		</section>
+
+		<section id="about" class="general-section">
+			<div class="_1-2-grid">
+				<p class="section-title">About</p>
+				<div class="measure">
+					<h1 class="measure fadeup-st">Hi, I'm Daniel</h1>
+					<br />
+					<div class="body-text-medium fadeup-st">
+						I'm a senior UX designer currently woffrking at <a href="https://wisecompany.se">In Wise Company</a>, where I help organizations build complex
+						products with simple user flows, all the way from early discovery to final implementation.
+						<Spacer size="xs" />
+						With 20 years of hands-on experience across established product companies and fast-moving agencies, I bring structure, direction, and design that holds
+						up in the real world.
+						<Spacer size="xs" />
+						My approach blends strategic insight with practical delivery: understand what matters, prioritize effectively, deliver quickly, and create solutions
+						that stand the test of time.
+						<Spacer size="xs" />
+						Want to discuss a project or explore working together?
+					</div>
+					<Spacer size="small" />
+					<a href="mailto:daniel.fridgren@gmail.com?subject=Meeting request" class="pill-btn fadeup-st" target="_blank" rel="noreferrer">Book a meeting</a>
+				</div>
+			</div>
+		</section>
+		<Spacer size="xl" />
+		<section id="services" class="general-section">
+			<div class="_1-2-grid">
+				<p class="section-title">Services</p>
+				<div class="measure">
+					<h1 class="fadeup-st">Supporting product teams with clarity and direction</h1>
+					<Spacer size="small" />
+					<ul class="body-list">
+						<li>
+							<img src="/images/icon-product-design.svg" alt="Product design icon" width="28" height="28" />
+							<div>
+								<p class="subheader-large">Product design</p>
+								<p class="body-text" style="margin: 0; margin-top: 0.25rem;">
+									From early discovery to final interface — translating insights, constraints and business goals into products that work.
+								</p>
+							</div>
+						</li>
+						<li>
+							<img src="/images/icon-user-research.svg" alt="User research icon" width="28" height="28" />
+							<div>
+								<p class="subheader-large">User research</p>
+								<p class="body-text" style="margin: 0; margin-top: 0.25rem;">
+									Planning and conducting research to uncover needs, reduce uncertainty and inform product decisions with evidence.
+								</p>
+							</div>
+						</li>
+						<li>
+							<img src="/images/icon-prototyping.svg" alt="Prototyping icon" width="28" height="28" />
+							<div>
+								<p class="subheader-large">Prototyping & validation</p>
+								<p class="body-text" style="margin: 0; margin-top: 0.25rem;">
+									Building interactive prototypes to explore concepts, validate assumptions and improve usability before investing in development.
+								</p>
+							</div>
+						</li>
+						<li>
+							<img src="/images/icon-strategy.svg" alt="Strategy icon" width="28" height="28" />
+							<div>
+								<p class="subheader-large">Design strategy</p>
+								<p class="body-text" style="margin: 0; margin-top: 0.25rem;">
+									Clarifying product direction by aligning user needs, business priorities, and technical realities.
+								</p>
+							</div>
+						</li>
+						<li>
+							<img src="/images/icon-teambuilding.svg" alt="Building teams icon" width="28" height="28" />
+							<div>
+								<p class="subheader-large">Design team enablement</p>
+
+								<p class="body-text" style="margin: 0; margin-top: 0.25rem;">
+									Helping organisations grow confident, autonomous design teams through coaching, hiring support and practical ways of working.
+								</p>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<Spacer size="xl" />
+		<Spacer size="large" />
+		<div class="horizontal-line"></div>
+		<Spacer size="xs" />
+		<section id="experience" class="general-section">
+			<div class="_1-2-grid">
+				<p class="section-title">Experience</p>
+				<div class="measure">
+					<h1 class="fadeup-st">Bringing 20 years of hands‑on design experience</h1>
+					<br />
+					<div class="timeline fadeup-st">
+						<div class="timeline-item">
+							<div class="timeline-marker"></div>
+							<div class="timeline-content">
+								<div class="timeline-role-company">Senior Design Consultant - In Wise Company</div>
+								<div class="timeline-year">Jan 2025 - Present</div>
+								<div class="timeline-description">
+									Solo but always In Wise Company. Partnering with companies to solve complex product challenges through strategic design and hands-on UX
+									delivery.
+								</div>
+							</div>
+						</div>
+						<div class="timeline-item">
+							<div class="timeline-marker"></div>
+							<div class="timeline-content">
+								<div class="timeline-role-company">
+									Design Manager - <UnderlineHoverLink href="https://refined.com">Refined</UnderlineHoverLink>
+								</div>
+								<div class="timeline-year">Mar 2020 - Oct 2024</div>
+								<div class="timeline-description">
+									Built and scaled the design function for a B2B SaaS platform, growing the team to 6 designers while establishing design systems, product
+									discovery practices, and strategic, cross-functional processes.
+								</div>
+							</div>
+						</div>
+						<div class="timeline-item">
+							<div class="timeline-marker"></div>
+							<div class="timeline-content">
+								<div class="timeline-role-company">
+									Senior UX Designer - <UnderlineHoverLink href="https://mindoktor.se">Min Doktor</UnderlineHoverLink>
+								</div>
+								<div class="timeline-year">Apr 2016 - Mar 2020</div>
+								<div class="timeline-description">
+									Designed patient- and clinician facing digital healthcare solutions, end-to-end, balancing strict regulatory requirements with intuitive
+									usability.
+								</div>
+							</div>
+						</div>
+						<div class="timeline-item">
+							<div class="timeline-marker"></div>
+							<div class="timeline-content">
+								<div class="timeline-role-company">
+									Senior UX Designer - <UnderlineHoverLink href="https://topp.se">TOPP</UnderlineHoverLink>
+								</div>
+								<div class="timeline-year">Aug 2013 - Apr 2016</div>
+								<div class="timeline-description">Consultant in design projects across mobile applications, IoT, medical devices and automotive products.</div>
+							</div>
+						</div>
+						<div class="timeline-item">
+							<div class="timeline-marker"></div>
+							<div class="timeline-content">
+								<div class="timeline-role-company">
+									UX Designer - <UnderlineHoverLink href="https://www.blackberry.com">Blackberry</UnderlineHoverLink>
+								</div>
+								<div class="timeline-year">Mar 2011 - Jul 2013</div>
+								<div class="timeline-description">
+									Lead designer for Home screen and Lock screen on BlackBerry 10, shaping core navigation and multitasking paradigms for millions of users.
+								</div>
+							</div>
+						</div>
+						<div class="timeline-item">
+							<div class="timeline-marker"></div>
+							<div class="timeline-content">
+								<div class="timeline-role-company">Interaction Designer - Color Monkey AB</div>
+								<div class="timeline-year">Nov 2009 - Mar 2011</div>
+							</div>
+						</div>
+						<div class="timeline-item">
+							<div class="timeline-marker"></div>
+							<div class="timeline-content">
+								<div class="timeline-role-company">
+									Interaction Designer - <UnderlineHoverLink href="">The Astonishing Tribe (TAT)</UnderlineHoverLink>
+								</div>
+								<div class="timeline-year">Jan 2006 - Nov 2009</div>
+								<div class="timeline-description">
+									Core design team member for the first version of Android at Google, working on-site in Mountain View to design foundational interaction models
+									and UI patterns that shaped the platform used by billions.
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<Spacer size="xs" />
+		<ContactSection />
+		<a href="https://www.brainville.com/SE/Brainville1" target="_blank" style="position:absolute; left:-9999px;">
+			<img src="https://www.brainville.com/Content/Images/SocialMedia/OnLight_Flat.svg" alt="Check out our company profile in Brainville" />
+		</a>
+	</PageWrapper>
+</Layout>
+
+<style>
+	/* Timeline Styles */
+	.timeline {
+		position: relative;
+		max-width: 64ch;
+		margin: var(--space-l) 0 var(--space-xl) 0;
+		font-family: var(--font-sans);
+	}
+
+	/* Timeline line */
+	.timeline::before {
+		content: '';
+		position: absolute;
+		left: 7px;
+		top: 18px;
+		bottom: -90px;
+		width: 2px;
+		background: linear-gradient(to bottom, var(--color-subtle) 75%, var(--color-bg) 90%);
+	}
+
+	.timeline-item {
+		position: relative;
+		margin-bottom: var(--space-xl);
+		padding-left: 2.5rem;
+	}
+
+	.timeline-item:last-child {
+		margin-bottom: 0;
+	}
+
+	.timeline-marker {
+		position: absolute;
+		left: 0;
+		top: 5px;
+		width: 16px;
+		height: 16px;
+		background: var(--color-bg);
+		border: 2px solid var(--color-subtle);
+		border-radius: 50%;
+		z-index: 1;
+	}
+
+	.timeline-year {
+		font-weight: 500;
+		font-size: var(--fs-xs);
+		color: var(--color-subtle);
+		margin-bottom: 0.1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.025em;
+	}
+
+	.timeline-role-company {
+		font-family: var(--font-body);
+		font-size: var(--font-size-base);
+		font-weight: 500;
+		color: var(--color-fg);
+		margin-bottom: var(--space-2xs);
+		line-height: var(--leading-normal);
+	}
+
+	.timeline-description {
+		color: var(--color-muted);
+		line-height: var(--leading-base);
+	}
+
+	@media (max-width: 768px) {
+		.timeline {
+			margin-left: var(--space-2xs);
+		}
+
+		.timeline::before {
+			top: 14px;
+			left: 7px;
+			bottom: -80px;
+		}
+
+		.timeline-item {
+			padding-left: var(--space-l);
+		}
+	}
+
+	/* Logo grid for Employers & Clients */
+	.logo-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 3rem;
+		align-items: center;
+		justify-items: left;
+	}
+
+	.logo-item img,
+	.logo-item svg {
+		max-width: 160px;
+		width: 100%;
+		height: auto;
+		display: block;
+		object-fit: contain;
+	}
+
+	@media (max-width: 640px) {
+		.logo-grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 2.5rem;
+		}
+		.logo-item img,
+		.logo-item svg {
+			max-width: 120px;
+		}
+	}
+</style>
+
+<script>
+	// fallback: if mux-player fails to load, replace with image
+	const player = document.getElementById('baxter-player');
+	if (player) {
+		player.addEventListener('error', () => {
+			const figure = player.closest('.work-figure');
+			if (figure) {
+				figure.innerHTML = '<img src="/images/baxter.png" alt="Baxter dialysis user interface" loading="lazy" />';
+			}
+		});
+	}
+</script>
+
+<script>
+	import gsap from 'gsap';
+	import ScrollTrigger from 'gsap/ScrollTrigger';
+
+	window['gsap'] = gsap;
+	(window as any).ScrollTrigger = ScrollTrigger;
+
+	gsap.registerPlugin(ScrollTrigger);
+</script>
+
+<script type="module">
+	(async () => {
+		try {
+			// register ScrollToPlugin if available (dynamic import) with CDN fallback
+			try {
+				const { ScrollToPlugin } = await import('gsap/ScrollToPlugin');
+				if (ScrollToPlugin && window.gsap) window.gsap.registerPlugin(ScrollToPlugin);
+			} catch (e) {
+				// CDN fallback for ScrollToPlugin
+				await new Promise((res) => {
+					const s = document.createElement('script');
+					s.src = 'https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollToPlugin.min.js';
+					s.onload = res;
+					document.head.appendChild(s);
+				});
+				if (window.gsap && window.gsap.ScrollToPlugin) window.gsap.registerPlugin(window.gsap.ScrollToPlugin);
+			}
+
+			if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+			// Fade elements with fadeup-st class
+			const sections = gsap.utils.toArray('.fadeup-st');
+			sections.forEach((section, i) => {
+				gsap.from(section, {
+					opacity: 0,
+					y: 20,
+					duration: 1.25,
+					stagger: 0.28,
+					ease: 'power2.out',
+					scrollTrigger: {
+						trigger: section,
+						start: 'top 85%',
+						toggleActions: 'play none none none'
+						// markers: true, // enable to debug
+					},
+					delay: i * 0.03
+				});
+			});
+			// staggered reveal for list items inside .body-list
+			const lists = gsap.utils.toArray('.body-list');
+			lists.forEach((list) => {
+				gsap.from(list.querySelectorAll('li'), {
+					scrollTrigger: {
+						trigger: list,
+						start: 'top 85%',
+						toggleActions: 'play none none none'
+						// markers: true, // enable to debug
+					},
+					opacity: 0,
+					y: 20,
+					duration: 1.25,
+					stagger: 0.28,
+					ease: 'power2.out'
+				});
+			});
+		} catch (err) {
+			console.error('GSAP init/import failed:', err);
+		}
+	})();
+</script>

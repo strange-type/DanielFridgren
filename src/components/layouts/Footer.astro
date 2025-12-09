@@ -1,0 +1,104 @@
+---
+import Spacer from '../mdx/Spacer.astro';
+import PageWrapper from './PageWrapper.astro';
+---
+
+<PageWrapper>
+  <footer class="footer" transition:persist>
+    <div class="footer-grid">
+      <div class="footer-left footer-body">
+        <span>© {new Date().getFullYear()} fridgren.se</span>
+        <br />
+        <span class="footer-body">Malmö, Sweden</span>
+      </div>
+
+      <div class="footer-right">
+        <div class="footer-links">
+          <a href="https://x.com/inwisecompany" aria-label="X/Twitter" target="_blank" rel="noreferrer">
+            <span class="visually-hidden">Home</span>
+            <img src="/images/icon-x.svg" alt="X/Twitter logo" width="24" height="24" />
+          </a>
+          <a href="https://linkedin.com/in/fridgren" aria-label="LinkedIn" target="_blank" rel="noreferrer">
+            <span class="visually-hidden">Home</span>
+            <img src="/images/icon-linkedin.svg" alt="LinkedIn" width="24" height="24" />
+          </a>
+        </div>
+      </div>
+    </div>
+    <Spacer size="large" />
+  </footer>
+</PageWrapper>
+
+<style>
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr auto;
+    align-items: center;
+    width: 100%;
+    gap: var(--space-lg);
+  }
+
+  .footer-left {
+    grid-column: 2;
+    justify-self: start;
+    margin-left: 1.25rem;
+  }
+
+  .footer-body {
+    font-size: var(--fs-sm);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--color-subtle);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: var(--space-xs);
+  }
+
+  .footer-link {
+    font-size: var(--fs-sm);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--color-subtle);
+    text-decoration: none;
+  }
+
+  .footer-link:hover {
+    text-decoration: underline;
+  }
+
+  .footer-right {
+    grid-column: 3; /* place the right block in the third column */
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+  }
+
+  @media (max-width: 770px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      text-align: right;
+      gap: var(--space-sm);
+    }
+
+    .footer-left {
+      grid-column: 1;
+      justify-self: end;
+    }
+
+    .footer-right {
+      grid-column: 1;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 1rem;
+    }
+
+    .footer-links {
+      margin-top: 1rem;
+    }
+  }
+</style>

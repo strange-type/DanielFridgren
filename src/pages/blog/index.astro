@@ -1,0 +1,185 @@
+---
+import { getCollection } from 'astro:content';
+import SEO from '../../components/seo.astro';
+import Layout from '../../layouts/Layout.astro';
+import PageWrapper from '../../components/layouts/PageWrapper.astro';
+import type { CollectionEntry } from 'astro:content';
+import Spacer from '../../components/mdx/Spacer.astro';
+
+const posts = (await getCollection('blog')) as CollectionEntry<'blog'>[];
+const isDev = import.meta.env.DEV;
+const visible = posts.filter((p) => isDev || !p.data.draft).sort((a, b) => (a.data.pubDate > b.data.pubDate ? -1 : 1));
+
+const formatDate = (date: any) =>
+  new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric'
+  });
+---
+
+<Layout>
+  <PageWrapper>
+    <SEO
+      title="Blog — In Wise Company"
+      description="Insights on product design, discovery and UX practice from Daniel Fridgren."
+      pathname={Astro.url.pathname}
+    />
+    <main role="main" aria-labelledby="blog-heading">
+      <Spacer size="xs" />
+      <h1 id="blog-heading" class="main-title measure fadeup-st">Blog Archive</h1>
+      <Spacer size="xs" />
+      <ul class="post-list measure" aria-live="polite">
+        {
+          visible.map((post: any) => (
+            <li class="post-list-item fadeup-st">
+              <a class="post-link" href={`/blog/${post.slug}`}>
+                <time class="post-date metadata" datetime={String(post.data.pubDate)}>
+                  {formatDate(post.data.pubDate)}
+                </time>
+                <div class="post-content">
+                  <h2 class="post-title">{post.data.title}</h2>
+                  {post.data.description ? <p class="post-description">{post.data.description}</p> : null}
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </main>
+  </PageWrapper>
+</Layout>
+
+<style>
+  .post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+    max-width: 32rem; /* constrain the list width */
+    margin-left: 0;
+  }
+
+  .post-list-item {
+    margin-bottom: 0;
+    padding-block: var(--space-12);
+  }
+
+  .post-link {
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    column-gap: var(--space-24);
+    align-items: baseline;
+    text-decoration: none;
+    color: inherit;
+    padding: 0;
+  }
+
+  .post-title {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: var(--fs-md);
+    margin: 0;
+    color: var(--color-fg);
+  }
+
+  .metadata {
+    font-size: var(--fs-sm);
+    color: var(--color-subtle);
+  }
+
+  .post-date {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+    white-space: nowrap;
+  }
+
+  .post-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .post-link:hover .post-title {
+    text-decoration: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.2em;
+  }
+
+  @media (max-width: 640px) {
+    .post-link {
+      grid-template-columns: 1fr;
+      row-gap: var(--space-4);
+    }
+
+    .post-date {
+      justify-self: start;
+    }
+  }
+
+  .post-description {
+    margin-top: var(--space-12);
+    color: var(--color-muted);
+    font-size: var(--fs-sm);
+    margin-bottom: 0;
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+
+  window['gsap'] = gsap;
+  (window as any).ScrollTrigger = ScrollTrigger;
+
+  gsap.registerPlugin(ScrollTrigger);
+</script>
+
+<script type="module">
+  (async () => {
+    try {
+      // register ScrollToPlugin if available (dynamic import) with CDN fallback
+      try {
+        const { ScrollToPlugin } = await import('gsap/ScrollToPlugin');
+        if (ScrollToPlugin && window.gsap) window.gsap.registerPlugin(ScrollToPlugin);
+      } catch (e) {
+        // CDN fallback for ScrollToPlugin
+        await new Promise((res) => {
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollToPlugin.min.js';
+          s.onload = res;
+          document.head.appendChild(s);
+        });
+        if (window.gsap && window.gsap.ScrollToPlugin) window.gsap.registerPlugin(window.gsap.ScrollToPlugin);
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      // Fade elements with fadeup-st class
+      const sections = gsap.utils.toArray('.fadeup-st');
+      sections.forEach((section, i) => {
+        gsap.from(section, {
+          opacity: 0,
+          y: 10,
+          duration: 1.25,
+          stagger: 0.05,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+            // markers: true, // enable to debug
+          },
+          delay: i * 0.15
+        });
+      });
+    } catch (err) {
+      console.error('GSAP init/import failed:', err);
+    }
+  })();
+</script>

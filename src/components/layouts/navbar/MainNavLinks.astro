@@ -1,0 +1,18 @@
+---
+import UnderlineHoverLink from '../../mdx/UnderlineHoverLink.astro';
+---
+
+<div class="main" role="navigation" aria-label="Main">
+  <a href="/#about">About</a>
+  <a href="/#services">Services</a>
+  <a href="/cases/">Work</a>
+  <a href="/#contact">Contact</a>
+</div>
+
+<style>
+  .main {
+    display: flex;
+    flex-shrink: 0;
+    gap: var(--space-xs);
+  }
+</style>

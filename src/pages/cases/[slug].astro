@@ -1,0 +1,32 @@
+---
+// src/pages/cases/[slug].astro
+import CaseLayout from '../../layouts/CaseLayout.astro';
+
+const modules = import.meta.glob('../../content/cases/*.md');
+
+export async function getStaticPaths() {
+  const all = import.meta.glob('../../content/cases/*.md', { eager: true }) as Record<string, any>;
+  return Object.keys(all).map((p) => {
+    const slug = p.split('/').pop()?.replace('.md', '') ?? '';
+    return { params: { slug } };
+  });
+}
+
+const { params } = Astro;
+const slug = params.slug;
+
+// find the matching module path
+const path = Object.keys(modules).find((p) => p.endsWith(`/${slug}.md`));
+if (!path) {
+  throw new Response(null, { status: 404 });
+}
+
+// load the module (module is a function that imports the file)
+const mod = (await modules[path]()) as { default: any; frontmatter?: Record<string, any> };
+const Content = mod.default;
+const frontmatter = mod.frontmatter || {};
+---
+
+<CaseLayout {frontmatter}>
+  <Content />
+</CaseLayout>

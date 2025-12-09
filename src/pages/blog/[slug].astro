@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('blog')) as CollectionEntry<'blog'>[];
+  return posts.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const slug = Astro.params.slug;
+if (!slug) throw new Error('Missing slug param');
+
+// Load all posts in the collection
+const posts = (await getCollection('blog')) as CollectionEntry<'blog'>[];
+
+// Sort posts by date desc (newest first). Adjust if your frontmatter uses a different field name.
+const getDate = (p: CollectionEntry<'blog'>) => {
+  // Some posts may use `pubDate`, others `date`. The collection typing here only guarantees `pubDate`,
+  // so cast to `any` when checking the alternate field to satisfy TypeScript.
+  const raw = (p.data as any).pubDate ?? (p.data as any).date ?? 0;
+  return new Date(raw);
+};
+
+posts.sort((a, b) => getDate(b).getTime() - getDate(a).getTime());
+
+// Find the current post index
+const idx = posts.findIndex((p) => p.slug === slug);
+if (idx === -1) throw new Error('Post not found');
+
+const post = posts[idx];
+
+// Compute neighbours: prev = older post, next = newer post (based on sort above)
+const prevEntry = idx < posts.length - 1 ? posts[idx + 1] : null;
+const nextEntry = idx > 0 ? posts[idx - 1] : null;
+
+// Normalize to the shape BlogPost expects: { url, title }
+const makeNav = (entry: CollectionEntry<'blog'> | null) => (entry ? { url: `/blog/${entry.slug}/`, title: entry.data.title ?? entry.slug } : null);
+
+const prev = makeNav(prevEntry);
+const next = makeNav(nextEntry);
+
+const { Content } = await post.render();
+const words = (post.body ?? '').split(/\s+/).filter(Boolean).length;
+const readingTime = Math.max(1, Math.round(words / 200));
+---
+
+<BlogPost frontmatter={{ ...post.data, slug: post.slug, readingTime }} {prev} {next}>
+  <Content />
+</BlogPost>

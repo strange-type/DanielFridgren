@@ -1,0 +1,143 @@
+---
+import Layout from './Layout.astro';
+import Spacer from '../components/mdx/Spacer.astro';
+import PageWrapper from '../components/layouts/PageWrapper.astro';
+import ContactSection from '../components/layouts/ContactSection.astro';
+import SEO from '../components/seo.astro';
+const { frontmatter } = Astro.props;
+
+const title = frontmatter.title || 'Case';
+const description = frontmatter.description || '';
+const seoKeywords: string[] = (frontmatter.seoKeywords as string[]) ?? [];
+const pathname = Astro.url.pathname;
+const ogImage = frontmatter.ogImage || frontmatter.heroImage || '/images/og-image.png';
+const secondaryImage = frontmatter.secondaryImage || '';
+const client = frontmatter.client || '';
+const dateRaw = frontmatter.date || '';
+let formattedDate = '';
+try {
+  formattedDate = dateRaw ? new Date(dateRaw).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+} catch (e) {
+  formattedDate = dateRaw;
+}
+const tags: string[] = (frontmatter.tags as string[]) ?? [];
+const playbackId = frontmatter.playbackId as string | undefined;
+---
+
+<script>
+  import '@mux/mux-player';
+</script>
+
+<Layout>
+  <SEO title={title} description={description} keywords={seoKeywords} pathname={pathname} />
+
+  <main>
+    <PageWrapper>
+      <section class="hero-section">
+        <Spacer size="xs" />
+        <div>
+          <h1 class="main-title measure fadeup-st">{title}</h1>
+          <div class="subtitle fadeup-st">
+            {client}
+          </div>
+        </div>
+      </section>
+      {
+        playbackId ? (
+          <mux-player
+            id={`${frontmatter.slug || 'case'}-player`}
+            playback-id={playbackId}
+            accent-color={frontmatter.playbackAccent || '#e6a92c'}
+            thumbnail-time={frontmatter.thumbnailTime ?? 2}
+            loop={frontmatter.loop ? 'true' : undefined}
+            autoplay={frontmatter.autoplay || undefined}
+          />
+        ) : frontmatter.heroImage ? (
+          <figure class="work-figure fadeup-st">
+            <img src={frontmatter.heroImage} alt={title} loading="lazy" />
+          </figure>
+        ) : null
+      }
+
+      <section id="about" class="general-section">
+        <Spacer size="large" />
+        <div class="_1-2-grid">
+          <p class="subheader">About</p>
+          <div class="measure">
+            <article class="body-text fadeup-st">
+              <slot />
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="project-images fadeup-st">
+        <figure class="work-figure">
+          <img src={frontmatter.secondaryImage} alt={title} loading="lazy" />
+        </figure>
+      </section>
+      <Spacer size="xl" />
+      <ContactSection />
+    </PageWrapper>
+  </main>
+</Layout>
+
+<style>
+  mux-player {
+    --controls: none;
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+
+  window['gsap'] = gsap;
+  (window as any).ScrollTrigger = ScrollTrigger;
+
+  gsap.registerPlugin(ScrollTrigger);
+</script>
+
+<script type="module">
+  (async () => {
+    try {
+      // register ScrollToPlugin if available (dynamic import) with CDN fallback
+      try {
+        const { ScrollToPlugin } = await import('gsap/ScrollToPlugin');
+        if (ScrollToPlugin && window.gsap) window.gsap.registerPlugin(ScrollToPlugin);
+      } catch (e) {
+        // CDN fallback for ScrollToPlugin
+        await new Promise((res) => {
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollToPlugin.min.js';
+          s.onload = res;
+          document.head.appendChild(s);
+        });
+        if (window.gsap && window.gsap.ScrollToPlugin) window.gsap.registerPlugin(window.gsap.ScrollToPlugin);
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      // Fade elements with fadeup-st class
+      const sections = gsap.utils.toArray('.fadeup-st');
+      sections.forEach((section, i) => {
+        gsap.from(section, {
+          opacity: 0,
+          y: 10,
+          duration: 1.25,
+          stagger: 0.05,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+            // markers: true, // enable to debug
+          },
+          delay: i * 0.15
+        });
+      });
+    } catch (err) {
+      console.error('GSAP init/import failed:', err);
+    }
+  })();
+</script>
