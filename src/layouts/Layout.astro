@@ -1,8 +1,8 @@
 ---
-import '../global.css';
-import Footer from '../components/layouts/Footer.astro';
-import Navbar from '../components/layouts/navbar/Navbar.astro';
-import HyphenopolyClient from '../components/HyphenopolyClient.astro';
+import "../global.css";
+import Footer from "../components/layouts/Footer.astro";
+import Navbar from "../components/layouts/navbar/Navbar.astro";
+import HyphenopolyClient from "../components/HyphenopolyClient.astro";
 
 export interface Props {
   title?: string;
@@ -20,7 +20,7 @@ const { title, desc, type, coverImage } = Astro.props;
 // const contentId = currentPath.split("/").filter(Boolean).join("/");
 
 // Use localhost URL in development, production URL otherwise
-const baseUrl = import.meta.env.DEV ? 'http://localhost:4321' : Astro.site;
+const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
 
 // Construct OG image URL - now just using the content ID directly
 // const ogImageURL = type
@@ -59,13 +59,25 @@ const baseUrl = import.meta.env.DEV ? 'http://localhost:4321' : Astro.site;
 
     <meta name="author" content="Daniel Fridgren" />
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/images/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/images/favicon/favicon-32x32.png"
+    />
     <link rel="manifest" href="/manifest.json" />
     <link rel="me" href="https://linkedin.com/in/fridgren" />
 
     <!-- Privacy-friendly analytics by Plausible -->
-    <script defer data-domain="wisecompany.se" src="https://plausible.io/js/script.js"></script>
+    <script
+      defer
+      data-domain="fridgren.se"
+      src="https://plausible.io/js/script.js"></script>
   </head>
   <body>
     <HyphenopolyClient />
