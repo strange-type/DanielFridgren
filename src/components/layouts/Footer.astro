@@ -1,26 +1,41 @@
 ---
-import Spacer from '../mdx/Spacer.astro';
-import PageWrapper from './PageWrapper.astro';
+import Spacer from "../mdx/Spacer.astro";
+import PageWrapper from "./PageWrapper.astro";
 ---
 
 <PageWrapper>
   <footer class="footer" transition:persist>
     <div class="footer-grid">
       <div class="footer-left footer-body">
-        <span>© {new Date().getFullYear()} fridgren.se</span>
+        <span>© {new Date().getFullYear()} Daniel Fridgren</span>
         <br />
-        <span class="footer-body">Malmö, Sweden</span>
+        <span class="footer-body">Senior UX Designer in Malmö, Sweden</span>
       </div>
 
       <div class="footer-right">
         <div class="footer-links">
-          <a href="https://x.com/inwisecompany" aria-label="X/Twitter" target="_blank" rel="noreferrer">
+          <a
+            href="https://x.com/fridgren"
+            aria-label="Follow on X"
+            target="_blank"
+            rel="noreferrer"
+          >
             <span class="visually-hidden">Home</span>
-            <img src="/images/icon-x.svg" alt="X/Twitter logo" width="24" height="24" />
+            <img src="/images/icon-x.svg" alt="X logo" width="24" height="24" />
           </a>
-          <a href="https://linkedin.com/in/fridgren" aria-label="LinkedIn" target="_blank" rel="noreferrer">
+          <a
+            href="https://linkedin.com/in/fridgren"
+            aria-label="Connect on LinkedIn"
+            target="_blank"
+            rel="noreferrer"
+          >
             <span class="visually-hidden">Home</span>
-            <img src="/images/icon-linkedin.svg" alt="LinkedIn" width="24" height="24" />
+            <img
+              src="/images/icon-linkedin.svg"
+              alt="LinkedIn logo"
+              width="24"
+              height="24"
+            />
           </a>
         </div>
       </div>

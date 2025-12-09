@@ -320,7 +320,7 @@
   --color-subtle: var(--color-gray-300);
   --color-very-subtle: var(--color-gray-150);
 
-  --svg-icon-filter: invert(1) hue-rotate(180deg);
+  --svg-icon-filter: none;
 }
 
 /* TEMPORARY DISABLED DARK THEME
