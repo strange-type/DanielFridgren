@@ -2,7 +2,6 @@
 import Layout from "../layouts/Layout.astro";
 import Seo from "../components/seo.astro";
 import Spacer from "../components/mdx/Spacer.astro";
-import UnderlineHoverLink from "../components/mdx/UnderlineHoverLink.astro";
 import PageWrapper from "../components/layouts/PageWrapper.astro";
 import ContactSection from "../components/layouts/ContactSection.astro";
 import fs from "fs";
@@ -23,6 +22,34 @@ try {
 } catch (err) {
 	logoSvgs = [];
 }
+
+const logosHtml = logoSvgs
+	.map((l) => `<div class="logo-item fadeup-st">${l.svg}</div>`)
+	.join("");
+
+//gathering cases for work section
+const modules = import.meta.glob("../content/cases/*.md", {
+	eager: true,
+}) as Record<string, any>;
+
+const moduleKeys = Object.keys(modules || {});
+
+const posts = moduleKeys
+	.map((path) => {
+		const mod = (modules as Record<string, any>)[path];
+		const fm = (mod as any).frontmatter || {};
+		const filename = path.match(/([^/\\]+)\.md$/)?.[1] || "";
+		const slug = fm.slug || filename;
+		return {
+			...fm,
+			url: `/cases/${slug}`,
+			__path: path,
+		};
+	})
+	.sort(
+		(a, b) =>
+			(Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0),
+	);
 ---
 
 <script>
@@ -209,7 +236,72 @@ try {
 			</div>
 		</section>
 		<Spacer size="xl" />
+		<section id="work" class="general-section">
+			<div class="_1-2-grid">
+				<p class="section-title">Work</p>
+				<div>
+					<h1 class="fadeup-st">Selected case studies</h1>
+					<div class="body-text fadeup-st">
+						A curated mix of UX, discovery and research work from
+						recent engagements.
+					</div>
+					<Spacer />
+					<div class="work-cards">
+						{
+							posts.map((p) => (
+								<a
+									class="card-w-inline-block link-plain"
+									href={p.url}
+									aria-label={`Open case study about ${p.title || p.__path}`}
+								>
+									{p.heroImage || p.image ? (
+										<figure class="work-figure">
+											<img
+												src={
+													p.heroImage ||
+													p.image ||
+													"/images/og-image.png"
+												}
+												alt={p.title || ""}
+												loading="lazy"
+											/>
+										</figure>
+									) : null}
 
+									<div class="work-card-meta">
+										<div class="work-card-title">
+											{p.title || p.excerpt || ""}
+										</div>
+										<h3 class="work-card-subtitle">
+											{p.client || p.__path}
+										</h3>
+									</div>
+								</a>
+							))
+						}
+					</div>
+
+					{
+						posts.length === 0 ? (
+							<div class="body-text">
+								<p>
+									No case posts found. Diagnostic info
+									(development only):
+								</p>
+								<pre style="white-space:pre-wrap; background:#f6f6f6; padding:8px; border-radius:4px;">
+									{JSON.stringify(
+										Object.keys(modules || {}),
+										null,
+										2,
+									)}
+								</pre>
+							</div>
+						) : null
+					}
+				</div>
+			</div>
+		</section>
+		<Spacer size="large" />
 		<section id="experience" class="general-section">
 			<div class="_1-2-grid">
 				<p class="section-title">Experience</p>
