@@ -539,6 +539,20 @@ a:focus-visible {
   outline-offset: 4px;
 }
 
+.navLinks a {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--color-subtle);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.navLinks a:hover {
+  color: var(--color-fg);
+  text-decoration: 2px underline;
+}
+
 /* Utility: link without underline  */
 .link-plain,
 .link-plain:link,
@@ -703,15 +717,13 @@ blockquote {
   margin: var(--space-xl) 0 var(--space-xl) 4rem;
 }
 
-/* Decorative quotation mark — SVG placed via pseudo element so we can control size independently */
+/* Decorative quotation mark placed via pseudo element so we can control size independently */
 blockquote::before {
   content: "";
   position: absolute;
   left: -60px;
   top: 0rem;
-  /* tweak vertical alignment — you can adjust this */
   width: 70px;
-  /* default size, you can change later */
   height: 70px;
   background-image: url('/images/quotation-marks.svg');
   background-repeat: no-repeat;
@@ -720,7 +732,6 @@ blockquote::before {
   pointer-events: none;
 }
 
-/* Make sure the text doesn't overlap the SVG: add an inline left padding equal to the SVG width plus a small gutter */
 blockquote {
   padding-left: calc(48px + 0.5rem);
 }
@@ -787,35 +798,6 @@ mux-player {
   }
 }
 
-/* 
-.hero-grid {
-  grid-column-gap: 0rem;
-  grid-row-gap: 5rem;
-  grid-template-rows: auto;
-  grid-template-columns: 1fr 2fr;
-  grid-auto-columns: 1fr;
-  display: grid;
-  position: relative;
-  justify-content: space-between;
-  align-items: end;
-  width: 100%;
-  max-width: 1600px;
-}
-
-.hero-grid .hero-secondary {
-  justify-self: end;
-  text-align: right;
-
-}
-
-@media (max-width: 768px) {
-  .hero-grid {
-    grid-template-rows: auto auto;
-    grid-row-gap: var(--space-sm);
-  }
-}
-
-*/
 
 /* 3) Lists */
 .body-list {
