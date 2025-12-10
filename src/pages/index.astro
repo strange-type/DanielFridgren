@@ -220,15 +220,19 @@ try {
 					<br />
 					<div class="timeline">
 						<div class="timeline-item fadeup-st">
-							<div class="timeline-marker fadeup-st"></div>
+							<div class="timeline-marker"></div>
 							<div class="timeline-content">
-								<div class="timeline-role-company">
-									Senior Design Consultant - In Wise Company
+								<div class="subheader-large">
+									Senior Design Consultant <a
+										href="https://wisecompany.se"
+									>
+										• In Wise Company</a
+									>
 								</div>
 								<div class="timeline-year">
 									Jan 2025 - Present
 								</div>
-								<div class="timeline-description">
+								<div class="body-secondary">
 									Solo but always In Wise Company. Partnering
 									with companies to solve complex product
 									challenges through strategic design and
@@ -239,16 +243,17 @@ try {
 						<div class="timeline-item fadeup-st">
 							<div class="timeline-marker"></div>
 							<div class="timeline-content">
-								<div class="timeline-role-company">
-									Design Manager - <UnderlineHoverLink
+								<div class="subheader-large">
+									Design Manager <a
 										href="https://refined.com"
-										>Refined</UnderlineHoverLink
+									>
+										• Refined</a
 									>
 								</div>
 								<div class="timeline-year">
 									Mar 2020 - Oct 2024
 								</div>
-								<div class="timeline-description">
+								<div class="body-secondary">
 									Built and scaled the design function for a
 									B2B SaaS platform, growing the team to 6
 									designers while establishing design systems,
@@ -260,16 +265,17 @@ try {
 						<div class="timeline-item fadeup-st">
 							<div class="timeline-marker"></div>
 							<div class="timeline-content">
-								<div class="timeline-role-company">
-									Senior UX Designer - <UnderlineHoverLink
+								<div class="subheader-large">
+									Senior UX Designer <a
 										href="https://mindoktor.se"
-										>Min Doktor</UnderlineHoverLink
+									>
+										• Min Doktor</a
 									>
 								</div>
 								<div class="timeline-year">
 									Apr 2016 - Mar 2020
 								</div>
-								<div class="timeline-description">
+								<div class="body-secondary">
 									Designed patient- and clinician facing
 									digital healthcare solutions, end-to-end,
 									balancing strict regulatory requirements
@@ -280,16 +286,17 @@ try {
 						<div class="timeline-item fadeup-st">
 							<div class="timeline-marker"></div>
 							<div class="timeline-content">
-								<div class="timeline-role-company">
-									Senior UX Designer - <UnderlineHoverLink
+								<div class="subheader-large">
+									Senior UX Designer <a
 										href="https://topp.se"
-										>TOPP</UnderlineHoverLink
+									>
+										• TOPP</a
 									>
 								</div>
 								<div class="timeline-year">
 									Aug 2013 - Apr 2016
 								</div>
-								<div class="timeline-description">
+								<div class="body-secondary">
 									Consultant in design projects across mobile
 									applications, IoT, medical devices and
 									automotive products.
@@ -300,15 +307,16 @@ try {
 							<div class="timeline-marker"></div>
 							<div class="timeline-content">
 								<div class="subheader-large">
-									UX Designer - <UnderlineHoverLink
+									UX Designer <a
 										href="https://www.blackberry.com"
-										>BlackBerry</UnderlineHoverLink
+									>
+										• BlackBerry</a
 									>
 								</div>
 								<div class="timeline-year">
 									Mar 2011 - Jul 2013
 								</div>
-								<div class="timeline-description">
+								<div class="body-secondary">
 									Lead designer for Home screen and Lock
 									screen on BlackBerry 10, shaping core
 									navigation and multitasking paradigms for
@@ -319,8 +327,10 @@ try {
 						<div class="timeline-item fadeup-st">
 							<div class="timeline-marker"></div>
 							<div class="timeline-content">
-								<div class="timeline-role-company">
-									Interaction Designer - Color Monkey AB
+								<div class="subheader-large">
+									Interaction Designer<a href="">
+										• Color Monkey</a
+									>
 								</div>
 								<div class="timeline-year">
 									Nov 2009 - Mar 2011
@@ -330,16 +340,15 @@ try {
 						<div class="timeline-item fadeup-st">
 							<div class="timeline-marker"></div>
 							<div class="timeline-content">
-								<div class="timeline-role-company">
-									Interaction Designer - <UnderlineHoverLink
-										href=""
-										>The Astonishing Tribe (TAT)</UnderlineHoverLink
+								<div class="subheader-large">
+									Interaction Designer<a href="">
+										• The Astonishing Tribe</a
 									>
 								</div>
 								<div class="timeline-year">
 									Jan 2006 - Nov 2009
 								</div>
-								<div class="timeline-description">
+								<div class="body-secondary">
 									Core design team member for the first
 									version of Android at Google, working
 									on-site in Mountain View to design
@@ -373,7 +382,7 @@ try {
 	/* Timeline Styles */
 	.timeline {
 		position: relative;
-		max-width: 64ch;
+		max-width: 56ch;
 		margin: var(--space-l) 0 var(--space-xl) 0;
 		font-family: var(--font-sans);
 	}
@@ -406,7 +415,7 @@ try {
 	.timeline-marker {
 		position: absolute;
 		left: 0;
-		top: 5px;
+		top: 3px;
 		width: 16px;
 		height: 16px;
 		background: var(--color-bg);
@@ -424,18 +433,9 @@ try {
 		letter-spacing: 0.025em;
 	}
 
-	.timeline-role-company {
-		font-family: var(--font-sans);
-		font-size: var(--fs-base);
-		font-weight: 500;
-		color: var(--color-fg);
-		margin-bottom: 0.4rem;
-		line-height: var(--leading-normal);
-	}
-
-	.timeline-description {
+	.timeline a {
 		color: var(--color-muted);
-		line-height: var(--leading-base);
+		text-decoration: none;
 	}
 
 	@media (max-width: 768px) {
