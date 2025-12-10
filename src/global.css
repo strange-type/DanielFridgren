@@ -1,195 +1,35 @@
-@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap");
-
 @font-face {
-  font-family: "Source Sans", sans-serif;
-  src:
-    local("Source Sans Regular"),
-    url("https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap");
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-}
-
-
-@font-face {
-  font-family: "Gilroy", sans-serif;
-  src:
-    local("Gilroy-Heavy"),
-    url("/fonts/Gilroy-Heavy.ttf") format("ttf");
-  font-weight: normal;
+  font-family: "TT Norms Pro";
+  src: url("/fonts/TTNormsProVariable.ttf") format("truetype-variations");
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Gilroy", sans-serif;
-  src:
-    local("Gilroy-Heavy"),
-    url("/fonts/Gilroy-HeavyItalic.ttf") format("ttf");
-  font-weight: normal;
+  font-family: "TT Norms Pro";
+  src: url("/fonts/TTNormsProVariable.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TT Norms Pro Mono";
+  src: url("/fonts/TTNormsProMonoVariable.ttf") format("truetype-variations");
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Gilroy", sans-serif;
-  src:
-    local("Gilroy-ExtraBold"),
-    url("/fonts/Gilroy-ExtraBoldItalic.ttf") format("ttf");
-  font-weight: normal;
-  font-style: normal;
+  font-family: "TT Norms Pro Mono";
+  src: url("/fonts/TTNormsProMonoVariable.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: italic;
   font-display: swap;
 }
 
-@font-face {
-  font-family: "Gilroy", sans-serif;
-  src:
-    local("Gilroy-ExtraBold"),
-    url("/fonts/Gilroy-ExtraBold.ttf") format("ttf");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Gilroy", sans-serif;
-  src:
-    local("Gilroy-ExtraRegular"),
-    url("/fonts/Gilroy-Regular.ttf") format("ttf");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Gilroy", sans-serif;
-  src:
-    local("Gilroy-ExtraRegular"),
-    url("/fonts/Gilroy-RegularItalic.ttf") format("ttf");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Gilroy", sans-serif;
-  src:
-    local("Gilroy-UltraLight"),
-    url("/fonts/Gilroy-UltraLight.ttf") format("ttf");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Gilroy", sans-serif;
-  src:
-    local("Gilroy-UltraLight"),
-    url("/fonts/Gilroy-UltraLight.ttf") format("ttf");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kozuka Mincho Pro";
-  src:
-    local("Kozuka Mincho Pro Regular"),
-    url("/fonts/KozukaMinchoPro-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kozuka Mincho Pro";
-  src:
-    local("Kozuka Mincho Pro Light"),
-    url("/fonts/KozukaMinchoPro-Light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kozuka Mincho Pro";
-  src:
-    local("Kozuka Mincho Pro ExtraLight"),
-    url("/fonts/KozukaMinchoPro-ExtraLight.ttf") format("truetype");
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kozuka Mincho Pro";
-  src:
-    local("Kozuka Mincho Pro Medium"),
-    url("/fonts/KozukaMinchoPro-Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kozuka Mincho Pro";
-  src:
-    local("Kozuka Mincho Pro Bold"),
-    url("/fonts/KozukaMinchoPro-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kozuka Gothic Pro";
-  src:
-    local("Kozuka Gothic Pro Regular"),
-    url("/fonts/KozukaGothicPro-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kozuka Gothic Pro";
-  src:
-    local("Kozuka Gothic Pro Light"),
-    url("/fonts/KozukaGothicPro-Light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kozuka Gothic Pro";
-  src:
-    local("Kozuka Gothic Pro ExtraLight"),
-    url("/fonts/KozukaGothicPro-ExtraLight.ttf") format("truetype");
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kozuka Gothic Pro";
-  src:
-    local("Kozuka Gothic Pro Medium"),
-    url("/fonts/KozukaGothicPro-Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kozuka Gothic Pro";
-  src:
-    local("Kozuka Gothic Pro Bold"),
-    url("/fonts/KozukaGothicPro-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
 
 :root {
   /* Spacing */
@@ -208,16 +48,16 @@
 
 
   /* Fonts */
-  --font-heading: "Kozuka Gothic Pro", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-body: "Kozuka Mincho Pro", "Times New Roman", serif;
-  --font-sans: "Kozuka Gothic Pro", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-heading: "TT Norms Pro", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-body: "TT Norms Pro", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: "TT Norms Pro", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
   /* Leading */
   --leading-ultratight: 100%;
   --leading-tighter: 110%;
   --leading-tight: 120%;
   --leading-snug: 130%;
-  --leading-base: 140%;
+  --leading-base: 145%;
   --leading-loose: 170%;
   --leading-looser: 200%;
 
@@ -279,15 +119,16 @@
   --font-size-s: var(--fs-sm);
 
 
-  /* Line-height tokens */
+  /* Line-height tokens 
   --leading-base: 1.45;
   --leading-snug: 1.25;
   --leading-tight: 1.15;
+*/
 
-  /* Measure for readable line length */
+
   --measure-min: 40ch;
-  --measure-preferred: 75ch;
-  --measure-max: 80ch;
+  --measure-preferred: 64ch;
+  --measure-max: 72ch;
 
   /* Colors */
   --color-white: #fff;
@@ -454,13 +295,12 @@ body {
 /* Headings */
 h1 {
   font-family: var(--font-sans);
-  font-weight: 800;
+  font-weight: 600;
   font-size: var(--fs-xl);
   line-height: var(--leading-tight);
+  letter-spacing: -0.04em;
   margin-bottom: var(--space-s);
   max-width: 1200px;
-  /* letter-spacing: -1px; */
-
 }
 
 @media (max-width: 768px) {
@@ -649,7 +489,7 @@ picture {
   font-family: var(--font-sans);
   font-size: var(--fs-base);
   line-height: var(--leading-base);
-
+  letter-spacing: -0.02em;
   cursor: pointer;
 
   /* elevation & smoothing */
