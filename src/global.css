@@ -590,7 +590,6 @@ picture {
   margin-bottom: 0;
 }
 
-
 .body-text-medium {
   font-family: var(--font-body);
   font-size: var(--fs-md);
@@ -600,6 +599,13 @@ picture {
   color: var(--color-fg);
   margin-bottom: 0;
 }
+
+@media (max-width: 768px) {
+  .case-content .body-text {
+    font-size: var(--fs-md);
+  }
+}
+
 
 @media (max-width: 768px) {
   .hero-secondary {
