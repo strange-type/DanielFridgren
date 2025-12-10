@@ -1,23 +1,23 @@
 ---
-import Layout from './Layout.astro';
-import PageWrapper from '../components/layouts/PageWrapper.astro';
-import Spacer from '../components/mdx/Spacer.astro';
-import SEO from '../components/seo.astro';
-import { visit } from 'unist-util-visit';
+import Layout from "./Layout.astro";
+import PageWrapper from "../components/layouts/PageWrapper.astro";
+import Spacer from "../components/mdx/Spacer.astro";
+import SEO from "../components/seo.astro";
+import { visit } from "unist-util-visit";
 
 export const remarkPlugins = [
   () => (tree: any) => {
     let first = false;
 
-    visit(tree, 'paragraph', (node) => {
+    visit(tree, "paragraph", (node) => {
       if (!first) {
         node.data = node.data || {};
         node.data.hProperties = node.data.hProperties || {};
-        node.data.hProperties.class = 'lead';
+        node.data.hProperties.class = "lead";
         first = true;
       }
     });
-  }
+  },
 ];
 
 const { frontmatter, prev, next } = Astro.props;
@@ -29,18 +29,37 @@ const { frontmatter, prev, next } = Astro.props;
 
     <div class="blog-grid">
       <aside class="blog-side">
-        <div class="post-date">{new Date(frontmatter.pubDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+        <div class="post-date">
+          {
+            new Date(frontmatter.pubDate).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })
+          }
+        </div>
       </aside>
 
       <article class="blog-main">
-        <SEO title={frontmatter.title} description={frontmatter.description} pathname={`/blog/${frontmatter.slug ?? ''}`} pubDate={frontmatter.pubDate} />
+        <SEO
+          title={frontmatter.title}
+          description={frontmatter.description}
+          pathname={`/blog/${frontmatter.slug ?? ""}`}
+          pubDate={frontmatter.pubDate}
+        />
 
         <header class="blogpost-header">
           <h1 class="big-title measure fadeup-st">{frontmatter.title}</h1>
           <p class="blogpost-meta fadeup-st">
-            {frontmatter.readingTime ?? '—'} min read
+            {frontmatter.readingTime ?? "—"} min read
             <span class="meta-date-mobile">
-              • {new Date(frontmatter.pubDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+              • {
+                new Date(frontmatter.pubDate).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })
+              }
             </span>
           </p>
         </header>
@@ -50,7 +69,7 @@ const { frontmatter, prev, next } = Astro.props;
         </section>
 
         <footer class="blogpost-footer fadeup-st">
-          <p>Tags: {frontmatter.tags?.join(', ') ?? '—'}</p>
+          <p>Tags: {frontmatter.tags?.join(", ") ?? "—"}</p>
         </footer>
 
         <nav class="post-nav fadeup-st" aria-label="Post navigation">
@@ -178,57 +197,3 @@ const { frontmatter, prev, next } = Astro.props;
     }
   }
 </style>
-
-<script>
-  import gsap from 'gsap';
-  import ScrollTrigger from 'gsap/ScrollTrigger';
-
-  window['gsap'] = gsap;
-  (window as any).ScrollTrigger = ScrollTrigger;
-
-  gsap.registerPlugin(ScrollTrigger);
-</script>
-
-<script type="module">
-  (async () => {
-    try {
-      // register ScrollToPlugin if available (dynamic import) with CDN fallback
-      try {
-        const { ScrollToPlugin } = await import('gsap/ScrollToPlugin');
-        if (ScrollToPlugin && window.gsap) window.gsap.registerPlugin(ScrollToPlugin);
-      } catch (e) {
-        // CDN fallback for ScrollToPlugin
-        await new Promise((res) => {
-          const s = document.createElement('script');
-          s.src = 'https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollToPlugin.min.js';
-          s.onload = res;
-          document.head.appendChild(s);
-        });
-        if (window.gsap && window.gsap.ScrollToPlugin) window.gsap.registerPlugin(window.gsap.ScrollToPlugin);
-      }
-
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-      // Fade elements with fadeup-st class
-      const sections = gsap.utils.toArray('.fadeup-st');
-      sections.forEach((section, i) => {
-        gsap.from(section, {
-          opacity: 0,
-          y: 10,
-          duration: 1.25,
-          stagger: 0.05,
-          ease: 'power4.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 85%',
-            toggleActions: 'play none none none'
-            // markers: true, // enable to debug
-          },
-          delay: i * 0.15
-        });
-      });
-    } catch (err) {
-      console.error('GSAP init/import failed:', err);
-    }
-  })();
-</script>
