@@ -616,12 +616,13 @@ const posts = moduleKeys
 	.page-bg {
 		position: fixed;
 		right: 30px;
-		bottom: 0;
+		top: 100vh;
 		pointer-events: none;
 		z-index: 0;
 		opacity: 0;
 		max-height: 100vh;
-		overflow: hidden;
+		overflow: visible;
+		will-change: transform, opacity;
 	}
 
 	/* Ensure all page content sits above the background */
@@ -656,19 +657,21 @@ const posts = moduleKeys
 	// Parallax scroll effect for page background SVG
 	const pageBg = document.querySelector(".page-bg") as HTMLElement | null;
 	if (pageBg) {
-		const parallaxSpeed = 0.2; // 0 = stationary, 1 = scroll with page, 0.5 = half speed
+		const parallaxSpeed = 0.2;
 		let ticking = false;
 
 		const updateParallax = () => {
-			const scrollY = window.scrollY - 5000;
-			pageBg.style.transform = `translateY(${scrollY * parallaxSpeed}px)`;
-
-			// Fade in opacity as you scroll down the page
+			const scrollY = window.scrollY;
 			const scrollHeight =
 				document.documentElement.scrollHeight - window.innerHeight;
-			const scrollProgress = window.scrollY / scrollHeight;
-			const fadeStart = 0.7; // Start fading here
-			const fadeEnd = 0.75; // Full opacity here
+			const scrollProgress = scrollY / scrollHeight;
+
+			// Parallax: move upward as you scroll (negative = up)
+			pageBg.style.transform = `translateY(-${0.7 * scrollY * parallaxSpeed}px)`;
+
+			// Fade in opacity from 70% to 75% scroll
+			const fadeStart = 0.7;
+			const fadeEnd = 0.75;
 			const opacity = Math.max(
 				0,
 				Math.min(
@@ -680,11 +683,18 @@ const posts = moduleKeys
 			ticking = false;
 		};
 
-		window.addEventListener("scroll", () => {
-			if (!ticking) {
-				requestAnimationFrame(updateParallax);
-				ticking = true;
-			}
-		});
+		window.addEventListener(
+			"scroll",
+			() => {
+				if (!ticking) {
+					requestAnimationFrame(updateParallax);
+					ticking = true;
+				}
+			},
+			{ passive: true },
+		);
+
+		// Initial call to position correctly
+		updateParallax();
 	}
 </script>

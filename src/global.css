@@ -769,6 +769,7 @@ mux-player {
   color: var(--color-muted);
   transition: color 220ms ease;
   margin-top: var(--space-2xs);
+  margin-bottom: calc(var(--space-2xs)*0.8);
 
 }
 
