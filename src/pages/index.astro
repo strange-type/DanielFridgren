@@ -144,8 +144,8 @@ const posts = moduleKeys
 							Supporting product teams with clarity and direction
 						</h1>
 						<Spacer size="small" />
-						<ul class="body-list">
-							<li class="fadeup-st">
+						<ul class="body-list fadeup-st">
+							<li class="">
 								<img
 									src="/images/icon-product-design.svg"
 									alt="Product design icon"
@@ -157,7 +157,7 @@ const posts = moduleKeys
 										Product design
 									</p>
 									<p
-										class="body-text"
+										class="body-text service-text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										From early discovery to final interface
@@ -166,7 +166,7 @@ const posts = moduleKeys
 									</p>
 								</div>
 							</li>
-							<li class="fadeup-st">
+							<li class="">
 								<img
 									src="/images/icon-user-research.svg"
 									alt="User research icon"
@@ -176,7 +176,7 @@ const posts = moduleKeys
 								<div>
 									<p class="subheader-large">User research</p>
 									<p
-										class="body-text"
+										class="body-text service-text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Planning and conducting research to
@@ -185,7 +185,7 @@ const posts = moduleKeys
 									</p>
 								</div>
 							</li>
-							<li class="fadeup-st">
+							<li class="">
 								<img
 									src="/images/icon-prototyping.svg"
 									alt="Prototyping icon"
@@ -197,7 +197,7 @@ const posts = moduleKeys
 										Prototyping & validation
 									</p>
 									<p
-										class="body-text"
+										class="body-text service-text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Building interactive prototypes to
@@ -207,7 +207,7 @@ const posts = moduleKeys
 									</p>
 								</div>
 							</li>
-							<li class="fadeup-st">
+							<li class="">
 								<img
 									src="/images/icon-strategy.svg"
 									alt="Strategy icon"
@@ -219,7 +219,7 @@ const posts = moduleKeys
 										Design strategy
 									</p>
 									<p
-										class="body-text"
+										class="body-text service-text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Clarifying product direction by aligning
@@ -228,7 +228,7 @@ const posts = moduleKeys
 									</p>
 								</div>
 							</li>
-							<li class="fadeup-st">
+							<li class="">
 								<img
 									src="/images/icon-teambuilding.svg"
 									alt="Building teams icon"
@@ -241,7 +241,7 @@ const posts = moduleKeys
 									</p>
 
 									<p
-										class="body-text"
+										class="body-text service-text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Helping organisations grow confident,
@@ -288,25 +288,14 @@ const posts = moduleKeys
 
 									<div class="work-card-meta">
 										<div class="work-card-title">
-											{p.title || p.excerpt || ""}
-											<svg
-												width="16"
-												height="16"
-												viewBox="0 0 16 16"
-												fill="none"
-												xmlns="http://www.w3.org/2000/svg"
-											>
-												<path
-													d="M11.875 4H11.5V4.75H11.875H14.7203L8.98516 10.4852L8.72031 10.75L9.25 11.2797L9.51484 11.0148L15.25 5.27969V8.125V8.5H16V8.125V4.375V4H15.625H11.875ZM4.375 4.75H4V5.125V15.625V16H4.375H14.875H15.25V15.625V11.125V10.75H14.5V11.125V15.25H4.75V5.5H8.875H9.25V4.75H8.875H4.375Z"
-													fill="black"
-												/>
-											</svg>
+											{p.description || p.excerpt || ""}
 										</div>
 										<h3 class="work-card-subtitle">
 											{p.client || p.__path}
 										</h3>
 									</div>
 								</a>
+								<Spacer size="xs" />
 							))
 						}
 					</div>
@@ -637,6 +626,17 @@ const posts = moduleKeys
 			opacity: 0.12;
 		}
 	}
+
+	/* Service text highlight effect */
+	.service-text {
+		color: var(--color-subtle);
+		transition: color 0.25s ease;
+		max-width: 42ch;
+	}
+
+	.service-text.in-focus {
+		color: var(--color-fg);
+	}
 </style>
 
 <script>
@@ -696,5 +696,48 @@ const posts = moduleKeys
 
 		// Initial call to position correctly
 		updateParallax();
+	}
+</script>
+
+<script>
+	// Service text highlight effect when in middle 10% of screen
+	const serviceTexts = document.querySelectorAll(
+		".service-text",
+	) as NodeListOf<HTMLElement>;
+	if (serviceTexts.length > 0) {
+		let ticking = false;
+
+		const updateHighlight = () => {
+			const viewportHeight = window.innerHeight;
+			const midStart = viewportHeight * 0.45; // 45% from top
+			const midEnd = viewportHeight * 0.55; // 55% from top
+
+			serviceTexts.forEach((text) => {
+				const rect = text.getBoundingClientRect();
+				const textCenter = rect.top + rect.height / 2;
+
+				if (textCenter >= midStart && textCenter <= midEnd) {
+					text.classList.add("in-focus");
+				} else {
+					text.classList.remove("in-focus");
+				}
+			});
+
+			ticking = false;
+		};
+
+		window.addEventListener(
+			"scroll",
+			() => {
+				if (!ticking) {
+					requestAnimationFrame(updateHighlight);
+					ticking = true;
+				}
+			},
+			{ passive: true },
+		);
+
+		// Initial call
+		updateHighlight();
 	}
 </script>
