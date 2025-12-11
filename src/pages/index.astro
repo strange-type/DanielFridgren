@@ -257,8 +257,8 @@ const posts = moduleKeys
 			</section>
 			<Spacer size="xl" />
 			<section id="work" class="general-section">
-				<div class="_1-2-grid">
-					<p class="section-title">Work</p>
+				<div>
+					<p class="section-title"></p>
 					<div>
 						<h1 class="fadeup-st">Selected case studies</h1>
 						<div class="body-text fadeup-st">
@@ -324,7 +324,7 @@ const posts = moduleKeys
 			<Spacer size="large" />
 			<section id="experience" class="general-section">
 				<div class="_1-2-grid">
-					<p class="section-title">Experience</p>
+					<p class="section-title"></p>
 					<div class="measure">
 						<h1 class="fadeup-st">
 							Bringing 20 years of hands‑on design experience
@@ -648,8 +648,9 @@ const posts = moduleKeys
 	const pageBg = document.querySelector(".page-bg") as HTMLElement | null;
 	if (pageBg) {
 		const parallaxSpeed = 0.2; // 0 = stationary, 1 = scroll with page, 0.5 = half speed
+		let ticking = false;
 
-		window.addEventListener("scroll", () => {
+		const updateParallax = () => {
 			const scrollY = window.scrollY - 5000;
 			pageBg.style.transform = `translateY(${scrollY * parallaxSpeed}px)`;
 
@@ -667,6 +668,14 @@ const posts = moduleKeys
 				),
 			);
 			pageBg.style.opacity = opacity.toString();
+			ticking = false;
+		};
+
+		window.addEventListener("scroll", () => {
+			if (!ticking) {
+				requestAnimationFrame(updateParallax);
+				ticking = true;
+			}
 		});
 	}
 </script>

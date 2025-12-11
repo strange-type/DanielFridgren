@@ -98,32 +98,11 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
 <script>
   import gsap from "gsap";
   import ScrollTrigger from "gsap/ScrollTrigger";
-  import Lenis from "lenis";
 
   window["gsap"] = gsap;
   (window as any).ScrollTrigger = ScrollTrigger;
 
   gsap.registerPlugin(ScrollTrigger);
-
-  // Only run in the browser
-  /*  if (typeof window !== "undefined") {
-    const lenis = new Lenis({
-      lerp: 0.2, // lower = smoother/slower
-      smoothWheel: true,
-    });
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    lenis.on("scroll", ScrollTrigger.update);
-    ScrollTrigger.addEventListener("refreshInit", () => {
-      // optional: do something when refresh starts
-    });
-    ScrollTrigger.refresh(); 
-  }*/
 </script>
 
 <script type="module">
