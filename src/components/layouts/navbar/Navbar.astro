@@ -12,7 +12,9 @@ import { Icon } from "astro-icon/components";
       <Logo />
     </a>
     <div class="brand-text">
-      <div class="docked">Daniel Fridgren</div>
+      <div class="docked">
+        <a href="/" aria-label="home">Daniel Fridgren</a>
+      </div>
       <div class="subtle">UX Designer based&nbsp;in Malmö&nbsp;Sweden</div>
     </div>
   </div>
@@ -84,6 +86,7 @@ import { Icon } from "astro-icon/components";
     .docked {
       display: none;
     }
+
     .subtle {
       display: none;
     }

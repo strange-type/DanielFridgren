@@ -85,6 +85,12 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
       img {
         content-visibility: auto;
       }
+
+      /* Ensure footer is always above page backgrounds */
+      footer {
+        position: relative;
+        z-index: 10;
+      }
     </style>
   </body>
 </html>

@@ -174,8 +174,8 @@
   --color-gray-700: #575653;
   --color-gray-600: #6F6E69;
   --color-gray-500: #878580;
-  --color-gray-300: #B7B5AC;
   --color-gray-400: #9F9D96;
+  --color-gray-300: #B7B5AC;
   --color-gray-200: #CECDC3;
   --color-gray-150: #DAD8CE;
   --color-gray-100: #E6E4D9;
@@ -419,6 +419,10 @@ a:focus-visible {
   font-weight: 600;
   color: var(--color-subtle);
   text-transform: uppercase;
+  text-decoration: none;
+}
+
+.docked a {
   text-decoration: none;
 }
 
