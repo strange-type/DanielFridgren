@@ -8,26 +8,58 @@ export interface Props {
   ogImage?: string;
 }
 
-const { title, description, pathname, pubDate, keywords, ogImage } = Astro.props as Props;
+const { title, description, pathname, pubDate, keywords, ogImage } =
+  Astro.props as Props;
 
-const SITE = 'https://fridgren.se';
-const siteName = 'Daniel Fridgren — Senior UX Design';
+const SITE = "https://fridgren.se";
+const siteName = "Daniel Fridgren — Senior UX Design";
 const url = pathname ? `${SITE}${pathname}` : SITE;
 let fullTitle: string;
-if (!pathname || pathname === '/') {
+if (!pathname || pathname === "/") {
   // Homepage: avoid duplicating site name
   fullTitle = title || siteName;
 } else {
   // Other pages: append site name
   fullTitle = title ? `${title} — ${siteName}` : siteName;
 }
-const metaType = pubDate ? 'article' : 'website';
+const metaType = pubDate ? "article" : "website";
 
 // Site-wide fallback description
 const defaultDescription =
-  'Senior UX Design for product leaders. I help organisations build complex products with simple user flows — from discovery to final implementation.';
+  "Senior UX Design for product leaders. I help organisations build complex products with simple user flows — from discovery to final implementation.";
 const metaDescription = description || defaultDescription;
 ---
+
+<!-- site name for crawlers / social -->
+<meta property="og:site_name" content="Daniel Fridgren" />
+
+<!-- JSON-LD: WebSite + Person + publisher logo (absolute URL) -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "url": "https://fridgren.se",
+        "name": "Daniel Fridgren",
+        "publisher": {
+          "@type": "Person",
+          "name": "Daniel Fridgren",
+          "url": "https://fridgren.se"
+        }
+      },
+      {
+        "@type": "Person",
+        "name": "Daniel Fridgren",
+        "url": "https://fridgren.se",
+        "sameAs": [
+          "https://www.linkedin.com/in/fridgren",
+          "https://x.com/fridgren"
+        ]
+      }
+    ]
+  }
+</script>
 
 <head>
   <title>{fullTitle}</title>
@@ -35,7 +67,11 @@ const metaDescription = description || defaultDescription;
   <!-- Always emit a meta description (page-specific or fallback) -->
   <meta name="description" content={metaDescription} />
 
-  {Array.isArray(keywords) && keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+  {
+    Array.isArray(keywords) && keywords.length > 0 && (
+      <meta name="keywords" content={keywords.join(", ")} />
+    )
+  }
 
   <!-- canonical -->
   <link rel="canonical" href={url} />
