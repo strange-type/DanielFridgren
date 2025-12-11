@@ -759,14 +759,14 @@ mux-player {
 
 .work-card-subtitle {
   font-family: var(--font-sans);
-  font-size: var(--font-size-medium);
+  font-size: var(--fs-md);
   font-weight: 400;
   margin: 0;
   color: var(--color-muted);
 }
 
 .work-card-title {
-  font-size: calc(var(--fs-md)*1.45);
+  font-size: var(--fs-md);
   font-weight: 400;
   line-height: var(--leading-tight);
   color: var(--color-muted);
