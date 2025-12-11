@@ -764,10 +764,14 @@ mux-player {
 }
 
 .work-card-title {
-  font-size: var(--fs-md);
+  font-size: calc(var(--fs-md)*1.25);
+  font-weight: 600;
   color: var(--color-muted);
   transition: color 220ms ease;
+  margin-top: var(--space-2xs);
+
 }
+
 
 .work-card-meta .work-card-subtitle {
   transition: color 220ms ease;

@@ -127,7 +127,7 @@ const posts = moduleKeys
 						</div>
 						<Spacer size="small" />
 						<a
-							href="mailto:daniel.fridgren@gmail.com?subject=Meeting request"
+							href="mailto:daniel.fridgren@gmail.com?subject=Meeting+request"
 							class="pill-btn fadeup-st"
 							target="_blank"
 							rel="noreferrer">Book a meeting</a
@@ -258,67 +258,64 @@ const posts = moduleKeys
 			<Spacer size="xl" />
 			<section id="work" class="general-section">
 				<div>
-					<p class="section-title"></p>
-					<div>
-						<h1 class="fadeup-st">Selected case studies</h1>
-						<div class="body-text fadeup-st">
-							A curated mix of UX, discovery and research work
-							from recent engagements.
-						</div>
-						<Spacer />
-						<div class="work-cards">
-							{
-								posts.map((p) => (
-									<a
-										class="card-w-inline-block link-plain"
-										href={p.url}
-										aria-label={`Open case study about ${p.title || p.__path}`}
-									>
-										{p.heroImage || p.image ? (
-											<figure class="work-figure">
-												<img
-													src={
-														p.heroImage ||
-														p.image ||
-														"/images/og-image.png"
-													}
-													alt={p.title || ""}
-													loading="lazy"
-												/>
-											</figure>
-										) : null}
-
-										<div class="work-card-meta">
-											<div class="work-card-title">
-												{p.title || p.excerpt || ""}
-											</div>
-											<h3 class="work-card-subtitle">
-												{p.client || p.__path}
-											</h3>
-										</div>
-									</a>
-								))
-							}
-						</div>
-
+					<h1 class="fadeup-st">Selected case studies</h1>
+					<div class="body-text fadeup-st">
+						A curated mix of UX, discovery and research work from
+						recent engagements.
+					</div>
+					<Spacer size="small" />
+					<div class="work-cards">
 						{
-							posts.length === 0 ? (
-								<div class="body-text">
-									<p>
-										No case posts found. Diagnostic info
-										(development only):
-									</p>
-									<pre style="white-space:pre-wrap; background:#f6f6f6; padding:8px; border-radius:4px;">
-										{JSON.stringify(
-											Object.keys(modules || {}),
-											null,
-											2,
-										)}
-									</pre>
-								</div>
-							) : null
+							posts.map((p) => (
+								<a
+									class="card-w-inline-block link-plain"
+									href={p.url}
+									aria-label={`Open case study about ${p.title || p.__path}`}
+								>
+									{p.heroImage || p.image ? (
+										<figure class="work-figure">
+											<img
+												src={
+													p.heroImage ||
+													p.image ||
+													"/images/og-image.png"
+												}
+												alt={p.title || ""}
+												loading="lazy"
+											/>
+										</figure>
+									) : null}
+
+									<div class="work-card-meta">
+										<div class="work-card-title">
+											{p.title || p.excerpt || ""}
+										</div>
+										<h3 class="work-card-subtitle">
+											{p.client || p.__path}
+										</h3>
+									</div>
+								</a>
+							))
 						}
 					</div>
+
+					{
+						posts.length === 0 ? (
+							<div class="body-text">
+								<p>
+									No case posts found. Diagnostic info
+									(development only):
+								</p>
+								<pre style="white-space:pre-wrap; background:#f6f6f6; padding:8px; border-radius:4px;">
+									{JSON.stringify(
+										Object.keys(modules || {}),
+										null,
+										2,
+									)}
+								</pre>
+							</div>
+						) : null
+					}
 				</div>
 			</section>
 			<Spacer size="large" />
