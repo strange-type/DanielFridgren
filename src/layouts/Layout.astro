@@ -108,7 +108,7 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
   // Only run in the browser
   if (typeof window !== "undefined") {
     const lenis = new Lenis({
-      lerp: 0.11, // lower = smoother/slower
+      lerp: 0.13, // lower = smoother/slower
       smoothWheel: true,
     });
 

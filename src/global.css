@@ -331,7 +331,7 @@ h1 {
   font-family: var(--font-sans);
   font-weight: 600;
   font-size: var(--fs-xl);
-  line-height: var(--leading-tight);
+  line-height: var(--leading-tighter);
   letter-spacing: -0.04em;
   margin-bottom: var(--space-s);
   max-width: 1200px;
@@ -340,7 +340,7 @@ h1 {
 @media (max-width: 768px) {
   h1 {
     font-size: var(--fs-lg);
-    line-height: var(--leading-snug);
+    line-height: var(--leading-ultratight);
     margin-bottom: var(--space-xs);
   }
 }
