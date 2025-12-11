@@ -7,6 +7,6 @@ import icon from "astro-icon";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://wisecompany.se",
+  site: "https://fridgren.se",
   integrations: [robots(), sitemap(), astroLLMsGenerator(), icon()],
 });
