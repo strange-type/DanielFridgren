@@ -340,6 +340,7 @@ const posts = moduleKeys
 						</h1>
 						<br />
 						<div class="timeline">
+							<div class="timeline-line fadeup-st"></div>
 							<div class="timeline-item fadeup-st">
 								<div class="timeline-marker"></div>
 								<div class="timeline-content">
@@ -511,8 +512,7 @@ const posts = moduleKeys
 	}
 
 	/* Timeline line */
-	.timeline::before {
-		content: "";
+	.timeline-line {
 		position: absolute;
 		left: 7px;
 		top: 18px;
@@ -521,7 +521,7 @@ const posts = moduleKeys
 		background: linear-gradient(
 			to bottom,
 			var(--color-very-subtle) 75%,
-			var(--color-bg) 90%
+			transparent 90%
 		);
 	}
 
