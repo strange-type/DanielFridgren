@@ -106,9 +106,9 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
   gsap.registerPlugin(ScrollTrigger);
 
   // Only run in the browser
-  if (typeof window !== "undefined") {
+  /*  if (typeof window !== "undefined") {
     const lenis = new Lenis({
-      lerp: 0.13, // lower = smoother/slower
+      lerp: 0.2, // lower = smoother/slower
       smoothWheel: true,
     });
 
@@ -119,7 +119,11 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
     requestAnimationFrame(raf);
 
     lenis.on("scroll", ScrollTrigger.update);
-  }
+    ScrollTrigger.addEventListener("refreshInit", () => {
+      // optional: do something when refresh starts
+    });
+    ScrollTrigger.refresh(); 
+  }*/
 </script>
 
 <script type="module">
