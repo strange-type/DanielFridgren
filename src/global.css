@@ -502,6 +502,7 @@ picture {
 .subheader-large {
   font-family: var(--font-sans);
   font-size: var(--fs-md);
+  line-height: var(--leading-base);
   font-weight: 600;
   margin-bottom: var(--space-2xs);
 }

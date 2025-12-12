@@ -75,17 +75,10 @@ const posts = moduleKeys
 	/>
 	<div class="index-page-container">
 		<div class="page-bg" aria-hidden="true">
-			<svg
-				width="538"
-				height="861"
-				viewBox="0 0 538 861"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<path
-					d="M538 406.038H537.788C537.929 409.63 538 413.24 538 416.866C538 566.365 417.564 687.558 269 687.558C120.436 687.558 9.83662e-05 566.365 0 416.866C0 267.367 120.435 146.174 269 146.174C329.558 146.174 385.442 166.311 430.4 200.294V0H538V406.038ZM269.002 254.962C179.584 254.962 107.096 327.45 107.096 416.868C107.096 506.287 179.584 578.775 269.002 578.775C358.421 578.775 430.909 506.287 430.909 416.868C430.909 327.45 358.421 254.962 269.002 254.962Z"
-					fill="#F2F2F2"></path>
-			</svg>
+<svg width="515" height="656" viewBox="0 0 515 656" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M514.409 396.082L514.404 397.762C513.509 540.431 398.7 655.807 257.205 655.808C115.155 655.808 0.000186813 539.525 0 396.082C0 252.639 115.155 136.355 257.205 136.355C298.836 136.356 338.157 146.343 372.946 164.075V339.412C352.104 296.087 308.109 266.221 257.205 266.221C186.18 266.221 128.604 324.363 128.604 396.084C128.604 467.805 186.18 525.947 257.205 525.947C328.23 525.947 385.808 467.805 385.808 396.084V396.082H385.807V0H514.409V396.082Z" fill="#F2F2F2"/>
+</svg>
+
 		</div>
 		<PageWrapper>
 			<section id="hero" class="hero-section">
@@ -723,10 +716,10 @@ const posts = moduleKeys
 			const scrollProgress = scrollY / scrollHeight;
 
 			// Parallax: move upward as you scroll (negative = up)
-			pageBg.style.transform = `translateY(-${0.7 * scrollY * parallaxSpeed}px)`;
+			pageBg.style.transform = `translateY(-${0.5 * scrollY * parallaxSpeed}px)`;
 
 			// Fade in opacity from 70% to 75% scroll
-			const fadeStart = 0.80;
+			const fadeStart = 0.76;
 			const fadeEnd = 0.82;
 			const opacity = Math.max(
 				0,
