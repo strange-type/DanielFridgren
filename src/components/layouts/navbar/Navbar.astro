@@ -17,8 +17,32 @@ import { Icon } from "astro-icon/components";
   </div>
   <div class="right-hand-side">
     <MainNavLinks />
+    <button
+      id="menu-toggle"
+      class="menu-toggle"
+      aria-label="Toggle mobile menu"
+    >
+      <Icon name="mdi:menu" class="menu-icon" width="32" height="32" />
+      <Icon name="mdi:close" class="close-icon" width="32" height="32" />
+    </button>
   </div>
 </nav>
+
+<MobileMenu />
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    menuToggle?.addEventListener("click", () => {
+      mobileMenu?.classList.toggle("open");
+      menuToggle?.classList.toggle("open");
+      const isOpen = mobileMenu?.classList.contains("open");
+      document.body.style.overflow = isOpen ? "hidden" : "auto";
+    });
+  });
+</script>
 
 <style>
   .navbar {
@@ -67,13 +91,50 @@ import { Icon } from "astro-icon/components";
     align-items: baseline;
   }
 
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-xs);
+    color: var(--color-text);
+    font-size: var(--fs-l);
+    position: relative;
+  }
+
+  .menu-toggle .close-icon {
+    display: none;
+  }
+
+  .menu-toggle.open .menu-icon {
+    display: none;
+  }
+
+  .menu-toggle.open .close-icon {
+    display: block;
+  }
+
   .subtle {
     color: var(--color-subtle);
   }
   @media screen and (max-width: 576px) {
     .navbar {
       padding: 0 var(--space-s);
+      margin-top: var(--space-s);
       margin-bottom: var(--space-m);
+      align-items: center;
+    }
+
+    .right-hand-side > :not(.menu-toggle) {
+      display: none !important;
+    }
+
+    .menu-toggle {
+      display: block;
+    }
+
+    .brand {
+      align-items: center;
     }
 
     .brand-text {
