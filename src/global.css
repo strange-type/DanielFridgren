@@ -139,25 +139,23 @@
 
 
   /* Typographic scale (fluid via clamp) */
-  --fs-xs: clamp(.78rem, .9vw, .85rem);
-  --fs-sm: clamp(.95rem, 1.05vw, 1.05rem);
-  --fs-base: clamp(1.125rem, 1.35vw, 1.375rem);
-  --fs-md: clamp(1.25rem, 1.9vw, 1.625rem);
-  --fs-lg: clamp(3rem, 3.8vw, 3.4rem);
-  --fs-xl: clamp(3.8rem, 3.6vw, 4.4rem);
 
-  /* backwards-compat aliases (optional but prevents breakage) */
-  --font-size-base: var(--fs-base);
-  --font-size-md: var(--fs-md);
-  --font-size-large: var(--fs-lg);
-  --font-size-s: var(--fs-sm);
+  /* Major Third ratio (1.25) - More conservative progression */
+  --fs-xs: clamp(0.8rem, 0.9vw, 0.85rem);
+  --fs-sm: clamp(1rem, 1.1vw, 1.05rem);
+  --fs-base: clamp(1.25rem, 1.4vw, 1.375rem);
+  --fs-md: clamp(1.563rem, 1.8vw, 1.75rem);
+  --fs-lg: clamp(2.441rem, 3.2vw, 2.8rem);
+  --fs-xl: clamp(3.052rem, 4vw, 3.5rem);
 
-
-  /* Line-height tokens 
-  --leading-base: 1.45;
-  --leading-snug: 1.25;
-  --leading-tight: 1.15;
-*/
+  /* Perfect Fourth ratio (1.333) - More dramatic */
+  /*
+  --fs-xs: clamp(0.75rem, 0.9vw, 0.85rem);
+  --fs-sm: clamp(1rem, 1.1vw, 1.05rem);
+  --fs-base: clamp(1.333rem, 1.5vw, 1.4rem);
+  --fs-md: clamp(1.777rem, 2vw, 1.875rem);
+  --fs-lg: clamp(2.369rem, 3.2vw, 2.8rem);
+  --fs-xl: clamp(3.157rem, 4vw, 3.5rem); */
 
 
   --measure-min: 40ch;
@@ -585,7 +583,7 @@ picture {
 .horizontal-line {
   height: 1px;
   background: var(--color-very-subtle);
-  margin: calc(var(--space-l)) 0;
+  margin: var(--space-l) 0;
   width: 100%;
   max-width: 1200px;
   margin-left: 0;
@@ -752,35 +750,33 @@ mux-player {
 }
 
 .work-card-meta {
-
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-l);
+  align-items: baseline;
   padding: 0;
-  max-width: 56ch;
+  margin-top: var(--space-s);
+  width: 100%;
 }
 
 .work-card-subtitle {
-  font-family: var(--font-sans);
-  font-size: var(--fs-md);
-  font-weight: 400;
+  font-size: var(--fs-base);
   margin: 0;
+  font-weight: 400;
   color: var(--color-muted);
+  white-space: nowrap;
+  transition: color 220ms ease;
+  text-align: right;
+  margin-left: auto;
 }
 
 .work-card-title {
   font-size: var(--fs-md);
-  font-weight: 400;
-  line-height: var(--leading-tight);
+  line-height: var(--leading-base);
   color: var(--color-muted);
   transition: color 220ms ease;
-  margin-top: var(--space-2xs);
-  margin-bottom: calc(var(--space-2xs)*0.8);
-
-
-}
-
-
-.work-card-meta .work-card-subtitle {
-  transition: color 220ms ease;
-  color: var(--color-gray-300);
+  margin: 0;
+  max-width: 48ch;
 }
 
 .work-card-meta:hover .work-card-title,
@@ -798,10 +794,23 @@ mux-player {
   color: var(--color-fg);
 }
 
+@media (max-width: 768px) {
+  .work-card-meta {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xs);
+  }
+
+  .work-card-subtitle {
+    white-space: normal;
+    text-align: left;
+    margin-left: 0;
+  }
+}
+
 .work-card-sub {
   margin: 0;
   font-family: var(--font-body);
-  font-size: var(--font-size-base);
+  font-size: var(--fs-base);
   color: var(--color-muted);
 }
 
@@ -855,7 +864,7 @@ mux-player {
 }
 
 .subtitle {
-  font-size: var(--font-size-base);
+  font-size: var(--fs-base);
   font-family: var(--font-body);
   font-weight: 300;
   color: var(--color-muted);
@@ -873,7 +882,7 @@ mux-player {
 
 /* 7) Secondary & typographic elements */
 .body-secondary {
-  font-size: var(--font-size-base);
+  font-size: var(--fs-base);
   font-family: var(--font-body);
   font-weight: 300;
   color: var(--color-muted);
@@ -911,7 +920,7 @@ mux-player {
 
 .metadata span,
 span.metadata {
-  font-size: var(--font-size-sm);
+  font-size: var(--fs-smm);
   font-family: var(--font-sans);
   color: var(--color-muted);
 }

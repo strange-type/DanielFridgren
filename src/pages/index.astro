@@ -84,7 +84,7 @@ const posts = moduleKeys
 			>
 				<path
 					d="M538 406.038H537.788C537.929 409.63 538 413.24 538 416.866C538 566.365 417.564 687.558 269 687.558C120.436 687.558 9.83662e-05 566.365 0 416.866C0 267.367 120.435 146.174 269 146.174C329.558 146.174 385.442 166.311 430.4 200.294V0H538V406.038ZM269.002 254.962C179.584 254.962 107.096 327.45 107.096 416.868C107.096 506.287 179.584 578.775 269.002 578.775C358.421 578.775 430.909 506.287 430.909 416.868C430.909 327.45 358.421 254.962 269.002 254.962Z"
-					fill="#F4F4F4"></path>
+					fill="#F2F2F2"></path>
 			</svg>
 		</div>
 		<PageWrapper>
@@ -152,12 +152,12 @@ const posts = moduleKeys
 									width="28"
 									height="28"
 								/>
-								<div>
+								<div class="service-item">
 									<p class="subheader-large">
 										Product design
 									</p>
 									<p
-										class="body-text service-text"
+										class="body-text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										From early discovery to final interface
@@ -173,10 +173,10 @@ const posts = moduleKeys
 									width="28"
 									height="28"
 								/>
-								<div>
+								<div class="service-item">
 									<p class="subheader-large">User research</p>
 									<p
-										class="body-text service-text"
+										class="body-text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Planning and conducting research to
@@ -192,12 +192,12 @@ const posts = moduleKeys
 									width="28"
 									height="28"
 								/>
-								<div>
+								<div class="service-item">
 									<p class="subheader-large">
 										Prototyping & validation
 									</p>
 									<p
-										class="body-text service-text"
+										class="body-text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Building interactive prototypes to
@@ -214,12 +214,12 @@ const posts = moduleKeys
 									width="28"
 									height="28"
 								/>
-								<div>
+								<div class="service-item">
 									<p class="subheader-large">
 										Design strategy
 									</p>
 									<p
-										class="body-text service-text"
+										class="body-text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Clarifying product direction by aligning
@@ -235,13 +235,13 @@ const posts = moduleKeys
 									width="28"
 									height="28"
 								/>
-								<div>
+								<div class="service-item">
 									<p class="subheader-large">
 										Design team enablement
 									</p>
 
 									<p
-										class="body-text service-text"
+										class="body-text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Helping organisations grow confident,
@@ -257,7 +257,7 @@ const posts = moduleKeys
 			</section>
 			<Spacer size="xl" />
 			<section id="work" class="general-section">
-				<div>
+				<div class="service-item">
 					<h1 class="fadeup-st">Selected case studies</h1>
 					<div class="body-text fadeup-st">
 						A curated mix of UX, discovery and research work from
@@ -628,14 +628,70 @@ const posts = moduleKeys
 	}
 
 	/* Service text highlight effect */
-	.service-text {
+	.service-item p {
 		color: var(--color-subtle);
 		transition: color 0.25s ease;
+	}
+
+	.service-item .body-text {
 		max-width: 42ch;
 	}
 
-	.service-text.in-focus {
+	.service-item.in-focus p {
 		color: var(--color-fg);
+	}
+
+	/* Work cards stacked layout */
+	.work-cards {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xxl);
+	}
+
+	.work-card-stacked {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-m);
+	}
+
+
+	.work-card-stacked:hover {
+		color: var(--color-muted);
+	}
+
+	.work-card-stacked .work-figure {
+		margin: 0;
+		overflow: hidden;
+		border-radius: var(--border-radius-base);
+	}
+
+	.work-card-stacked .work-figure img {
+		width: 100%;
+		height: auto;
+		display: block;
+		transition:
+			transform 240ms ease,
+			opacity 240ms ease;
+	}
+
+	.work-card-stacked:hover .work-figure img {
+		transform: scale(1.02);
+		opacity: 0.95;
+	}
+
+	.work-card-description {
+		font-family: var(--font-body);
+		font-size: var(--fs-md);
+		line-height: var(--leading-base);
+		color: var(--color-muted);
+		max-width: 60ch;
+		margin: 0;
+	}
+
+	@media (max-width: 768px) {
+		.work-card-description {
+			font-size: var(--fs-base);
+		}
 	}
 </style>
 
@@ -670,8 +726,8 @@ const posts = moduleKeys
 			pageBg.style.transform = `translateY(-${0.7 * scrollY * parallaxSpeed}px)`;
 
 			// Fade in opacity from 70% to 75% scroll
-			const fadeStart = 0.7;
-			const fadeEnd = 0.75;
+			const fadeStart = 0.80;
+			const fadeEnd = 0.82;
 			const opacity = Math.max(
 				0,
 				Math.min(
@@ -701,25 +757,37 @@ const posts = moduleKeys
 
 <script>
 	// Service text highlight effect when in middle 10% of screen
-	const serviceTexts = document.querySelectorAll(
-		".service-text",
+	const serviceItems = document.querySelectorAll(
+		".service-item",
 	) as NodeListOf<HTMLElement>;
-	if (serviceTexts.length > 0) {
+	if (serviceItems.length > 0) {
 		let ticking = false;
 
 		const updateHighlight = () => {
 			const viewportHeight = window.innerHeight;
-			const midStart = viewportHeight * 0.40; // 45% from top
-			const midEnd = viewportHeight * 0.60; // 55% from top
+			const targetY = viewportHeight * 0.5; // Center of viewport
 
-			serviceTexts.forEach((text) => {
-				const rect = text.getBoundingClientRect();
-				const textCenter = rect.top + rect.height / 2;
+			let closestItem: HTMLElement | null = null;
+			let closestDistance = Infinity;
 
-				if (textCenter >= midStart && textCenter <= midEnd) {
-					text.classList.add("in-focus");
+			// Find the item closest to the center
+			serviceItems.forEach((item) => {
+				const rect = item.getBoundingClientRect();
+				const itemCenter = rect.top + rect.height / 2;
+				const distance = Math.abs(itemCenter - targetY);
+
+				if (distance < closestDistance) {
+					closestDistance = distance;
+					closestItem = item;
+				}
+			});
+
+			// Only highlight the closest item
+			serviceItems.forEach((item) => {
+				if (item === closestItem) {
+					item.classList.add("in-focus");
 				} else {
-					text.classList.remove("in-focus");
+					item.classList.remove("in-focus");
 				}
 			});
 
