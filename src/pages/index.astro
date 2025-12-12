@@ -73,6 +73,25 @@ const posts = moduleKeys
 			"daniel fridgren",
 		]}
 	/>
+	
+	<!-- Video Structured Data for Search Engines -->
+	<script type="application/ld+json" set:html={JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "VideoObject",
+		"name": "Daniel Fridgren - UX Design Portfolio Showcase",
+		"description": "Senior UX Designer helping organizations build complex products with simple user flows",
+		"thumbnailUrl": `${Astro.site}images/og-image.png`,
+		"uploadDate": "2025-12-03T16:24:14Z",
+		"duration": "PT33S",
+		"contentUrl": "https://stream.mux.com/heEyyMTCGulT0201qoOrDX4sj4mi6Kvw7Kc8ryw7MbviY.m3u8",
+		"embedUrl": "https://youtu.be/N9Z1nwKOgv8",
+		"publisher": {
+			"@type": "Person",
+			"name": "Daniel Fridgren",
+			"url": Astro.site
+		}
+	})} />
+
 	<div class="index-page-container">
 		<div class="page-bg" aria-hidden="true">
 <svg width="515" height="656" viewBox="0 0 515 656" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -120,7 +139,7 @@ const posts = moduleKeys
 						</div>
 						<Spacer size="small" />
 						<a
-							href="mailto:daniel.fridgren@gmail.com?subject=Meeting+request"
+							href="mailto:daniel@fridgren.se?subject=Meeting+request"
 							class="pill-btn fadeup-st"
 							target="_blank"
 							rel="noreferrer">Book a meeting</a
