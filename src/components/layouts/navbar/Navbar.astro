@@ -39,7 +39,16 @@ import { Icon } from "astro-icon/components";
       mobileMenu?.classList.toggle("open");
       menuToggle?.classList.toggle("open");
       const isOpen = mobileMenu?.classList.contains("open");
-      document.body.style.overflow = isOpen ? "hidden" : "auto";
+
+      if (isOpen) {
+        const scrollbarWidth =
+          window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.overflow = "hidden";
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      } else {
+        document.body.style.overflow = "auto";
+        document.body.style.paddingRight = "0";
+      }
     });
   });
 </script>
@@ -100,6 +109,8 @@ import { Icon } from "astro-icon/components";
     color: var(--color-text);
     font-size: var(--fs-l);
     position: relative;
+    -webkit-tap-highlight-color: transparent;
+    tap-highlight-color: transparent;
   }
 
   .menu-toggle .close-icon {
