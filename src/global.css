@@ -509,8 +509,8 @@ picture {
 
 /* BUTTON */
 :root {
-  --shadow: 0 6px 18px rgba(24, 24, 24, 0.12);
-  --shadow-hover: 0 10px 28px rgba(24, 24, 24, 0.16);
+  --shadow: 0 6px 18px rgba(24, 24, 24, 0.06);
+  --shadow-hover: 0 10px 28px rgba(24, 24, 24, 0.06);
   --transition-speed: 180ms;
   --scale-hover: 1.04;
 }
@@ -538,31 +538,36 @@ picture {
   /* transitions */
   transition:
     transform var(--transition-speed) cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    box-shadow var(--transition-speed) cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    background-color var(--transition-speed) cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    color var(--transition-speed) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow var(--transition-speed) cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-origin: center;
-  will-change: transform, box-shadow, background-color, color;
+  will-change: transform, box-shadow;
 }
 
 /* Hover and keyboard focus (use focus-visible for keyboard users) */
 .pill-btn:hover,
 .pill-btn:focus-visible {
-  transform: scale(var(--scale-hover));
-  box-shadow: var(--shadow-hover);
-  background: var(--color-fg);
-  color: var(--color-bg);
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04);
   outline: none;
 }
 
-/* Small active shrink to give tactile feel on press */
+/* Pressed state with black background */
 .pill-btn:active {
-  transform: scale(calc(var(--scale-hover) - 0.04));
+  transform: translateY(0);
+  background: var(--color-fg);
+  color: var(--color-bg);
+  box-shadow: var(--box-shadow-sm);
+  transition-duration: 80ms;
 }
 
 /* Accessible visible focus ring for keyboard users */
 .pill-btn:focus-visible {
-  box-shadow: 0 0 0 4px rgba(100, 150, 255, 0.14), var(--shadow-hover);
+  box-shadow:
+    0 0 0 4px rgba(100, 150, 255, 0.14),
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* Respect users who prefer reduced motion */
