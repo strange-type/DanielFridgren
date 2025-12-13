@@ -71,14 +71,12 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
 
     <link rel="me" href="https://linkedin.com/in/fridgren" />
 
-    <!-- Privacy-friendly analytics by Plausible and visitors.now -->
-    <script
-      src="https://cdn.visitors.now/v.js"
-      data-token="98527db3-c35b-4fed-be98-765cb9db38f5"></script>
+    <!-- Cloudflare Web Analytics -->
     <script
       defer
-      data-domain="fridgren.se"
-      src="https://plausible.io/js/script.js"></script>
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "c2d1eb89e36d42b3af5daa6253a5f323"}'
+    ></script><!-- End Cloudflare Web Analytics -->
   </head>
   <body>
     <HyphenopolyClient />
