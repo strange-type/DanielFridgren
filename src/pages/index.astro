@@ -100,7 +100,7 @@ const posts = moduleKeys
 
 		</div>
 		<PageWrapper>
-			<section id="hero" class="hero-section">
+			<section id="hero" class="hero-section full-bleed">
 				<mux-player
 					playback-id="heEyyMTCGulT0201qoOrDX4sj4mi6Kvw7Kc8ryw7MbviY"
 					accent-color="#e6a92c"
@@ -504,6 +504,26 @@ const posts = moduleKeys
 </Layout>
 
 <style>
+	/* Full bleed hero section */
+	.hero-section.full-bleed {
+		width: 100vw;
+		max-width: 1600px;
+		margin-left: 50%;
+		transform: translateX(-50%);
+		margin-bottom: var(--space-xl);
+	}
+
+	.hero-section.full-bleed mux-player {
+		width: 100%;
+		height: auto;
+	}
+
+	@media (max-width: 1600px) {
+		.hero-section.full-bleed {
+			width: 100vw;
+		}
+	}
+
 	/* Timeline Styles */
 	.timeline {
 		position: relative;
