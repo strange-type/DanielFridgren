@@ -6,16 +6,17 @@ import { Icon } from "astro-icon/components";
 ---
 
 <nav class="navbar" transition:persist>
-  <div class="brand">
-    <a href="/" aria-label="home">
+  <div class="nav-left">
+    <a href="/" aria-label="home" class="logo-link">
       <span class="visually-hidden">Home</span>
       <Logo />
     </a>
-    <div class="brand-text docked">
+    <div class="brand-text">
       <a href="/" aria-label="home">Daniel Fridgren</a>
     </div>
   </div>
-  <div class="right-hand-side">
+
+  <div class="nav-right">
     <MainNavLinks />
     <button
       id="menu-toggle"
@@ -56,48 +57,63 @@ import { Icon } from "astro-icon/components";
 <style>
   .navbar {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    align-items: flex-end;
-    margin: var(--space-l) auto var(--space-l);
-    padding: 0 var(--space-l);
-    padding-right: calc(var(--space-l) * 1.4);
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: var(--space-2xs) var(--space-l) var(--space-m) var(--space-m);
     animation: fadeIn 0.5s 0.2s forwards;
     opacity: 0;
-    background: transparent;
-    position: relative;
     z-index: 1001;
+    mix-blend-mode: difference;
   }
 
-  .brand {
+  .navbar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .nav-left {
     display: flex;
-    align-items: end;
-    flex-direction: row;
+    align-items: center;
     gap: var(--space-s);
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+  }
+
+  .logo-link {
+    display: block;
+    transform: scale(0.65);
+    transform-origin: center;
   }
 
   .brand-text {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-s);
+    font-size: var(--fs-base);
+    font-weight: 400;
   }
 
-  .docked {
-    font-size: var(--fs-xs);
-    font-weight: 600;
-    text-transform: uppercase;
+  .brand-text a {
+    text-decoration: none;
+    color: inherit;
   }
 
-  .subtle {
-    font-size: var(--fs-xs);
-    font-weight: 600;
-    color: var(--color-subtle);
-    text-transform: uppercase;
-  }
-
-  .right-hand-side {
-    display: flex;
-    align-items: baseline;
+  .navbar,
+  .navbar * {
+    color: white;
   }
 
   .menu-toggle {
@@ -125,39 +141,31 @@ import { Icon } from "astro-icon/components";
     display: block;
   }
 
-  .subtle {
-    color: var(--color-subtle);
+  @media (max-width: 768px) {
+    .navbar {
+      padding: var(--space-xs) var(--space-s) var(--space-s) var(--space-s);
+    }
   }
+
   @media screen and (max-width: 576px) {
     .navbar {
-      padding: 0 var(--space-s);
-      margin-top: var(--space-s);
-      margin-bottom: var(--space-m);
-      align-items: center;
+      padding: var(--space-xs) calc(var(--space-2xs) * 0.1) 0 var(--space-s);
     }
 
-    .right-hand-side > :not(.menu-toggle) {
+    .brand-text {
+      display: none;
+    }
+
+    .logo-link {
+      transform: scale(1);
+    }
+
+    .nav-right > :not(.menu-toggle) {
       display: none !important;
     }
 
     .menu-toggle {
       display: block;
-    }
-
-    .brand {
-      align-items: center;
-    }
-
-    .brand-text {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .docked {
-      display: none;
-    }
-
-    .subtle {
-      display: none;
     }
   }
 

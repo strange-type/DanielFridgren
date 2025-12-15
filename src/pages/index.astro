@@ -510,12 +510,19 @@ const posts = moduleKeys
 		max-width: 1600px;
 		margin-left: 50%;
 		transform: translateX(-50%);
+		margin-top: 0;
 		margin-bottom: var(--space-xl);
 	}
 
 	.hero-section.full-bleed mux-player {
 		width: 100%;
 		height: auto;
+	}
+
+	@media (max-width: 768px) {
+		.hero-section.full-bleed {
+			margin-top: calc(-1 * var(--space-s));
+		}
 	}
 
 	@media (max-width: 1600px) {

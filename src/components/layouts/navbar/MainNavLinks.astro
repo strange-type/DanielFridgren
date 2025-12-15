@@ -13,12 +13,29 @@ import UnderlineHoverLink from "../../mdx/UnderlineHoverLink.astro";
   .main {
     display: flex;
     flex-shrink: 0;
-    gap: var(--space-xs);
+    gap: var(--space-m);
   }
 
   @media screen and (max-width: 576px) {
     .main {
       display: none !important;
     }
+  }
+
+  .navLinks a {
+    font-family: var(--font-sans);
+    font-size: var(--fs-base);
+    font-weight: 400;
+    color: var(--color-bg);
+    text-decoration: none;
+  }
+
+  .docked a {
+    text-decoration: none;
+  }
+
+  .navLinks a:hover {
+    color: var(--color-bg);
+    text-decoration: 2px underline;
   }
 </style>
