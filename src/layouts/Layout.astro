@@ -76,7 +76,10 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
       defer
       src="https://static.cloudflareinsights.com/beacon.min.js"
       data-cf-beacon='{"token": "c2d1eb89e36d42b3af5daa6253a5f323"}'></script>
-  </head>
+ 
+    <!-- Privacy-friendly analytics by Visitors.now -->
+    <script src="https://cdn.visitors.now/v.js" data-token="98527db3-c35b-4fed-be98-765cb9db38f5"></script>
+ </head>
   <body>
     <HyphenopolyClient />
     <Navbar />
