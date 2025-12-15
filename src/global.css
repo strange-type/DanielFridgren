@@ -254,6 +254,7 @@ ol[role="list"] {
 /* Set core root defaults */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 100px;
 }
 
 /* Set core body defaults */
