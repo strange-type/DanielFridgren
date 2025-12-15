@@ -505,8 +505,8 @@ picture {
   padding: 0.6rem 1.8rem;
   border-radius: 9999px;
   border: 1px solid var(--color-fg);
-  background: var(--color-bg);
-  color: var(--color-fg);
+  background: var(--color-fg);
+  color: var(--color-bg);
   font-weight: 500;
   font-family: var(--font-sans);
   font-size: var(--fs-base);
@@ -514,8 +514,7 @@ picture {
   letter-spacing: -0.02em;
   cursor: pointer;
 
-  /* elevation & smoothing */
-  box-shadow: var(--box-shadow-sm);
+  /* smoothing */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-decoration: none;
@@ -523,36 +522,33 @@ picture {
   /* transitions */
   transition:
     transform var(--transition-speed) cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    box-shadow var(--transition-speed) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background var(--transition-speed) cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    color var(--transition-speed) cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-origin: center;
-  will-change: transform, box-shadow;
+  will-change: transform, background, color;
 }
 
 /* Hover and keyboard focus (use focus-visible for keyboard users) */
 .pill-btn:hover,
 .pill-btn:focus-visible {
-  transform: translateY(-4px);
-  box-shadow:
-    0 12px 36px rgba(0, 0, 0, 0.08),
-    0 4px 12px rgba(0, 0, 0, 0.04);
+  transform: scale(1.05);
+  background: var(--color-bg);
+  color: var(--color-fg);
   outline: none;
 }
 
-/* Pressed state with black background */
+/* Pressed state */
 .pill-btn:active {
-  transform: translateY(0);
+  transform: scale(0.98);
   background: var(--color-fg);
   color: var(--color-bg);
-  box-shadow: var(--box-shadow-sm);
   transition-duration: 80ms;
 }
 
 /* Accessible visible focus ring for keyboard users */
 .pill-btn:focus-visible {
-  box-shadow:
-    0 0 0 4px rgba(100, 150, 255, 0.14),
-    0 8px 24px rgba(0, 0, 0, 0.12),
-    0 4px 12px rgba(0, 0, 0, 0.08);
+  outline: 3px solid rgba(100, 150, 255, 0.3);
+  outline-offset: 2px;
 }
 
 /* Respect users who prefer reduced motion */
@@ -566,7 +562,6 @@ picture {
   .pill-btn:focus-visible,
   .pill-btn:active {
     transform: none;
-    box-shadow: var(--shadow);
   }
 }
 
