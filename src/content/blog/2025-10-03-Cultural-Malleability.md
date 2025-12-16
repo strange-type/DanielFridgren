@@ -2,8 +2,8 @@
 title: "Culture As Our Most Adaptive Technology"
 description: "On cultural malleability, generational blind spots, and why we need people trained to question assumptions and stay with uncertainty."
 pubDate: "2025-10-03"
-draft: true
-tags: ["culture”, ”adaptation”, ”systems-thinking”,”design-thinking”]
+draft: false
+tags: ["culture”, ”adaptation”, ”systems-thinking”, ”design-thinking”]
 author: "Daniel Fridgren"
 ---
 
