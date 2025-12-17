@@ -1,6 +1,6 @@
 ---
-title: "Culture As Our Most Adaptive Technology"
-description: "On cultural malleability, generational blind spots, and why we need people trained to question assumptions and stay with uncertainty."
+title: "The Waters We Are In"
+description: "On cultural malleability, generational blind spots, and why societies adapt through cultural change rather than technology."
 pubDate: "2025-10-03"
 draft: false
 tags: ["culture", "adaptation", "systems thinking", "design thinking"]
