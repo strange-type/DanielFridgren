@@ -746,9 +746,11 @@ mux-player {
 }
 
 .work-card-subtitle {
-  font-size: var(--fs-base);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   margin: 0;
-  font-weight: 400;
   color: var(--color-muted);
   white-space: nowrap;
   transition: color 220ms ease;
@@ -959,12 +961,12 @@ mux-player {
 }
 
 .section-title {
-  font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--color-subtle);
   margin-bottom: var(--space-m);
   text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .page-header {
