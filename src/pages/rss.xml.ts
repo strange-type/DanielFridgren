@@ -1,13 +1,12 @@
 // src/pages/rss.xml.ts
 import { getCollection } from 'astro:content';
-import type { APIRoute } from 'astro';
 import type { CollectionEntry } from 'astro:content';
 
 const SITE = 'https://fridgren.se';
 const SITE_TITLE = 'Daniel Fridgren';
 const SITE_DESCRIPTION = 'Senior UX Design for product leaders. Thoughts on design, complex systems and technology.';
 
-export const GET: APIRoute = async () => {
+export async function GET() {
   const posts = (await getCollection('blog')) as CollectionEntry<'blog'>[];
   const visible = posts
     .filter((p) => !p.data.draft)
