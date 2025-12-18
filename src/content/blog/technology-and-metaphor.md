@@ -3,7 +3,7 @@ title: "The Metaphors We Build Into Technology"
 description: "How technologies reflect the metaphors of their time, and what ecological systems reveal about alternative ways of building."
 pubDate: "2025-08-19"
 draft: false
-tags: ["techno-optimism", "ecology", ”metaphor”]
+tags: ["techno-optimism", "ecology", "metaphor"]
 author: "Daniel Fridgren"
 ---
 
