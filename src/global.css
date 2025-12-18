@@ -339,7 +339,7 @@ h1 {
 @media (max-width: 768px) {
   h1 {
     font-size: var(--fs-lg);
-    line-height: var(--leading-ultratight);
+    line-height: var(--leading-tight);
     margin-bottom: var(--space-xs);
   }
 }
