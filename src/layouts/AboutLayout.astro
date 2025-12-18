@@ -16,11 +16,11 @@ const { title = "About", desc = "Learn more about me" } = Astro.props;
 <Layout title={title} desc={desc}>
     <PageWrapper>
         <Spacer size="2xl" />
-        <Spacer size="xl" />
         <main class="measure">
-            <h1 class="fadeup-st">About Daniel</h1>
+            <h1 class="main-title big-title measure fadeup-st">About</h1>
             <Spacer size="xs" />
-            <div class="body-text-medium fadeup-st">
+
+            <div class="body-text fadeup-st">
                 <slot />
             </div>
             <Spacer size="large" />
