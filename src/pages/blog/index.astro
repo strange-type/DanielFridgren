@@ -29,32 +29,38 @@ const formatDate = (date: any) =>
     />
     <main role="main" aria-labelledby="blog-heading">
       <Spacer size="xl" />
-      <h1 id="blog-heading" class="main-title measure fadeup-st">
-        Blog Archive
-      </h1>
-      <Spacer size="xs" />
-      <ul class="post-list measure" aria-live="polite">
-        {
-          visible.map((post: any) => (
-            <li class="post-list-item fadeup-st">
-              <a class="post-link" href={`/blog/${post.slug}`}>
-                <time
-                  class="post-date metadata"
-                  datetime={String(post.data.pubDate)}
-                >
-                  {formatDate(post.data.pubDate)}
-                </time>
-                <div class="post-content">
-                  <h2 class="post-title">{post.data.title}</h2>
-                  {post.data.description ? (
-                    <p class="post-description">{post.data.description}</p>
-                  ) : null}
-                </div>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+
+      <div class="_1-2-grid">
+        <div></div>
+        <div>
+          <h1 id="blog-heading" class="main-title big-title measure">
+            Blog Posts
+          </h1>
+          <Spacer size="xs" />
+          <ul class="post-list measure" aria-live="polite">
+            {
+              visible.map((post: any) => (
+                <li class="post-list-item">
+                  <a class="post-link" href={`/blog/${post.slug}`}>
+                    <time
+                      class="post-date metadata"
+                      datetime={String(post.data.pubDate)}
+                    >
+                      {formatDate(post.data.pubDate)}
+                    </time>
+                    <div class="post-content">
+                      <h2 class="post-title">{post.data.title}</h2>
+                      {post.data.description ? (
+                        <p class="post-description">{post.data.description}</p>
+                      ) : null}
+                    </div>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
     </main>
   </PageWrapper>
 </Layout>
@@ -67,7 +73,7 @@ const formatDate = (date: any) =>
     display: flex;
     flex-direction: column;
     gap: var(--space-16);
-    max-width: 32rem; /* constrain the list width */
+    max-width: 42rem; /* constrain the list width */
     margin-left: 0;
   }
 
