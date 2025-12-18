@@ -1028,18 +1028,6 @@ span.metadata {
 
 /* Lead for blogposts 
 .blogpost-content>p:first-of-type {
-  font-size: var(--fs-md);
-  line-height: var(--leading-snug);
-  font-weight: 400;
-  color: var(--color-fg);
-  max-width: 60ch;
-  margin-top: var(--space-xs);
-  margin-bottom: var(--space-m);
-  padding-left: var(--space-s);
-  border-left: 2px solid var(--color-very-subtle);
-}
-*/
-.blogpost-content>p:first-of-type {
   font-size: var(--fs-base);
   line-height: var(--leading-snug);
   font-weight: 400;
@@ -1049,3 +1037,4 @@ span.metadata {
   margin-top: var(--space-xs);
   margin-bottom: var(--space-m);
 }
+*/
