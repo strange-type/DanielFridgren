@@ -1,5 +1,5 @@
 ---
-title: "The Waters We Are In"
+title: "The Waters We Are In - On Culture And Adaptability"
 description: "On cultural malleability, generational blind spots, and why societies adapt through cultural change rather than technology."
 pubDate: "2025-10-03"
 draft: false
@@ -7,7 +7,7 @@ tags: ["culture", "adaptation", "systems thinking", "design thinking"]
 author: "Daniel Fridgren"
 ---
 
-Contrary to some popular narratives, I’d argue that humanity’s most powerful adaptive capacity is not technology, but culture. More precisely: cultural malleability.
+Contrary to some popular narratives, I’d argue that humanity’s most powerful adaptive capacity is not technology, but culture. More precisely: *cultural malleability*.
 
 Technology amplifies what a society is already capable of. Culture determines whether a society can change what it is capable of in the first place. It shapes what we consider normal, possible, and desirable, and therefore how we respond when circumstances change.
 
@@ -17,7 +17,7 @@ Children in the past did not grow up with the trepidation that humans would dest
 
 The difficulty with culture is not that it changes, but that it rarely feels like it can, from the inside
 
-We become like the fish in David Foster Wallace’s “This Is Water,” surrounded by assumptions so familiar they disappear from view.
+We become like the fish in David Foster Wallace’s [This Is Water](https://fs.blog/david-foster-wallace-this-is-water/), surrounded by assumptions so familiar they disappear from view.
 
 Our ideas about the world, about the systems we create, about our values, about what is deemed as success - all these ideas tend to surround us completely, and affect our thoughts and our decisions. But they are also malleable and constantly in flux.
 
