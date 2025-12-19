@@ -5,7 +5,7 @@ pubDate: "2025-10-03"
 draft: false
 tags: ["culture", "adaptation", "systems thinking", "design thinking"]
 author: "Daniel Fridgren"
-heroImage: "/images/blog-images/e09.png"
+heroImage: "/images/blog-images/avinash-kumar-txLvw4-PTDw-unsplash.jpg"
 ---
 
 Contrary to some popular narratives, I’d argue that humanity’s most powerful adaptive capacity is not technology, but culture. More precisely: *cultural malleability*.
