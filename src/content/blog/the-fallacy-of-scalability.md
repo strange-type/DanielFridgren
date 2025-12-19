@@ -6,6 +6,7 @@ draft: false
 tags: ["scalability", "systems-thinking", "resilience"]
 author: "Daniel Fridgren"
 heroImage: "/images/blog-images/vidit-goswami-HzfpmHo52ec-unsplash.jpg"
+heroImageCaption: "Photo by Vidit Goswami on Unsplash"
 ---
 
 I’ve got three children. In one sense they are the core of my investment portfolio. I invest a lot of time, attention, money and care in them.

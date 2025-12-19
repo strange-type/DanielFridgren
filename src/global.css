@@ -347,7 +347,7 @@ h1 {
 .big-title {
   font-family: var(--font-heading);
   font-weight: 400;
-  font-size: clamp(2.5rem, 7vw, 6rem);
+  font-size: clamp(2.8rem, 7vw, 6rem);
   line-height: var(--leading-tight);
   margin: 0 0 var(--space-8) 0;
   color: var(--color-fg);
