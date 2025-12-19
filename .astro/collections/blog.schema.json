@@ -28,6 +28,9 @@
         "readingTime": {
           "type": "number"
         },
+        "heroImage": {
+          "type": "string"
+        },
         "$schema": {
           "type": "string"
         }
