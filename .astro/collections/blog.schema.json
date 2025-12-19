@@ -31,6 +31,9 @@
         "heroImage": {
           "type": "string"
         },
+        "heroImageCaption": {
+          "type": "string"
+        },
         "$schema": {
           "type": "string"
         }
