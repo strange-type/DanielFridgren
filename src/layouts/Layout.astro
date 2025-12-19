@@ -100,6 +100,8 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
       /* https://css-tricks.com/almanac/properties/c/content-visibility/ */
       img {
         content-visibility: auto;
+        /* Prevent flickering during scroll animations */
+        contain-intrinsic-size: auto 400px;
       }
 
       /* Ensure footer is always above page backgrounds */
@@ -167,7 +169,7 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
           scrollTrigger: {
             trigger: section,
             start: "top 90%",
-            toggleActions: "play none none reverse",
+            toggleActions: "play none none none",
             // markers: true, // enable to debug
           },
           // Only add delay for elements initially visible on page load
