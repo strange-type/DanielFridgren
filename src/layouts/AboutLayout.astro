@@ -16,182 +16,174 @@ const { title = "About", desc = "Learn more about me" } = Astro.props;
 <Layout title={title} desc={desc}>
     <PageWrapper>
         <Spacer size="2xl" />
-        <main class="measure">
-            <h1 class="main-title big-title measure fadeup-st">About</h1>
-            <Spacer size="xs" />
+        <main>
+            <div class="_1-2-grid">
+                <h1 class="big-title fadeup-st">About</h1>
+                <div class="body-text measure fadeup-st">
+                    <Spacer size="xs" />
 
-            <div class="body-text fadeup-st">
-                <slot />
+                    <slot />
+                </div>
             </div>
-            <Spacer size="large" />
-            <section id="experience" class="general-section">
-                <p class="section-title"></p>
-                <div class="measure">
-                    <h1 class="fadeup-st">
-                        Bringing 20 years of hands‑on design experience
-                    </h1>
-                    <br />
-                    <div class="timeline">
-                        <div class="timeline-line fadeup-st"></div>
-                        <div class="timeline-item fadeup-st">
-                            <div class="timeline-marker"></div>
-                            <div class="timeline-content">
-                                <div class="subheader-large">
-                                    Senior Design Consultant <a
-                                        href="https://wisecompany.se"
-                                    >
-                                        • In Wise Company</a
-                                    >
-                                </div>
-                                <div class="timeline-year">
-                                    Jan 2025 - Present
-                                </div>
-                                <div class="body-secondary">
-                                    Solo but always In Wise Company. Partnering
-                                    with companies to solve complex product
-                                    challenges through strategic design and
-                                    hands-on UX delivery.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="timeline-item fadeup-st">
-                            <div class="timeline-marker"></div>
-                            <div class="timeline-content">
-                                <div class="subheader-large">
-                                    Design Manager <a
-                                        href="https://refined.com"
-                                    >
-                                        • Refined</a
-                                    >
-                                </div>
-                                <div class="timeline-year">
-                                    Mar 2020 - Oct 2024
-                                </div>
-                                <div class="body-secondary">
-                                    Built and scaled the design function for a
-                                    B2B SaaS platform, growing the team to 6
-                                    designers while establishing design systems,
-                                    product discovery practices, and strategic,
-                                    cross-functional processes.
+            <div class="_1-2-grid">
+                <div></div>
+                <section id="experience" class="general-section">
+                    <p class="section-title"></p>
+                    <div class="measure">
+                        <!-- 
+                        <h1 class="fadeup-st">
+                            Bringing 20 years of hands‑on design experience
+                        </h1>
+                        <br />-->
+                        <div class="timeline">
+                            <div class="timeline-line fadeup-st"></div>
+                            <div class="timeline-item fadeup-st">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <div class="subheader-large">
+                                        Senior Design Consultant <a
+                                            href="https://wisecompany.se"
+                                        >
+                                            • In Wise Company</a
+                                        >
+                                    </div>
+                                    <div class="timeline-year">
+                                        Jan 2025 - Present
+                                    </div>
+                                    <div class="body-secondary">
+                                        Solo but always In Wise Company.
+                                        Partnering with companies to solve
+                                        complex product challenges through
+                                        strategic design and hands-on UX
+                                        delivery.
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="timeline-item fadeup-st">
-                            <div class="timeline-marker"></div>
-                            <div class="timeline-content">
-                                <div class="subheader-large">
-                                    Senior UX Designer <a
-                                        href="https://mindoktor.se"
-                                    >
-                                        • Min Doktor</a
-                                    >
-                                </div>
-                                <div class="timeline-year">
-                                    Apr 2016 - Mar 2020
-                                </div>
-                                <div class="body-secondary">
-                                    Designed patient- and clinician facing
-                                    digital healthcare solutions, end-to-end,
-                                    balancing strict regulatory requirements
-                                    with intuitive usability.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="timeline-item fadeup-st">
-                            <div class="timeline-marker"></div>
-                            <div class="timeline-content">
-                                <div class="subheader-large">
-                                    Senior UX Designer <a
-                                        href="https://topp.se"
-                                    >
-                                        • TOPP</a
-                                    >
-                                </div>
-                                <div class="timeline-year">
-                                    Aug 2013 - Apr 2016
-                                </div>
-                                <div class="body-secondary">
-                                    Consultant in design projects across mobile
-                                    applications, IoT, medical devices and
-                                    automotive products.
+                            <div class="timeline-item fadeup-st">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <div class="subheader-large">
+                                        Design Manager <a
+                                            href="https://refined.com"
+                                        >
+                                            • Refined</a
+                                        >
+                                    </div>
+                                    <div class="timeline-year">
+                                        Mar 2020 - Oct 2024
+                                    </div>
+                                    <div class="body-secondary">
+                                        Built and scaled the design function for
+                                        a B2B SaaS platform, growing the team to
+                                        6 designers while establishing design
+                                        systems, product discovery practices,
+                                        and strategic, cross-functional
+                                        processes.
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="timeline-item fadeup-st">
-                            <div class="timeline-marker"></div>
-                            <div class="timeline-content">
-                                <div class="subheader-large">
-                                    UX Designer <a
-                                        href="https://www.blackberry.com"
-                                    >
-                                        • BlackBerry</a
-                                    >
-                                </div>
-                                <div class="timeline-year">
-                                    Mar 2011 - Jul 2013
-                                </div>
-                                <div class="body-secondary">
-                                    Lead designer for Home screen and Lock
-                                    screen on BlackBerry 10, shaping core
-                                    navigation and multitasking paradigms for
-                                    millions of users.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="timeline-item fadeup-st">
-                            <div class="timeline-marker"></div>
-                            <div class="timeline-content">
-                                <div class="subheader-large">
-                                    Interaction Designer<a href="">
-                                        • Color Monkey</a
-                                    >
-                                </div>
-                                <div class="timeline-year">
-                                    Nov 2009 - Mar 2011
+                            <div class="timeline-item fadeup-st">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <div class="subheader-large">
+                                        Senior UX Designer <a
+                                            href="https://mindoktor.se"
+                                        >
+                                            • Min Doktor</a
+                                        >
+                                    </div>
+                                    <div class="timeline-year">
+                                        Apr 2016 - Mar 2020
+                                    </div>
+                                    <div class="body-secondary">
+                                        Designed patient- and clinician facing
+                                        digital healthcare solutions,
+                                        end-to-end, balancing strict regulatory
+                                        requirements with intuitive usability.
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="timeline-item fadeup-st">
-                            <div class="timeline-marker"></div>
-                            <div class="timeline-content">
-                                <div class="subheader-large">
-                                    Interaction Designer<a href="">
-                                        • The Astonishing Tribe</a
-                                    >
+                            <div class="timeline-item fadeup-st">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <div class="subheader-large">
+                                        Senior UX Designer <a
+                                            href="https://topp.se"
+                                        >
+                                            • TOPP</a
+                                        >
+                                    </div>
+                                    <div class="timeline-year">
+                                        Aug 2013 - Apr 2016
+                                    </div>
+                                    <div class="body-secondary">
+                                        Consultant in design projects across
+                                        mobile applications, IoT, medical
+                                        devices and automotive products.
+                                    </div>
                                 </div>
-                                <div class="timeline-year">
-                                    Jan 2006 - Nov 2009
+                            </div>
+                            <div class="timeline-item fadeup-st">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <div class="subheader-large">
+                                        UX Designer <a
+                                            href="https://www.blackberry.com"
+                                        >
+                                            • BlackBerry</a
+                                        >
+                                    </div>
+                                    <div class="timeline-year">
+                                        Mar 2011 - Jul 2013
+                                    </div>
+                                    <div class="body-secondary">
+                                        Lead designer for Home screen and Lock
+                                        screen on BlackBerry 10, shaping core
+                                        navigation and multitasking paradigms
+                                        for millions of users.
+                                    </div>
                                 </div>
-                                <div class="body-secondary">
-                                    Core design team member for the first
-                                    version of Android at Google, working
-                                    on-site in Mountain View to design
-                                    foundational interaction models and UI
-                                    patterns that shaped the platform used by
-                                    billions.
+                            </div>
+                            <div class="timeline-item fadeup-st">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <div class="subheader-large">
+                                        Interaction Designer<a href="">
+                                            • Color Monkey</a
+                                        >
+                                    </div>
+                                    <div class="timeline-year">
+                                        Nov 2009 - Mar 2011
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-item fadeup-st">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <div class="subheader-large">
+                                        Interaction Designer<a href="">
+                                            • The Astonishing Tribe</a
+                                        >
+                                    </div>
+                                    <div class="timeline-year">
+                                        Jan 2006 - Nov 2009
+                                    </div>
+                                    <div class="body-secondary">
+                                        Core design team member for the first
+                                        version of Android at Google, working
+                                        on-site in Mountain View to design
+                                        foundational interaction models and UI
+                                        patterns that shaped the platform used
+                                        by billions.
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
             <Spacer size="large" />
-            <section id="contact" class="general-section">
-                <p class="section-title">Contact</p>
-                <div class="measure">
-                    <h1 class="fadeup-st">
-                        Want to discuss a project or explore working together?
-                    </h1>
-                    <a
-                        href="mailto:daniel@fridgren.se?subject=Meeting+request"
-                        class="pill-btn fadeup-st"
-                        target="_blank"
-                        rel="noreferrer">Get in touch</a
-                    >
-                    <Spacer size="2xl" />
-                    <Spacer size="xl" />
-                </div>
-            </section>
+            <ContactSection />
         </main>
     </PageWrapper>
 </Layout>
