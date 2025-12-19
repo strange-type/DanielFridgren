@@ -1,10 +1,11 @@
 ---
-title: "The Waters We Are In - On Culture And Adaptability"
+title: "On Culture And Adaptability"
 description: "On cultural malleability, generational blind spots, and why societies adapt through cultural change rather than technology."
 pubDate: "2025-10-03"
 draft: false
 tags: ["culture", "adaptation", "systems thinking", "design thinking"]
 author: "Daniel Fridgren"
+heroImage: "/images/blog-images/e09.png"
 ---
 
 Contrary to some popular narratives, I’d argue that humanity’s most powerful adaptive capacity is not technology, but culture. More precisely: *cultural malleability*.

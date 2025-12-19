@@ -5,7 +5,9 @@ pubDate: "2025-12-03"
 draft: false
 tags: ["complexity", "emergence", "distributed intelligence", "systems thinking"]
 author: "Daniel Fridgren"
+heroImage: "/images/blog-images/e011.png"
 ---
+
 We like to think of ourselves as the ones doing the thinking, choosing, deciding. But in complex systems - whether minds, hives, or societies - the agency rarely sit in the center. And yet we continue to imagine a single mind, a single will, a single point of control.
 
 The most obvious human reaction to complexity so far is to break down a problem into smaller pieces. Come up with lists of all tasks that needs to be done, order the tasks, and then direct task completion from a locus of control.

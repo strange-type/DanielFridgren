@@ -5,6 +5,7 @@ pubDate: "2025-08-19"
 draft: false
 tags: ["techno-optimism", "ecology", "metaphor"]
 author: "Daniel Fridgren"
+heroImage: "/images/blog-images/e03.png"
 ---
 
 
