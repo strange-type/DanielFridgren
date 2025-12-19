@@ -10,7 +10,7 @@ import Spacer from "../components/mdx/Spacer.astro";
     <div class="container mx-auto px-4 py-16 max-w-2xl">
         <h1 class="text-4xl md:text-5xl font-bold mb-6">Newsletter</h1>
 
-        <Spacer size="sm" />
+        <Spacer size="small" />
 
         <p class="body-text mb-8">
             Subscribe to receive occasional updates about design, technology,
@@ -18,7 +18,7 @@ import Spacer from "../components/mdx/Spacer.astro";
             the patterns that shape our digital world.
         </p>
 
-        <Spacer size="md" />
+        <Spacer size="small" />
 
         <div id="form-container">
             <form
@@ -81,7 +81,7 @@ import Spacer from "../components/mdx/Spacer.astro";
             </div>
         </div>
 
-        <Spacer size="sm" />
+        <Spacer size="small" />
 
         <p class="text-sm text-gray-600 mt-6">
             Your email will only be used to send you newsletter updates. You can
@@ -91,7 +91,9 @@ import Spacer from "../components/mdx/Spacer.astro";
 </Layout>
 
 <script>
-    const form = document.querySelector('form[name="newsletter"]');
+    const form = document.querySelector(
+        'form[name="newsletter"]',
+    ) as HTMLFormElement | null;
     const successMessage = document.getElementById("success-message");
     const errorMessage = document.getElementById("error-message");
 

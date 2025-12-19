@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 @font-face {
   font-family: "TT Norms Pro";
   src: url("/fonts/TTNormsProCompact-Normal.ttf") format("truetype");
