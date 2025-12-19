@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Daniel Fridgren</title>
+      <link>https://fridgren.se</link>
+      <description>Senior UX Design for product leaders. Thoughts on design, complex systems and technology.</description>
+      <language>en-us</language>
+      <atom:link href="https://fridgren.se/rss.xml" rel="self" type="application/rss+xml" />
+      
+    <item>
+      <title><![CDATA[The Many Minds That Move Us]]></title>
+      <link>https://fridgren.se/blog/agency-and-complex-systems</link>
+      <pubDate>Wed, 03 Dec 2025 00:00:00 GMT</pubDate>
+      <description><![CDATA[A reflection on why command-and-control thinking fails in complex systems, and why both minds and societies are shaped less by central intelligence than by emergent, plural agencies we’ve forgotten how to notice.]]></description>
+      <author>Daniel Fridgren</author>
+      <guid isPermaLink="true">https://fridgren.se/blog/agency-and-complex-systems</guid>
+    </item>
+  
+
+    <item>
+      <title><![CDATA[What Truly Matters Doesn’t Scale]]></title>
+      <link>https://fridgren.se/blog/the-fallacy-of-scalability</link>
+      <pubDate>Mon, 10 Nov 2025 00:00:00 GMT</pubDate>
+      <description><![CDATA[Why dominant investment models overlook the slow, non-scalable investments that sustains resilience and long-term societal health.]]></description>
+      <author>Daniel Fridgren</author>
+      <guid isPermaLink="true">https://fridgren.se/blog/the-fallacy-of-scalability</guid>
+    </item>
+  
+
+    <item>
+      <title><![CDATA[On Culture And Adaptability]]></title>
+      <link>https://fridgren.se/blog/on-cultural-malleability</link>
+      <pubDate>Fri, 03 Oct 2025 00:00:00 GMT</pubDate>
+      <description><![CDATA[On cultural malleability, generational blind spots, and why societies adapt through cultural change rather than technology.]]></description>
+      <author>Daniel Fridgren</author>
+      <guid isPermaLink="true">https://fridgren.se/blog/on-cultural-malleability</guid>
+    </item>
+  
+
+    <item>
+      <title><![CDATA[The Metaphors We Build Into Technology]]></title>
+      <link>https://fridgren.se/blog/technology-and-metaphor</link>
+      <pubDate>Tue, 19 Aug 2025 00:00:00 GMT</pubDate>
+      <description><![CDATA[How technologies reflect the metaphors of their time, and what ecological systems reveal about alternative ways of building.]]></description>
+      <author>Daniel Fridgren</author>
+      <guid isPermaLink="true">https://fridgren.se/blog/technology-and-metaphor</guid>
+    </item>
+  
+    </channel>
+  </rss>

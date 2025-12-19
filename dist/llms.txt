@@ -1,0 +1,28 @@
+# fridgren.se
+> AI-friendly documentation for fridgren.se
+
+## Pages
+
+- [Senior UX Design for product leaders who need a
+							strong partner](https://fridgren.se/) - Helping organisations build complex products with simple user flows, from discovery to final implementation.
+- [About](https://fridgren.se/about/)
+- [Blog Posts](https://fridgren.se/blog/) - Insights on product design, discovery and UX practice from Daniel Fridgren.
+- [Selected case studies](https://fridgren.se/cases/) - Cases from In Wise Company, showcasing our expertise in UX and product design across various industries.
+- [Contact](https://fridgren.se/contact/)
+
+### blog
+
+- [The Many Minds That Move Us](https://fridgren.se/blog/agency-and-complex-systems/) - A reflection on why command-and-control thinking fails in complex systems, and why both minds and societies are shaped less by central intelligence than by emergent, plural agencies we’ve forgotten how to notice.
+- [On Culture And Adaptability](https://fridgren.se/blog/on-cultural-malleability/) - On cultural malleability, generational blind spots, and why societies adapt through cultural change rather than technology.
+- [The Metaphors We Build Into Technology](https://fridgren.se/blog/technology-and-metaphor/) - How technologies reflect the metaphors of their time, and what ecological systems reveal about alternative ways of building.
+- [What Truly Matters Doesn’t Scale](https://fridgren.se/blog/the-fallacy-of-scalability/) - Why dominant investment models overlook the slow, non-scalable investments that sustains resilience and long-term societal health.
+
+### cases
+
+- [UX for next-generation medical devices](https://fridgren.se/cases/baxter/) - How can iterative prototyping reveal the right interaction model for next-generation dialysis machines?
+- [Designing future-focused energy experiences](https://fridgren.se/cases/eon/) - How do you design a coherent smart-home interaction model that unifies energy insights, device control, and security into one ecosystem?
+- [Refining digital healthcare experiences](https://fridgren.se/cases/min-doktor/) - How do you design healthcare journeys that stay clinically precise while remaining calm, clear, and usable for real patients?
+- [Democratizing Design and UxR Work](https://fridgren.se/cases/refined/) - How can lightweight methods unlock better decisions, faster alignment, and a more self-sufficient organisation?
+
+
+*Auto-generated documentation index*
