@@ -17,7 +17,9 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
         <Spacer size="2xl" />
         <main>
             <div class="_1-2-grid">
-                <h1 class="big-title fadeup-st">Contact</h1>
+                <div>
+                    <h1 class="big-title fadeup-st">Contact</h1>
+                </div>
                 <div>
                     <Spacer size="xs" />
 
@@ -33,16 +35,21 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
                         target="_blank"
                         rel="noreferrer">Get in touch</a
                     >
+
                     <Spacer size="2xl" />
                     <Spacer size="xl" />
                 </div>
             </div>
         </main>
     </PageWrapper>
-</Layout>
 
-<style>
-    .contact-text {
-        max-width: 44ch;
-    }
-</style>
+    <style>
+        .contact-text {
+            max-width: 44ch;
+        }
+
+        .contact-image {
+            padding: 20px;
+        }
+    </style>
+</Layout>

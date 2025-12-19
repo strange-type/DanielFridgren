@@ -30,6 +30,9 @@ What would it mean to build technology from a relational stance? from principles
 
 Speculative projects have explored this shift before. Ant Farm's [Dolphin Embassy](http://hiddenarchitecture.net/dolphin-embassy/) imagined a space where human researchers and cetaceans would meet and learn to speak with one another on equal terms. The goal was not to attempt to teach dolphins human language, or vice versa, but to create the foundation for a relational process, in an environment that was equal for all agents.
 
+![Ant Farm's Dolphin Embassy conceptual drawing](/images/blog-images/dolphin-embassy-ant-farm.jpg)
+*Ant Farm's Dolphin Embassy concept drawing*
+
  The proposal was satirical, but its critique was precise: our technologies often assume our vantage point, and to some extent our dominance, as a starting point, rather than relationship.
 
 A similar intuition appears in [The Overstory](https://en.wikipedia.org/wiki/The_Overstory), where Neelay Mehta grows disillusioned with games built around mastery and control. He begins to imagine systems that learn the way forests work: distributed, adaptive, and responsive to their surroundings. In the end, his work opens up a communication channel with our surroundings that reveals nonhuman nature as the overstory, rather than the opposite as it so often is in the anthropocentric view.
