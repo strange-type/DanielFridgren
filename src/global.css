@@ -735,12 +735,6 @@ mux-player {
     opacity 240ms ease;
 }
 
-@media (min-width: 769px) {
-  .work-figure {
-    max-width: 66.666%;
-  }
-}
-
 .work-card-meta {
   display: grid;
   grid-template-columns: 1fr auto;
