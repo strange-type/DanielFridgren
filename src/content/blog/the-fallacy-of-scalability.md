@@ -5,8 +5,8 @@ pubDate: "2025-11-10"
 draft: false
 tags: ["scalability", "systems-thinking", "resilience"]
 author: "Daniel Fridgren"
-heroImage: "/images/blog-images/vidit-goswami-HzfpmHo52ec-unsplash.jpg"
-heroImageCaption: "Photo by Vidit Goswami on Unsplash"
+heroImage: "/images/blog-images/priyank-gajera-zUYLqaCqpmw-unsplash.jpg"
+heroImageCaption: "Photo by Priyank Gajera on Unsplash"
 ---
 
 I’ve got three children. In one sense they are the core of my investment portfolio. I invest a lot of time, attention, money and care in them.
@@ -27,11 +27,11 @@ What truly matters cannot scale.
 
 Yet, scalability is of major importance for investors. Often celebrated in technology and business contexts as a way to maximize efficiency and impact. But what kind of impact?
 
-"We only look for scalable solutions for this problem."
+*"We only look for scalable solutions for this problem."*
 
-"If we can standardize this, the TAM will be huge.”
+*"If we can standardize this, the TAM will be huge.”*
 
-"The network effects here gives financial leverage."
+*"The network effects here gives financial leverage."*
 
 Consider for a moment what we loose when we scale.
 
@@ -39,7 +39,7 @@ Depth: Automated customer service may be scalable, but often the experience is s
 
 Variation: Scalable solutions tend to flatten out local and cultural variation. Homogeneity is often a result of the hunt for scalability.
 
-Robustness: What’s scalable in terms of human enterprises is often centralized and with single points of failure - Fragile.
+Robustness: What’s scalable in terms of human enterprises is often centralized and with single points of failure, becoming fragile.
 
 These losses are not accidental, but structural. Scalability favours short feedback loops and repeatability. Value which unfolds slowly, that is distributed across many people, or resists standardisation becomes hard to justify within dominant investment models. The returns are  delayed, indirect, and difficult to attribute. As a result, they fall outside what markets are well-equipped to fund, even when they are foundational to everything that follows.
 
