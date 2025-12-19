@@ -740,8 +740,6 @@ mux-player {
   grid-template-columns: 1fr auto;
   gap: var(--space-l);
   align-items: baseline;
-  padding: 0;
-  margin-top: var(--space-s);
   width: 100%;
 }
 
@@ -750,7 +748,6 @@ mux-player {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin: 0;
   color: var(--color-muted);
   white-space: nowrap;
   transition: color 220ms ease;
@@ -763,7 +760,8 @@ mux-player {
   line-height: var(--leading-base);
   color: var(--color-muted);
   transition: color 220ms ease;
-  margin: 0;
+  margin-bottom: -8px;
+  margin-top: 0;
   max-width: 48ch;
 }
 

@@ -1,0 +1,48 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageWrapper from "../components/layouts/PageWrapper.astro";
+import Spacer from "../components/mdx/Spacer.astro";
+import SEO from "../components/seo.astro";
+
+interface Props {
+    title?: string;
+    desc?: string;
+}
+
+const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
+---
+
+<Layout title={title} desc={desc}>
+    <PageWrapper>
+        <Spacer size="2xl" />
+        <main>
+            <div class="_1-2-grid">
+                <h1 class="big-title fadeup-st">Contact</h1>
+                <div>
+                    <Spacer size="xs" />
+
+                    <div class="contact-text body-text fadeup-st measure">
+                        Want to discuss a project or explore working together?
+                        I'm always open to new opportunities and collaborations.
+                    </div>
+                    <Spacer size="small" />
+                    <a
+                        href="mailto:daniel@fridgren.se?subject=Meeting+request"
+                        class="pill-btn fadeup-st"
+                        data-umami-event="Contact Page Click"
+                        target="_blank"
+                        rel="noreferrer">Get in touch</a
+                    >
+                    <Spacer size="2xl" />
+                    <Spacer size="xl" />
+                </div>
+            </div>
+        </main>
+    </PageWrapper>
+</Layout>
+
+<style>
+    .contact-text {
+        max-width: 44ch;
+    }
+</style>

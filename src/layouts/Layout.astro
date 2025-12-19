@@ -155,6 +155,10 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
 
       // Animate to visible state
       sections.forEach((section, i) => {
+        // Check if element is in viewport on page load
+        const rect = section.getBoundingClientRect();
+        const isInitiallyVisible = rect.top < window.innerHeight * 0.9;
+
         window.gsap.to(section, {
           opacity: 1,
           y: 0,
@@ -166,7 +170,8 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
             toggleActions: "play none none reverse",
             // markers: true, // enable to debug
           },
-          delay: i * 0.2,
+          // Only add delay for elements initially visible on page load
+          delay: isInitiallyVisible ? i * 0.2 : 0,
         });
       });
     } catch (err) {
