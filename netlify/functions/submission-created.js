@@ -1,13 +1,49 @@
-import fetch from 'node-fetch';
+const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
+  // Validate environment variables
+  const API_KEY = process.env.EMAIL_TOKEN;
+  if (!API_KEY) {
+    console.error('EMAIL_TOKEN environment variable is not set');
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Server configuration error' }),
+    };
+  }
+
+  // Validate event body
+  if (!event.body) {
+    console.error('No event body provided');
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'Invalid request' }),
+    };
+  }
+
   // Parse the submission data from Netlify Forms
-  const submission = JSON.parse(event.body).payload;
-  const email = submission.data.email;
+  let submission;
+  try {
+    submission = JSON.parse(event.body).payload;
+  } catch (error) {
+    console.error('Failed to parse event body:', error);
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'Invalid request format' }),
+    };
+  }
+
+  // Validate email field
+  const email = submission?.data?.email;
+  if (!email || typeof email !== 'string' || !email.includes('@')) {
+    console.error('Invalid or missing email address');
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'Valid email address is required' }),
+    };
+  }
 
   // ConvertKit API configuration
   const FORM_ID = 'd71b9186b4';
-  const API_KEY = process.env.EMAIL_TOKEN;
   const CONVERTKIT_API_URL = `https://api.convertkit.com/v3/forms/${FORM_ID}/subscribe`;
 
   try {
