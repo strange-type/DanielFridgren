@@ -33,14 +33,14 @@ const formatDate = (date: any) =>
       <div class="_1-2-grid">
         <div></div>
         <div>
-          <h1 id="blog-heading" class="main-title big-title measure">
+          <h1 id="blog-heading" class="big-title measure fadeup-st">
             Blog Posts
           </h1>
           <Spacer size="xs" />
           <ul class="post-list measure" aria-live="polite">
             {
               visible.map((post: any) => (
-                <li class="post-list-item">
+                <li class="post-list-item fadeup-st">
                   <a class="post-link" href={`/blog/${post.slug}`}>
                     <time
                       class="post-date metadata"
