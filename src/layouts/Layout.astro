@@ -71,18 +71,22 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
 
     <link rel="me" href="https://linkedin.com/in/fridgren" />
 
-
-<script defer src="https://cloud.umami.is/script.js" data-website-id="afa4fdc4-b9ba-493d-84ed-b3ff7a41884f"></script>
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="afa4fdc4-b9ba-493d-84ed-b3ff7a41884f"></script>
 
     <!-- Cloudflare Web Analytics -->
     <script
       defer
       src="https://static.cloudflareinsights.com/beacon.min.js"
       data-cf-beacon='{"token": "c2d1eb89e36d42b3af5daa6253a5f323"}'></script>
- 
+
     <!-- Privacy-friendly analytics by Visitors.now -->
-    <script src="https://cdn.visitors.now/v.js" data-token="98527db3-c35b-4fed-be98-765cb9db38f5"></script>
- </head>
+    <script
+      src="https://cdn.visitors.now/v.js"
+      data-token="98527db3-c35b-4fed-be98-765cb9db38f5"></script>
+  </head>
   <body>
     <HyphenopolyClient />
     <Navbar />
@@ -102,6 +106,12 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
       footer {
         position: relative;
         z-index: 10;
+      }
+
+      /* Set initial state for GSAP animations to prevent flash */
+      .fadeup-st {
+        opacity: 0;
+        transform: translateY(50px);
       }
     </style>
   </body>
@@ -141,21 +151,22 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
       // Fade elements with fadeup-st class
-      const sections = gsap.utils.toArray(".fadeup-st");
+      const sections = window.gsap.utils.toArray(".fadeup-st");
+
+      // Animate to visible state
       sections.forEach((section, i) => {
-        gsap.from(section, {
-          autoAlpha: 0,
-          y: 50,
+        window.gsap.to(section, {
+          opacity: 1,
+          y: 0,
           duration: 0.9,
           ease: "power2.out",
-          stagger: 0.08,
           scrollTrigger: {
             trigger: section,
             start: "top 90%",
             toggleActions: "play none none reverse",
             // markers: true, // enable to debug
           },
-          delay: i * 0.03,
+          delay: i * 0.2,
         });
       });
     } catch (err) {
