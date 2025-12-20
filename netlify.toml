@@ -3,3 +3,7 @@
 
 [functions]
   node_bundler = "esbuild"
+  
+[[functions]]
+  name = "submission-created"
+  included_files = ["netlify/functions/submission-created.js"]
