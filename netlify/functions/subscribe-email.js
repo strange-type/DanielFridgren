@@ -6,7 +6,7 @@ exports.handler = async (event, context) => {
     console.log(`Received a submission: ${email}`)
 
     const response = await fetch(
-        'https://api.convertkit.com/v3/forms/d71b9186b4/subscribe', {
+        'https://api.convertkit.com/v3/forms/8889037/subscribe', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
