@@ -20,9 +20,6 @@ importers:
       '@mux/mux-player':
         specifier: ^3.4.0
         version: 3.4.0(react@19.1.0)
-      '@plausible-analytics/tracker':
-        specifier: ^0.4.4
-        version: 0.4.4
       astro:
         specifier: ^5.16.4
         version: 5.16.4(@types/node@22.13.10)(rollup@4.36.0)(tsx@4.21.0)(typescript@5.8.2)(yaml@2.7.1)
@@ -816,9 +813,6 @@ packages:
 
   '@oslojs/encoding@1.1.0':
     resolution: {integrity: sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ==}
-
-  '@plausible-analytics/tracker@0.4.4':
-    resolution: {integrity: sha512-fz0NOYUEYXtg1TBaPEEvtcBq3FfmLFuTe1VZw4M8sTWX129br5dguu3M15+plOQnc181ShYe67RfwhKgK89VnA==}
 
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
@@ -3791,8 +3785,6 @@ snapshots:
       fastq: 1.19.1
 
   '@oslojs/encoding@1.1.0': {}
-
-  '@plausible-analytics/tracker@0.4.4': {}
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 
