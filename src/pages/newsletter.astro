@@ -1,61 +1,72 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Spacer from "../components/mdx/Spacer.astro";
 import PageWrapper from "../components/layouts/PageWrapper.astro";
+import Spacer from "../components/mdx/Spacer.astro";
 ---
 
-<PageWrapper>
-    <Layout
-        title="Newsletter Subscription"
-        desc="Subscribe to receive updates and insights on design, technology, and complex systems"
-    >
-        <div class="container mx-auto px-4 py-16 max-w-2xl">
-            <h1 class="text-4xl md:text-5xl font-bold mb-6">Newsletter</h1>
+<Layout
+    title="About Me"
+    desc="Designer and developer focused on creating meaningful digital experiences"
+>
+    <PageWrapper>
+        <Spacer size="2xl" />
+        <main>
+            <div class="_1-2-grid">
+                <h1 class="big-title fadeup-st">letter</h1>
+                <div class="body-text measure">
+                    <Spacer size="xs" />
 
-            <Spacer size="small" />
+                    <p class="body-text">
+                        Subscribe to receive occasional updates about design,
+                        technology, and complex systems. I share thoughts on
+                        emergence, cognition, and the patterns that shape our
+                        digital world.
+                    </p>
+                    <!-- Hidden form for Netlify detection -->
+                    <form name="newsletter" data-netlify="true" hidden>
+                        <input type="email" name="email" />
+                    </form>
 
-            <p class="body-text mb-8">
-                Subscribe to receive occasional updates about design,
-                technology, and complex systems. I share thoughts on emergence,
-                cognition, and the patterns that shape our digital world.
-            </p>
-
-            <Spacer size="small" />
-
-            <!-- Hidden form for Netlify detection -->
-            <form name="newsletter" data-netlify="true" hidden>
-                <input type="email" name="email" />
-            </form>
-
-            <form
-                name="newsletter"
-                method="POST"
-                data-netlify="true"
-                class="space-y-6"
-            >
-                <div>
-                    <label for="email" class="block text-sm font-medium mb-2">
-                        Email Address
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        placeholder="your@email.com"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                    />
+                    <form
+                        class="newsletter-form"
+                        name="newsletter"
+                        method="POST"
+                        action="/confirmation"
+                        data-netlify="true"
+                    >
+                        <div>
+                            <label
+                                for="email"
+                                style="display: block; margin-bottom: var(--space-2xs); font-size: var(--text-sm);"
+                            >
+                                Email Address
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                required
+                                placeholder="your@email.com"
+                                style="display: block; width: 100%; padding: var(--space-2xs) 0; background: transparent; border: none; border-bottom: 2px solid var(--color-border, #e5e7eb); font-size: var(--text-base); outline: none;"
+                            />
+                        </div>
+                        <Spacer size="xs" />
+                        <button type="submit" class="pill-btn">
+                            Subscribe
+                        </button>
+                    </form>
+                    <p class="body-secondary measure">
+                        Your email will only be used to send you newsletter
+                        updates. You can unsubscribe at any time.
+                    </p>
                 </div>
-
-                <button type="submit" class="pill-btn"> Subscribe </button>
-            </form>
-
-            <Spacer size="small" />
-
-            <p class="text-sm text-gray-600 mt-6">
-                Your email will only be used to send you newsletter updates. You
-                can unsubscribe at any time.
-            </p>
-        </div>
-    </Layout>
-</PageWrapper>
+            </div>
+        </main>
+    </PageWrapper>
+</Layout>
+<style>
+    .newsletter-form {
+        margin-top: var(--space-m);
+        max-width: 32ch;
+    }
+</style>
