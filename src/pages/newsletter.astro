@@ -12,7 +12,7 @@ import Spacer from "../components/mdx/Spacer.astro";
         <Spacer size="2xl" />
         <main>
             <div class="_1-2-grid">
-                <h1 class="big-title fadeup-st">letter</h1>
+                <h1 class="big-title fadeup-st">Subscribe</h1>
                 <div class="body-text measure">
                     <Spacer size="xs" />
 
@@ -34,28 +34,23 @@ import Spacer from "../components/mdx/Spacer.astro";
                         action="/confirmation"
                         data-netlify="true"
                     >
-                        <div>
-                            <label
-                                for="email"
-                                style="display: block; margin-bottom: var(--space-2xs); font-size: var(--text-sm);"
-                            >
-                                Email Address
-                            </label>
+                        <label for="email"> Email Address </label>
+                        <div class="input-form">
                             <input
+                                class="input-email"
                                 type="email"
                                 id="email"
                                 name="email"
                                 required
                                 placeholder="your@email.com"
-                                style="display: block; width: 100%; padding: var(--space-2xs) 0; background: transparent; border: none; border-bottom: 2px solid var(--color-border, #e5e7eb); font-size: var(--text-base); outline: none;"
                             />
+                            <button type="submit" class="pill-btn">
+                                Subscribe
+                            </button>
                         </div>
-                        <Spacer size="xs" />
-                        <button type="submit" class="pill-btn">
-                            Subscribe
-                        </button>
                     </form>
-                    <p class="body-secondary measure">
+                    <Spacer size="xs" />
+                    <p class="body-text-small measure">
                         Your email will only be used to send you newsletter
                         updates. You can unsubscribe at any time.
                     </p>
@@ -64,9 +59,3 @@ import Spacer from "../components/mdx/Spacer.astro";
         </main>
     </PageWrapper>
 </Layout>
-<style>
-    .newsletter-form {
-        margin-top: var(--space-m);
-        max-width: 32ch;
-    }
-</style>
