@@ -463,6 +463,13 @@ picture {
   margin-bottom: 0;
 }
 
+.body-text-small {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  color: var(--color-muted);
+  margin-bottom: var(--space-xs);
+}
+
 @media (max-width: 768px) {
   .case-content .body-text {
     font-size: var(--fs-md);
@@ -1024,6 +1031,31 @@ span.metadata {
     grid-template-columns: 1fr;
     gap: var(--space-24);
   }
+}
+
+/* Newsletter style */
+.newsletter-form {
+  margin-top: var(--space-m);
+  max-width: 40ch;
+}
+
+
+.input-email {
+  flex: 1;
+  padding: var(--space-2xs) var(--space-2xs);
+  background: transparent;
+  border: 1px solid var(--color-subtle);
+  border-radius: 3px;
+  font-size: var(--fs-sm);
+  outline: none;
+}
+
+.input-form {
+  display: flex;
+  gap: var(--space-s);
+  margin-top: var(--space-s);
+  margin-bottom: var(--space-s);
+  align-items: flex-end;
 }
 
 /* Lead for blogposts 
