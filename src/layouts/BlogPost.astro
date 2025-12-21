@@ -4,6 +4,7 @@ import PageWrapper from "../components/layouts/PageWrapper.astro";
 import Spacer from "../components/mdx/Spacer.astro";
 import SEO from "../components/seo.astro";
 import { visit } from "unist-util-visit";
+import SubscribeSection from "../components/layouts/SubscribeSection.astro";
 
 export const remarkPlugins = [
   () => (tree: any) => {
@@ -167,6 +168,9 @@ const { frontmatter, prev, next } = Astro.props;
         </div>
       )
     }
+    <Spacer size="xl" />
+    <SubscribeSection />
+
     <Spacer size="large" />
   </PageWrapper>
 </Layout>

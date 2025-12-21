@@ -9,52 +9,61 @@ import Spacer from "../components/mdx/Spacer.astro";
     desc="Designer and developer focused on creating meaningful digital experiences"
 >
     <PageWrapper>
-        <Spacer size="2xl" />
+        <Spacer size="xl" />
         <main>
             <div class="_1-2-grid">
-                <h1 class="big-title fadeup-st">Subscribe</h1>
-                <div class="body-text measure">
-                    <Spacer size="xs" />
+                <div></div>
+                <section id="experience" class="general-section">
+                    <p class="section-title"></p>
+                    <div class="measure">
+                        <h1 class="big-title fadeup-st">Subscribe</h1>
+                        <div class="body-text">
+                            <Spacer size="xs" />
 
-                    <p class="body-text">
-                        Subscribe to receive occasional updates about design,
-                        technology, and complex systems. I share thoughts on
-                        emergence, cognition, and the patterns that shape our
-                        digital world.
-                    </p>
-                    <!-- Hidden form for Netlify detection -->
-                    <form name="newsletter" data-netlify="true" hidden>
-                        <input type="email" name="email" />
-                    </form>
+                            <p class="body-text measure fadeup-st">
+                                Subscribe to receive occasional updates about
+                                design, technology, and complex systems. I share
+                                thoughts on emergence, cognition, and the
+                                patterns that shape our digital world.
+                            </p>
+                            <!-- Hidden form for Netlify detection -->
+                            <form name="newsletter" data-netlify="true" hidden>
+                                <input type="email" name="email" />
+                            </form>
 
-                    <form
-                        class="newsletter-form"
-                        name="newsletter"
-                        method="POST"
-                        action="/confirmation"
-                        data-netlify="true"
-                    >
-                        <label for="email"> Email Address </label>
-                        <div class="input-form">
-                            <input
-                                class="input-email"
-                                type="email"
-                                id="email"
-                                name="email"
-                                required
-                                placeholder="your@email.com"
-                            />
-                            <button type="submit" class="pill-btn">
-                                Subscribe
-                            </button>
+                            <form
+                                class="newsletter-form fadeup-st"
+                                name="newsletter"
+                                method="POST"
+                                action="/confirmation"
+                                data-netlify="true"
+                            >
+                                <label for="email" class="newsletter-label">
+                                    Email Address
+                                </label>
+                                <div class="newsletter-input-group">
+                                    <input
+                                        class="newsletter-input"
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        required
+                                        placeholder="your@email.com"
+                                    />
+                                    <button type="submit" class="pill-btn">
+                                        Subscribe
+                                    </button>
+                                </div>
+                            </form>
+                            <Spacer size="xs" />
+                            <p class="body-text-small measure fadeup-st">
+                                Your email will only be used to send you
+                                newsletter updates. You can unsubscribe at any
+                                time.
+                            </p>
                         </div>
-                    </form>
-                    <Spacer size="xs" />
-                    <p class="body-text-small measure">
-                        Your email will only be used to send you newsletter
-                        updates. You can unsubscribe at any time.
-                    </p>
-                </div>
+                    </div>
+                </section>
             </div>
         </main>
     </PageWrapper>
