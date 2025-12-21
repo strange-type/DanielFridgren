@@ -1039,8 +1039,22 @@ span.metadata {
   max-width: 40ch;
 }
 
+.newsletter-label {
+  display: block;
+  margin-bottom: var(--space-2xs);
+  font-size: var(--fs-sm);
+  color: var(--color-fg);
+}
 
-.input-email {
+.newsletter-input-group {
+  display: flex;
+  gap: var(--space-s);
+  margin-top: var(--space-s);
+  margin-bottom: var(--space-s);
+  align-items: flex-end;
+}
+
+.newsletter-input {
   flex: 1;
   padding: var(--space-2xs) var(--space-2xs);
   background: transparent;
@@ -1048,14 +1062,18 @@ span.metadata {
   border-radius: 3px;
   font-size: var(--fs-sm);
   outline: none;
+  transition: border-color 200ms ease, background-color 200ms ease;
 }
 
-.input-form {
-  display: flex;
-  gap: var(--space-s);
-  margin-top: var(--space-s);
-  margin-bottom: var(--space-s);
-  align-items: flex-end;
+.newsletter-input:hover {
+  border-color: var(--color-muted);
+  background-color: rgba(0, 0, 0, 0.01);
+}
+
+.newsletter-input:focus {
+  border-color: var(--color-fg);
+  outline: 1px solid var(--color-fg);
+  outline-offset: 0px;
 }
 
 /* Lead for blogposts 
