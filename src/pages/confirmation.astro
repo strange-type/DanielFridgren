@@ -1,28 +1,33 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Spacer from "../components/mdx/Spacer.astro";
+import PageWrapper from "../components/layouts/PageWrapper.astro";
 ---
 
-<Layout
-    title="Subscription Confirmed"
-    desc="Thank you for subscribing to the newsletter"
->
-    <div class="container mx-auto px-4 py-16 max-w-2xl">
-        <h1 class="text-4xl md:text-5xl font-bold mb-6">Thank You!</h1>
+<PageWrapper>
+    <Layout
+        title="Subscription Confirmed"
+        desc="Thank you for subscribing to the newsletter"
+    >
+        <Spacer size="2xl" />
+        <div class="container mx-auto px-4 py-16 max-w-2xl">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">Thank You!</h1>
 
-        <Spacer size="small" />
+            <Spacer size="small" />
 
-        <p class="body-text mb-8">
-            You've successfully subscribed to the newsletter. Please check your
-            email to confirm your subscription.
-        </p>
+            <p class="body-text mb-8">
+                You've successfully subscribed to the newsletter. Please check
+                your email to confirm your subscription.
+            </p>
 
-        <Spacer size="small" />
+            <Spacer size="small" />
 
-        <p class="body-text">
-            <a href="/" class="underline hover:no-underline"
-                >Return to homepage</a
-            >
-        </p>
-    </div>
-</Layout>
+            <p class="body-text">
+                <a href="/" class="underline hover:no-underline"
+                    >Return to homepage</a
+                >
+            </p>
+        </div>
+        <Spacer size="2xl" />
+    </Layout>
+</PageWrapper>
