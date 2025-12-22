@@ -165,15 +165,15 @@ const baseUrl = import.meta.env.DEV ? "http://localhost:4321" : Astro.site;
           opacity: 1,
           y: 0,
           duration: 0.9,
-          ease: "power2.out",
+          ease: "power4.out",
           scrollTrigger: {
             trigger: section,
-            start: "top 90%",
+            start: "top 85%",
             toggleActions: "play none none none",
             // markers: true, // enable to debug
           },
           // Only add delay for elements initially visible on page load
-          delay: isInitiallyVisible ? i * 0.2 : 0,
+          delay: isInitiallyVisible ? i * 0.1 : 0,
         });
       });
     } catch (err) {
