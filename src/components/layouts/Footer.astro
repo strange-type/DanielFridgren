@@ -65,8 +65,8 @@ import PageWrapper from "./PageWrapper.astro";
 
 <style>
   .footer {
-    background-color: var(--color-black);
-    color: var(--color-white);
+    background-color: var(--color-fg);
+    color: var(--color-bg);
     width: 100vw;
     position: relative;
     left: 50%;
@@ -106,8 +106,8 @@ import PageWrapper from "./PageWrapper.astro";
     font-size: var(--fs-xs);
     font-family: var(--font-sans);
     font-weight: 400;
-    color: var(--color-gray-500);
-    line-height: 1.5;
+    color: var(--color-muted);
+    line-height: var(--leading-loose);
     margin: 20px 0;
   }
 
@@ -127,7 +127,7 @@ import PageWrapper from "./PageWrapper.astro";
   .footer-column nav {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
+    gap: var(--space-md);
   }
 
   .footer-heading {
@@ -147,6 +147,7 @@ import PageWrapper from "./PageWrapper.astro";
     color: var(--color-white);
     text-decoration: none;
     transition: color 0.2s ease;
+    margin-bottom: var(--space-2xs);
   }
 
   .footer-link:hover {
