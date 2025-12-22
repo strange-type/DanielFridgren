@@ -5,8 +5,8 @@ pubDate: "2025-08-19"
 draft: false
 tags: ["techno-optimism", "ecology", "metaphor"]
 author: "Daniel Fridgren"
-heroImage: "/images/blog-images/yusuf-sabqi-YFb2dmUQ0Qo-unsplash.jpg"
-heroImageCaption: "Photo by Yusuf Sabqi on Unsplash"
+heroImage: "/images/blog-images/kier-in-sight-archives-bdEVC3OwrkQ-unsplash.jpg"
+heroImageCaption: "Photo by Kier In Sight on Unsplash"
 ---
 
 

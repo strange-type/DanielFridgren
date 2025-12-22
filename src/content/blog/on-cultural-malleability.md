@@ -5,7 +5,7 @@ pubDate: "2025-10-03"
 draft: false
 tags: ["culture", "adaptation", "systems thinking", "design thinking"]
 author: "Daniel Fridgren"
-heroImage: "/images/blog-images/avinash-kumar-txLvw4-PTDw-unsplash.jpg"
+heroImage: "/images/blog-images/wiki-sinaloa-raJrSL-LfVg-unsplash.jpg"
 heroImageCaption: "Photo by Avinash Kumar on Unsplash"
 ---
 
