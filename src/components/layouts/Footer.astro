@@ -5,6 +5,7 @@ import PageWrapper from "./PageWrapper.astro";
 
 <PageWrapper>
   <footer class="footer" transition:persist>
+    <Spacer size="2xl" />
     <div class="footer-grid">
       <div class="footer-left">
         <svg
@@ -58,6 +59,7 @@ import PageWrapper from "./PageWrapper.astro";
         </div>
       </div>
     </div>
+    <Spacer size="large" />
   </footer>
 </PageWrapper>
 
@@ -65,7 +67,19 @@ import PageWrapper from "./PageWrapper.astro";
   .footer {
     background-color: var(--color-black);
     color: var(--color-white);
-    padding: var(--space-2xl) 0;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-bottom: 0;
+  }
+
+  .footer-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: var(--space-128) var(--space-l);
   }
 
   .footer-grid {
@@ -79,6 +93,8 @@ import PageWrapper from "./PageWrapper.astro";
     display: flex;
     flex-direction: column;
     gap: var(--space-lg);
+    margin-left: var(--space-xl);
+    align-self: start;
   }
 
   .footer-logo {
@@ -87,18 +103,19 @@ import PageWrapper from "./PageWrapper.astro";
   }
 
   .footer-copyright {
-    font-size: var(--fs-sm);
+    font-size: var(--fs-xs);
     font-family: var(--font-sans);
     font-weight: 400;
     color: var(--color-gray-500);
     line-height: 1.5;
-    margin: 0;
+    margin: 20px 0;
   }
 
   .footer-nav {
     display: grid;
     grid-template-columns: repeat(2, minmax(150px, 200px));
     gap: var(--space-2xl);
+    align-self: start;
   }
 
   .footer-column {
@@ -119,13 +136,14 @@ import PageWrapper from "./PageWrapper.astro";
     font-weight: 500;
     letter-spacing: 0.05em;
     color: var(--color-gray-500);
-    margin: 0;
+    margin: 0 0 0.35rem 0;
   }
 
   .footer-link {
-    font-size: var(--fs-base);
+    font-size: var(--fs-sm);
     font-family: var(--font-sans);
     font-weight: 400;
+    line-height: var(--leading-loose);
     color: var(--color-white);
     text-decoration: none;
     transition: color 0.2s ease;
@@ -135,14 +153,23 @@ import PageWrapper from "./PageWrapper.astro";
     color: var(--color-gray-300);
   }
 
-  @media (max-width: 770px) {
-    .footer {
-      padding: var(--space-xl) 0;
+  @media (max-width: 768px) {
+    .footer-container {
+      padding: var(--space-2xl) var(--space-m);
     }
 
     .footer-grid {
       grid-template-columns: 1fr;
       gap: var(--space-xl);
+    }
+    .footer-column {
+      margin-left: var(--space-xl);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .footer-container {
+      padding: var(--space-xl) var(--space-s);
     }
 
     .footer-left {
@@ -157,7 +184,7 @@ import PageWrapper from "./PageWrapper.astro";
 
     .footer-copyright {
       order: 3;
-      margin-top: var(--space-lg);
+      margin-top: 20px;
     }
   }
 </style>
