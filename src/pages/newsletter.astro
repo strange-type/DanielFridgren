@@ -11,16 +11,16 @@ import Spacer from "../components/Spacer.astro";
     <PageWrapper>
         <Spacer size="xl" />
         <main>
-            <div class="_1-2-grid">
+            <div class="grid-columns-2">
                 <div></div>
-                <section id="experience" class="general-section">
-                    <p class="section-title"></p>
-                    <div class="measure">
-                        <h1 class="big-title fadeup-st">Subscribe</h1>
-                        <div class="body-text">
+                <section id="experience" class="section">
+                    <p class="title-section"></p>
+                    <div class="prose">
+                        <h1 class="title-display fadeup-st">Subscribe</h1>
+                        <div class="text">
                             <Spacer size="xs" />
 
-                            <p class="body-text measure fadeup-st">
+                            <p class="text prose fadeup-st">
                                 Subscribe to receive occasional updates about
                                 design, technology, and complex systems. I share
                                 thoughts on emergence, cognition, and the
@@ -32,31 +32,31 @@ import Spacer from "../components/Spacer.astro";
                             </form>
 
                             <form
-                                class="newsletter-form fadeup-st"
+                                class="form-newsletter fadeup-st"
                                 name="newsletter"
                                 method="POST"
                                 action="/confirmation"
                                 data-netlify="true"
                             >
-                                <label for="email" class="newsletter-label">
+                                <label for="email" class="form-label">
                                     Email Address
                                 </label>
-                                <div class="newsletter-input-group">
+                                <div class="form-group">
                                     <input
-                                        class="newsletter-input"
+                                        class="form-input"
                                         type="email"
                                         id="email"
                                         name="email"
                                         required
                                         placeholder="your@email.com"
                                     />
-                                    <button type="submit" class="pill-btn">
+                                    <button type="submit" class="button">
                                         Subscribe
                                     </button>
                                 </div>
                             </form>
                             <Spacer size="xs" />
-                            <p class="body-text-small measure fadeup-st">
+                            <p class="text-sm prose fadeup-st">
                                 Your email will only be used to send you
                                 newsletter updates. You can unsubscribe at any
                                 time.

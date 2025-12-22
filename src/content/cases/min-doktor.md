@@ -32,7 +32,7 @@ I joined Min Doktor to help refine the core experience across both patient and c
 
 One highlight was a research initiative that followed Min Doktor's acquisition of Minutkliniken. I discovered that nurses were frequently becoming a bottleneck in the patient flow. By analysing their workload, we identified opportunities to gather essential information before the consultation. One solution was a self-check-in kiosk for use in the clinic, enabling patients to confirm their visit and update their details on arrival. Another was encouraging patients to fill out forms and provide relevant medical history in the app ahead of time, which reduced the administrative load on nurses.
 
-<figure class="inline-figure">
+<figure class="figure-inline">
 <img src="/images/md-journey.png" alt="A simple user journey" />
 </figure>
 

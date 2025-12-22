@@ -31,14 +31,14 @@ const formatDate = (date: any) =>
     <main role="main" aria-labelledby="blog-heading">
       <Spacer size="xl" />
 
-      <div class="_1-2-grid">
+      <div class="grid-columns-2">
         <div></div>
         <div>
-          <h1 id="blog-heading" class="big-title measure fadeup-st">
+          <h1 id="blog-heading" class="title-display prose fadeup-st">
             Blog Posts
           </h1>
           <Spacer size="xs" />
-          <ul class="post-list measure" aria-live="polite">
+          <ul class="post-list prose" aria-live="polite">
             {
               visible.map((post: any) => (
                 <li class="post-list-item fadeup-st">
