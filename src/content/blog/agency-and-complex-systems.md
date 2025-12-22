@@ -9,7 +9,7 @@ heroImage: "/images/blog-images/oxa-roxa-tOqoBPr12C8-unsplash.jpg"
 heroImageCaption: "Photo by Oxa Roxa on Unsplash"
 ---
 
-We like to think of ourselves as the ones doing the thinking, choosing, deciding. But in complex systems - whether minds, hives, or societies - the agency rarely sit in the center. And yet we continue to imagine a single mind, a single will, a single point of control.
+*We like to think of ourselves as the ones doing the thinking, choosing, deciding. But in complex systems - whether minds, hives, or societies - the agency rarely sit in the center. And yet we continue to imagine a single mind, a single will, a single point of control.*
 
 The most obvious human reaction to complexity so far is to break down a problem into smaller pieces. Come up with lists of all tasks that needs to be done, order the tasks, and then direct task completion from a locus of control.
 
