@@ -28,7 +28,7 @@ During my years at Refined, I hired, coached and developed talent to raise the o
 
 I developed a Product Discovery playbook that enabled not just designers but entire cross-functional teams to surface user insights and make grounded product decisions. The goal wasn't to impose a rigid methodology, but to offer a lightweight, modular toolkit that teams could use on their own terms. It created a shared way of working that reduced dependency on the design department, while raising the overall quality of discovery work, effectively democratizing research and making teams more self-sufficient.
 
-<figure class="inline-figure">
+<figure class="figure-inline">
   <img src="/images/playbook-2.png" alt="Product Discovery Cards" />
 </figure>
 

@@ -16,21 +16,21 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
     <PageWrapper>
         <Spacer size="2xl" />
         <main>
-            <div class="_1-2-grid">
+            <div class="grid-columns-2">
                 <div>
-                    <h1 class="big-title fadeup-st">Contact</h1>
+                    <h1 class="title-display fadeup-st">Contact</h1>
                 </div>
                 <div>
                     <Spacer size="xs" />
 
-                    <div class="contact-text body-text fadeup-st measure">
+                    <div class="contact-text text fadeup-st prose">
                         Want to discuss a project or explore working together?
                         I'm always open to new opportunities and collaborations.
                     </div>
                     <Spacer size="small" />
                     <a
                         href="mailto:daniel@fridgren.se?subject=Meeting+request"
-                        class="pill-btn fadeup-st"
+                        class="button fadeup-st"
                         data-umami-event="Contact Page Click"
                         target="_blank"
                         rel="noopener noreferrer">Get in touch</a

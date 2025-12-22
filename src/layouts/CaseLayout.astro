@@ -45,11 +45,11 @@ const playbackId = frontmatter.playbackId as string | undefined;
 
   <main>
     <PageWrapper>
-      <section class="hero-section">
+      <section class="section-hero">
         <Spacer />
         <div>
-          <h1 class="main-title measure fadeup-st">{title}</h1>
-          <div class="section-title fadeup-st">
+          <h1 class="title-page prose fadeup-st">{title}</h1>
+          <div class="title-section fadeup-st">
             {client}
           </div>
         </div>
@@ -65,18 +65,18 @@ const playbackId = frontmatter.playbackId as string | undefined;
             autoplay={frontmatter.autoplay || undefined}
           />
         ) : frontmatter.heroImage ? (
-          <figure class="work-figure fadeup-st">
+          <figure class="portfolio-figure fadeup-st">
             <img src={frontmatter.heroImage} alt={title} loading="lazy" />
           </figure>
         ) : null
       }
 
-      <section id="about" class="general-section">
+      <section id="about" class="section">
         <Spacer size="large" />
-        <div class="_1-2-grid">
-          <p class="subheader fadeup-st">About</p>
-          <div class="measure">
-            <article class="case-content body-text fadeup-st">
+        <div class="grid-columns-2">
+          <p class="heading-sub fadeup-st">About</p>
+          <div class="prose">
+            <article class="case-content text fadeup-st">
               <slot />
             </article>
           </div>
@@ -84,7 +84,7 @@ const playbackId = frontmatter.playbackId as string | undefined;
       </section>
 
       <section class="project-images fadeup-st">
-        <figure class="work-figure">
+        <figure class="portfolio-figure">
           <img src={frontmatter.secondaryImage} alt={title} loading="lazy" />
         </figure>
       </section>

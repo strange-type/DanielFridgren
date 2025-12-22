@@ -120,7 +120,7 @@ const formatDate = (date: string) =>
 		-->
 
 		<PageWrapper>
-			<section id="hero" class="hero-section full-bleed">
+			<section id="hero" class="section-hero full-bleed">
 				<mux-player
 					playback-id="heEyyMTCGulT0201qoOrDX4sj4mi6Kvw7Kc8ryw7MbviY"
 					accent-color="#e6a92c"
@@ -130,16 +130,16 @@ const formatDate = (date: string) =>
 				<Spacer size="large" />
 			</section>
 
-			<section id="about" class="general-section">
-				<div class="_1-2-grid">
-					<p class="section-title fadeup-st">About</p>
-					<div class="measure">
-						<h1 class="measure fadeup-st">
+			<section id="about" class="section">
+				<div class="grid-columns-2">
+					<p class="title-section fadeup-st">About</p>
+					<div class="prose">
+						<h1 class="fadeup-st">
 							Senior UX Design for product leaders who need a
 							strong partner
 						</h1>
 						<br />
-						<div class="body-text fadeup-st">
+						<div class="text fadeup-st">
 							I'm Daniel Fridgren, a senior UX designer currently working at <a
 								href="https://wisecompany.se">In Wise Company</a
 							>, where I help organizations build complex products
@@ -160,7 +160,7 @@ const formatDate = (date: string) =>
 						<Spacer size="small" />
 						<a
 							href="mailto:daniel@fridgren.se?subject=Meeting+request"
-							class="pill-btn fadeup-st"
+							class="button fadeup-st"
 							data-umami-event="Top CTA Click"
 							target="_blank"
 							rel="noreferrer">Book a meeting</a
@@ -169,15 +169,15 @@ const formatDate = (date: string) =>
 				</div>
 			</section>
 			<Spacer size="xl" />
-			<section id="services" class="general-section">
-				<div class="_1-2-grid">
-					<p class="section-title fadeup-st">Services</p>
-					<div class="measure">
+			<section id="services" class="section">
+				<div class="grid-columns-2">
+					<p class="title-section fadeup-st">Services</p>
+					<div class="prose">
 						<h1 class="fadeup-st">
 							Supporting product teams with clarity and direction
 						</h1>
 						<Spacer size="small" />
-						<ul class="body-list fadeup-st">
+						<ul class="list-styled fadeup-st">
 							<li class="">
 								<img
 									src="/images/icon-product-design.svg"
@@ -186,11 +186,11 @@ const formatDate = (date: string) =>
 									height="28"
 								/>
 								<div class="service-item">
-									<p class="subheader-large">
+									<p class="heading-sub-lg">
 										Product design
 									</p>
 									<p
-										class="body-text"
+											class="text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										From early discovery to final interface
@@ -207,9 +207,9 @@ const formatDate = (date: string) =>
 									height="28"
 								/>
 								<div class="service-item">
-									<p class="subheader-large">User research</p>
+									<p class="heading-sub-lg">User research</p>
 									<p
-										class="body-text"
+										class="text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Planning and conducting research to
@@ -226,11 +226,11 @@ const formatDate = (date: string) =>
 									height="28"
 								/>
 								<div class="service-item">
-									<p class="subheader-large">
+									<p class="heading-sub-lg">
 										Prototyping & validation
 									</p>
 									<p
-										class="body-text"
+										class="text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Building interactive prototypes to
@@ -248,11 +248,11 @@ const formatDate = (date: string) =>
 									height="28"
 								/>
 								<div class="service-item">
-									<p class="subheader-large">
+									<p class="heading-sub-lg">
 										Design strategy
 									</p>
 									<p
-										class="body-text"
+										class="text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Clarifying product direction by aligning
@@ -269,12 +269,12 @@ const formatDate = (date: string) =>
 									height="28"
 								/>
 								<div class="service-item">
-									<p class="subheader-large">
+									<p class="heading-sub-lg">
 										Design team enablement
 									</p>
 
 									<p
-										class="body-text"
+										class="text"
 										style="margin: 0; margin-top: 0.25rem;"
 									>
 										Helping organisations grow confident,
@@ -289,24 +289,24 @@ const formatDate = (date: string) =>
 				</div>
 			</section>
 			<Spacer size="xl" />
-			<section id="work" class="general-section">
+			<section id="work" class="section">
 				<div class="service-item">
 					<h1 class="fadeup-st">Selected case studies</h1>
-					<div class="body-text fadeup-st">
+					<div class="text fadeup-st">
 						A curated mix of UX, discovery and research work from
 						recent engagements.
 					</div>
 					<Spacer size="small" />
-					<div class="work-cards">
+					<div class="portfolio">
 						{
 							posts.map((p) => (
 								<a
-									class="card-w-inline-block link-plain fadeup-st"
+									class="portfolio-item link-unstyled fadeup-st"
 									href={p.url}
 									aria-label={`Open case study about ${p.title || p.__path}`}
 								>
 									{p.heroImage || p.image ? (
-										<figure class="work-figure">
+										<figure class="portfolio-figure">
 											<img
 												src={
 													p.heroImage ||
@@ -319,11 +319,11 @@ const formatDate = (date: string) =>
 										</figure>
 									) : null}
 
-									<div class="work-card-meta">
-										<div class="work-card-title">
+									<div class="portfolio-card-header">
+										<div class="portfolio-card-title">
 											{p.description || p.excerpt || ""}
 										</div>
-										<h3 class="work-card-subtitle">
+										<h3 class="portfolio-card-subtitle">
 											{p.client || p.__path}
 										</h3>
 									</div>
@@ -335,7 +335,7 @@ const formatDate = (date: string) =>
 
 					{
 						posts.length === 0 ? (
-							<div class="body-text">
+								<div class="text">
 								<p>
 									No case posts found. Diagnostic info
 									(development only):
@@ -354,16 +354,16 @@ const formatDate = (date: string) =>
 			</section>
 			<!--<Spacer size="xl" />
 			
-				<section id="blog-featured" class="general-section">
+				<section id="blog-featured" class="section">
 					
 						<div></div>
-						<div class="measure">
+						<div class="prose">
 						<h1 class="fadeup-st">Latest from the blog</h1>
-						<div class="body-text fadeup-st">
+						<div class="text fadeup-st">
 							Recent thoughts on design, complexity and technology.
 						</div>
 						<Spacer size="small" />
-						<div class="blog-cards measure">
+						<div class="blog-cards prose">
 							{featuredPosts.map((post) => (
 								<a
 									href={`/blog/${post.slug}`}
@@ -390,9 +390,9 @@ const formatDate = (date: string) =>
  
 
  			<Spacer size="large" />
-			<section id="experience" class="general-section">
-				<div class="_1-2-grid">
-					<p class="section-title"></p>
+			<section id="experience" class="section">
+				<div class="grid-columns-2">
+					<p class="title-section"></p>
 					<div class="measure">
 						<h1 class="fadeup-st">
 							Bringing 20 years of hands‑on design experience
@@ -403,7 +403,7 @@ const formatDate = (date: string) =>
 							<div class="timeline-item fadeup-st">
 								<div class="timeline-marker"></div>
 								<div class="timeline-content">
-									<div class="subheader-large">
+									<div class="heading-sub-lg">
 										Senior Design Consultant <a
 											href="https://wisecompany.se"
 										>
@@ -413,7 +413,7 @@ const formatDate = (date: string) =>
 									<div class="timeline-year">
 										Jan 2025 - Present
 									</div>
-									<div class="body-secondary">
+									<div class="text-muted">
 										Solo but always In Wise Company.
 										Partnering with companies to solve
 										complex product challenges through
@@ -425,7 +425,7 @@ const formatDate = (date: string) =>
 							<div class="timeline-item fadeup-st">
 								<div class="timeline-marker"></div>
 								<div class="timeline-content">
-									<div class="subheader-large">
+									<div class="heading-sub-lg">
 										Design Manager <a
 											href="https://refined.com"
 										>
@@ -435,7 +435,7 @@ const formatDate = (date: string) =>
 									<div class="timeline-year">
 										Mar 2020 - Oct 2024
 									</div>
-									<div class="body-secondary">
+									<div class="text-muted">
 										Built and scaled the design function for
 										a B2B SaaS platform, growing the team to
 										6 designers while establishing design
@@ -448,7 +448,7 @@ const formatDate = (date: string) =>
 							<div class="timeline-item fadeup-st">
 								<div class="timeline-marker"></div>
 								<div class="timeline-content">
-									<div class="subheader-large">
+									<div class="heading-sub-lg">
 										Senior UX Designer <a
 											href="https://mindoktor.se"
 										>
@@ -458,7 +458,7 @@ const formatDate = (date: string) =>
 									<div class="timeline-year">
 										Apr 2016 - Mar 2020
 									</div>
-									<div class="body-secondary">
+									<div class="text-muted">
 										Designed patient- and clinician facing
 										digital healthcare solutions,
 										end-to-end, balancing strict regulatory
@@ -469,7 +469,7 @@ const formatDate = (date: string) =>
 							<div class="timeline-item fadeup-st">
 								<div class="timeline-marker"></div>
 								<div class="timeline-content">
-									<div class="subheader-large">
+									<div class="heading-sub-lg">
 										Senior UX Designer <a
 											href="https://topp.se"
 										>
@@ -479,7 +479,7 @@ const formatDate = (date: string) =>
 									<div class="timeline-year">
 										Aug 2013 - Apr 2016
 									</div>
-									<div class="body-secondary">
+									<div class="text-muted">
 										Consultant in design projects across
 										mobile applications, IoT, medical
 										devices and automotive products.
@@ -489,7 +489,7 @@ const formatDate = (date: string) =>
 							<div class="timeline-item fadeup-st">
 								<div class="timeline-marker"></div>
 								<div class="timeline-content">
-									<div class="subheader-large">
+									<div class="heading-sub-lg">
 										UX Designer <a
 											href="https://www.blackberry.com"
 										>
@@ -499,7 +499,7 @@ const formatDate = (date: string) =>
 									<div class="timeline-year">
 										Mar 2011 - Jul 2013
 									</div>
-									<div class="body-secondary">
+									<div class="text-muted">
 										Lead designer for Home screen and Lock
 										screen on BlackBerry 10, shaping core
 										navigation and multitasking paradigms
@@ -510,7 +510,7 @@ const formatDate = (date: string) =>
 							<div class="timeline-item fadeup-st">
 								<div class="timeline-marker"></div>
 								<div class="timeline-content">
-									<div class="subheader-large">
+									<div class="heading-sub-lg">
 										Interaction Designer<a href="">
 											• Color Monkey</a
 										>
@@ -523,7 +523,7 @@ const formatDate = (date: string) =>
 							<div class="timeline-item fadeup-st">
 								<div class="timeline-marker"></div>
 								<div class="timeline-content">
-									<div class="subheader-large">
+									<div class="heading-sub-lg">
 										Interaction Designer<a href="">
 											• The Astonishing Tribe</a
 										>
@@ -531,7 +531,7 @@ const formatDate = (date: string) =>
 									<div class="timeline-year">
 										Jan 2006 - Nov 2009
 									</div>
-									<div class="body-secondary">
+									<div class="text-muted">
 										Core design team member for the first
 										version of Android at Google, working
 										on-site in Mountain View to design
@@ -566,7 +566,7 @@ const formatDate = (date: string) =>
 
 <style>
 	/* Full bleed hero section */
-	.hero-section.full-bleed {
+	.section-hero.full-bleed {
 		width: 100vw;
 		max-width: 1600px;
 		margin-left: 50%;
@@ -575,19 +575,19 @@ const formatDate = (date: string) =>
 		margin-bottom: var(--space-xl);
 	}
 
-	.hero-section.full-bleed mux-player {
+	.section-hero.full-bleed mux-player {
 		width: 100%;
 		height: auto;
 	}
 
 	@media (max-width: 768px) {
-		.hero-section.full-bleed {
+		.section-hero.full-bleed {
 			margin-top: calc(-1 * var(--space-s));
 		}
 	}
 
 	@media (max-width: 1600px) {
-		.hero-section.full-bleed {
+		.section-hero.full-bleed {
 			width: 100vw;
 		}
 	}
@@ -739,24 +739,24 @@ const formatDate = (date: string) =>
 		}
 	}
 
-	.work-card-stacked {
+	.portfolio-card-stacked {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-m);
 	}
 
 
-	.work-card-stacked:hover {
+	.portfolio-card-stacked:hover {
 		color: var(--color-muted);
 	}
 
-	.work-card-stacked .work-figure {
+	.portfolio-card-stacked .portfolio-figure {
 		margin: 0;
 		overflow: hidden;
 		border-radius: var(--border-radius-base);
 	}
 
-	.work-card-stacked .work-figure img {
+	.portfolio-card-stacked .portfolio-figure img {
 		width: 100%;
 		height: auto;
 		display: block;
@@ -765,12 +765,12 @@ const formatDate = (date: string) =>
 			opacity 240ms ease;
 	}
 
-	.work-card-stacked:hover .work-figure img {
+	.portfolio-card-stacked:hover .portfolio-figure img {
 		transform: scale(1.02);
 		opacity: 0.95;
 	}
 
-	.work-card-description {
+	.portfolio-card-description {
 		font-family: var(--font-body);
 		font-size: var(--fs-md);
 		line-height: var(--leading-base);
@@ -780,7 +780,7 @@ const formatDate = (date: string) =>
 	}
 
 	@media (max-width: 768px) {
-		.work-card-description {
+		.portfolio-card-description {
 			font-size: var(--fs-base);
 		}
 	}
@@ -791,7 +791,7 @@ const formatDate = (date: string) =>
 	const player = document.getElementById("baxter-player");
 	if (player) {
 		player.addEventListener("error", () => {
-			const figure = player.closest(".work-figure");
+			const figure = player.closest(".portfolio-figure");
 			if (figure) {
 				figure.innerHTML =
 					'<img src="/images/baxter.png" alt="Baxter dialysis user interface" loading="lazy" />';

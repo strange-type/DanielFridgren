@@ -35,7 +35,9 @@ const { frontmatter, prev, next } = Astro.props;
             class="hero-image"
           />
           <div class="hero-overlay">
-            <h1 class="hero-title big-title fadeup-st">{frontmatter.title}</h1>
+            <h1 class="hero-title title-display fadeup-st">
+              {frontmatter.title}
+            </h1>
             {frontmatter.heroImageCaption && (
               <p class="hero-image-caption fadeup-st">
                 {frontmatter.heroImageCaption}
@@ -50,7 +52,7 @@ const { frontmatter, prev, next } = Astro.props;
 
     {
       !frontmatter.heroImage && (
-        <div class="blog-grid">
+        <div class="grid-blog">
           <aside class="blog-side">
             <div class="post-date">
               {new Date(frontmatter.pubDate).toLocaleDateString("en-GB", {
@@ -84,7 +86,7 @@ const { frontmatter, prev, next } = Astro.props;
               </p>
             </header>
 
-            <section class="blogpost-content measure">
+            <section class="blogpost-content prose">
               <slot />
             </section>
 
@@ -114,7 +116,7 @@ const { frontmatter, prev, next } = Astro.props;
 
     {
       frontmatter.heroImage && (
-        <div class="blog-grid">
+        <div class="grid-blog">
           <aside class="blog-side">
             <div class="post-date">
               {new Date(frontmatter.pubDate).toLocaleDateString("en-GB", {
@@ -145,7 +147,7 @@ const { frontmatter, prev, next } = Astro.props;
               </span>
             </p>
 
-            <section class="blogpost-content measure fadeup-st">
+            <section class="blogpost-content prose fadeup-st">
               <slot />
             </section>
             <Spacer size="large" />
@@ -250,7 +252,7 @@ const { frontmatter, prev, next } = Astro.props;
   }
 
   /* When hero image is present, align date with metadata */
-  .hero-image-container ~ .blog-grid .post-date {
+  .hero-image-container ~ .grid-blog .post-date {
     margin-top: 0;
   }
 
