@@ -1,0 +1,95 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageWrapper from "../components/layouts/PageWrapper.astro";
+import Spacer from "../components/mdx/Spacer.astro";
+import ContactSection from "../components/layouts/ContactSection.astro";
+---
+
+<Layout
+    title="Colophon"
+    desc="A brief description of the site, its purpose, and the technologies used to build it."
+>
+    <PageWrapper>
+        <Spacer size="2xl" />
+        <main>
+            <div class="_1-2-grid">
+                <h1 class="big-title fadeup-st">Colophon</h1>
+                <div class="body-text measure fadeup-st">
+                    <Spacer size="xs" />
+
+                    <div class="body-text fadeup-st">
+                        A <a
+                            href="https://en.wikipedia.org/wiki/Colophon_(publishing)"
+                            target="_blank"
+                            rel="noopener noreferrer">colophon</a
+                        > is a brief statement that documents how a work was produced.
+                        Traditionally, it records details about things like authorship,
+                        materials, tools and place of creation. Here, it explains
+                        how this website was made.
+                        <Spacer size="xs" />
+                        I designed and built the site myself. I chose a code-first
+                        workflow to retain full control over structure and presentation.
+                        The backbone is <a
+                            href="https://astro.build"
+                            target="_blank"
+                            rel="noopener noreferrer">Astro</a
+                        >, chosen for its static-first model and restrained use
+                        of client-side JavaScript. GitHub Copilot was used as a
+                        coding assistant for routine tasks and small JavaScript
+                        utilities. Design decisions, structure, and final
+                        implementations remained mine. The interface is built
+                        with plain HTML, CSS, and a small amount of JavaScript.
+                        All blog posts and case material are written in Markdown
+                        and structured using Astro Content Collections.
+                        <Spacer size="xs" />
+                        The visual system is defined through CSS design tokens. Spacing,
+                        typography, colour, rhythm, and motion are expressed as variables
+                        and reused consistently across the site, allowing the design
+                        to be adjusted at a systemic level rather than page by page.
+                        Typography is set using a fluid scale based on clamp(), adapting
+                        across screen sizes with attention to line length, leading,
+                        and contrast.
+                        <Spacer size="xs" />
+                        Motion is defined through <a
+                            GSAP,
+                            used
+                            sparingly
+                            and
+                            disabled
+                            for
+                            users
+                            who
+                            prefer
+                            href="https://gsap.com/"
+                            target="_blank"
+                            rel="noopener noreferrer">GSAP</a
+                        >, used sparingly and disabled for users who prefer
+                        reduced motion. Accessibility considerations: focus
+                        states, contrast, and semantic structure, are treated as
+                        defaults rather than additions. The site is deployed as
+                        a static build on <a
+                            href="https://www.netlify.com/"
+                            target="_blank"
+                            rel="noopener noreferrer">Netlify</a
+                        >, with DNS and network-level services provided by <a
+                            href="https://www.cloudflare.com/"
+                            target="_blank"
+                            rel="noopener noreferrer">Cloudflare</a
+                        >. Analytics are handled via <a
+                            href="https://umami.is/"
+                            target="_blank"
+                            rel="noopener noreferrer">Umami</a
+                        >. No behavioural tracking or cross-site profiling is
+                        used. Newsletter subscriptions are processed server-side
+                        using Netlify Functions, which forward form submissions
+                        to <a
+                            href="https://kit.com/"
+                            target="_blank"
+                            rel="noopener noreferrer">Kit</a
+                        > without adding client-side JavaScript.
+                    </div>
+                </div>
+            </div>
+        </main>
+    </PageWrapper>
+</Layout>
