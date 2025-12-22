@@ -4,7 +4,7 @@ import SEO from "../../components/seo.astro";
 import Layout from "../../layouts/Layout.astro";
 import PageWrapper from "../../components/layouts/PageWrapper.astro";
 import type { CollectionEntry } from "astro:content";
-import Spacer from "../../components/mdx/Spacer.astro";
+import Spacer from "../../components/Spacer.astro";
 import SubscribeSection from "../../components/layouts/SubscribeSection.astro";
 
 const posts = (await getCollection("blog")) as CollectionEntry<"blog">[];
