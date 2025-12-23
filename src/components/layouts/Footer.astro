@@ -92,7 +92,7 @@ import PageWrapper from "./PageWrapper.astro";
   // Create staggered animation when footer scrolls into view
   ScrollTrigger.create({
     trigger: ".footer",
-    start: "top bottom-=100",
+    start: "top 95%",
     once: true,
     onEnter: () => {
       gsap.to("#footer-path-3", {
@@ -120,7 +120,7 @@ import PageWrapper from "./PageWrapper.astro";
 
   ScrollTrigger.create({
     trigger: ".footer",
-    start: "top bottom-=50",
+    start: "top 95%",
     once: true,
     onEnter: () => {
       gsap.to(footerFadeups, {

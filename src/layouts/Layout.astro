@@ -70,6 +70,18 @@ const { title, desc, type, coverImage } = Astro.props;
       /* Prevent horizontal overflow from full-width elements */
       body {
         overflow-x: hidden;
+        position: relative;
+      }
+
+      /* Fix mobile viewport height issues */
+      html {
+        height: 100%;
+        height: -webkit-fill-available;
+      }
+
+      body {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
       }
 
       /* Improve Page speed */
@@ -103,6 +115,13 @@ const { title, desc, type, coverImage } = Astro.props;
   (window as any).ScrollTrigger = ScrollTrigger;
 
   gsap.registerPlugin(ScrollTrigger);
+
+  // Configure ScrollTrigger for mobile
+  ScrollTrigger.config({
+    autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+  });
+
+  ScrollTrigger.normalizeScroll(true);
 </script>
 
 <script type="module">
