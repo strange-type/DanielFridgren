@@ -6,7 +6,7 @@ draft: false
 tags: ["culture", "adaptation", "systems thinking", "design thinking"]
 author: "Daniel Fridgren"
 heroImage: "/images/blog-images/wiki-sinaloa-raJrSL-LfVg-unsplash.jpg"
-heroImageCaption: "Photo by Avinash Kumar on Unsplash"
+heroImageCaption: "Photo by Wiki Sinaloa on Unsplash"
 ---
 
 Contrary to some popular narratives, I’d argue that humanity’s most powerful adaptive capacity is not technology, but culture. More precisely: *cultural malleability*.
@@ -19,7 +19,7 @@ Children in the past did not grow up with the trepidation that humans would dest
 
 The difficulty with culture is not that it changes, but that it rarely feels like it can, from the inside
 
-We become like the fish in David Foster Wallace’s [This Is Water](https://fs.blog/david-foster-wallace-this-is-water/), surrounded by assumptions so familiar they disappear from view.
+We become like the fish in David Foster Wallace's <a href="https://fs.blog/david-foster-wallace-this-is-water/" target="_blank" rel="noopener noreferrer">This Is Water</a>, surrounded by assumptions so familiar they disappear from view.
 
 Our ideas about the world, about the systems we create, about our values, about what is deemed as success - all these ideas tend to surround us completely, and affect our thoughts and our decisions. But they are also malleable and constantly in flux.
 
