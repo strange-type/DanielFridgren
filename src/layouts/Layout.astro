@@ -121,7 +121,10 @@ const { title, desc, type, coverImage } = Astro.props;
     autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
   });
 
-  ScrollTrigger.normalizeScroll(true);
+  // Refresh ScrollTrigger after fonts and images load
+  window.addEventListener("load", () => {
+    ScrollTrigger.refresh();
+  });
 </script>
 
 <script type="module">
