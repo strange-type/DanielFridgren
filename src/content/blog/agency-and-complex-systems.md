@@ -1,6 +1,6 @@
 ---
-title: "The Many Minds That Move Us"
-description: "A reflection on why command-and-control thinking fails in complex systems, and why both minds and societies are shaped less by central intelligence than by emergent, plural agencies we’ve forgotten how to notice."
+title: "Out Of Control"
+description: "A reflection on why command-and-control thinking fails in complex systems, and why things like minds and societies are shaped more by emergent agencies we’ve forgotten how to notice."
 pubDate: "2025-12-03"
 draft: false
 tags: ["complexity", "emergence", "distributed intelligence", "systems thinking"]
