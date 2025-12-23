@@ -80,13 +80,19 @@ import PageWrapper from "./PageWrapper.astro";
 
   // Wait for DOM to be ready
   document.addEventListener("DOMContentLoaded", () => {
-    // Set initial state - paths hidden
+    // Set initial state - paths hidden (no animation, just state)
+    gsap.set(["#footer-path-1", "#footer-path-2", "#footer-path-3"], {
+      opacity: 1,
+    });
+
     gsap.set(["#footer-path-3"], {
       scaleY: 0,
+      transformOrigin: "bottom",
     });
 
     gsap.set(["#footer-path-1", "#footer-path-2"], {
       scaleX: 0,
+      transformOrigin: "left",
     });
 
     // Create staggered animation when footer scrolls into view
@@ -94,27 +100,24 @@ import PageWrapper from "./PageWrapper.astro";
       trigger: ".footer",
       start: "top bottom-=100",
       once: true,
+      invalidateOnRefresh: true,
       onEnter: () => {
-        gsap.to(["#footer-path-3"], {
-          opacity: 1,
+        gsap.to("#footer-path-3", {
           scaleY: 1,
           duration: 0.6,
           ease: "power2.out",
-          stagger: 0.15,
         });
-      },
-    });
-    ScrollTrigger.create({
-      trigger: ".footer",
-      start: "top bottom-=100",
-      once: true,
-      onEnter: () => {
-        gsap.to(["#footer-path-1", "#footer-path-2"], {
-          opacity: 1,
+        gsap.to("#footer-path-1", {
           scaleX: 1,
           duration: 0.6,
           ease: "power2.out",
-          stagger: 0.15,
+          delay: 0.15,
+        });
+        gsap.to("#footer-path-2", {
+          scaleX: 1,
+          duration: 0.6,
+          ease: "power2.out",
+          delay: 0.3,
         });
       },
     });
@@ -127,6 +130,7 @@ import PageWrapper from "./PageWrapper.astro";
       trigger: ".footer",
       start: "top bottom-=50",
       once: true,
+      invalidateOnRefresh: true,
       onEnter: () => {
         gsap.to(footerFadeups, {
           opacity: 1,
@@ -138,10 +142,10 @@ import PageWrapper from "./PageWrapper.astro";
       },
     });
 
-    // Refresh ScrollTrigger after a short delay to ensure proper calculations
-    setTimeout(() => {
+    // Refresh ScrollTrigger after images and fonts load
+    window.addEventListener("load", () => {
       ScrollTrigger.refresh();
-    }, 100);
+    });
   });
 </script>
 
