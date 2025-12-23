@@ -73,17 +73,6 @@ const { title, desc, type, coverImage } = Astro.props;
         position: relative;
       }
 
-      /* Fix mobile viewport height issues */
-      html {
-        height: 100%;
-        height: -webkit-fill-available;
-      }
-
-      body {
-        min-height: 100vh;
-        min-height: -webkit-fill-available;
-      }
-
       /* Improve Page speed */
       /* https://css-tricks.com/almanac/properties/c/content-visibility/ */
       img {
@@ -183,6 +172,7 @@ const { title, desc, type, coverImage } = Astro.props;
             trigger: section,
             start: "top 85%",
             toggleActions: "play none none none",
+            invalidateOnRefresh: true,
             // markers: true, // enable to debug
           },
           // Only add delay for elements initially visible on page load

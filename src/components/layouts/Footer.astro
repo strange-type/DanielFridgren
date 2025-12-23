@@ -94,8 +94,9 @@ import Spacer from "../Spacer.astro";
   // Create staggered animation when footer scrolls into view
   ScrollTrigger.create({
     trigger: ".footer",
-    start: "top 95%",
+    start: "top bottom",
     once: true,
+    invalidateOnRefresh: true,
     onEnter: () => {
       // Animate logo paths
       gsap.to(["#footer-path-3"], {
