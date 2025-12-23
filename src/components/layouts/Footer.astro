@@ -29,41 +29,39 @@ import PageWrapper from "./PageWrapper.astro";
             d="M20 156L8.85556e-07 156L1.73793e-06 136.5L7.70453e-06 -8.74227e-07L20 0L20 156Z"
             fill="var(--color-bg)"></path>
         </svg>
-        <p class="footer-copyright fadeup-st">
+        <p class="footer-copyright">
           © {new Date().getFullYear()} Daniel Fridgren<br />Malmö, Sweden
         </p>
       </div>
 
       <div class="footer-nav">
         <div class="footer-column">
-          <h3 class="footer-heading fadeup-st">ABOUT</h3>
+          <h3 class="footer-heading">ABOUT</h3>
           <nav>
-            <a href="/about" class="footer-link fadeup-st">About</a>
-            <a href="/cases" class="footer-link fadeup-st">Work</a>
-            <a href="/blog" class="footer-link fadeup-st">Blog</a>
-            <a href="/colophon" class="footer-link fadeup-st">Colophon</a>
+            <a href="/about" class="footer-link">About</a>
+            <a href="/cases" class="footer-link">Work</a>
+            <a href="/blog" class="footer-link">Blog</a>
+            <a href="/colophon" class="footer-link">Colophon</a>
           </nav>
         </div>
 
         <div class="footer-column">
-          <h3 class="footer-heading fadeup-st">CONTACT</h3>
+          <h3 class="footer-heading">CONTACT</h3>
           <nav>
             <a
               href="https://linkedin.com/in/fridgren"
               target="_blank"
               rel="noopener noreferrer"
-              class="footer-link fadeup-st">LinkedIn</a
+              class="footer-link">LinkedIn</a
             >
             <a
               href="https://x.com/fridgren"
               target="_blank"
               rel="noopener noreferrer"
-              class="footer-link fadeup-st">Twitter</a
+              class="footer-link">Twitter</a
             >
-            <a href="mailto:daniel@fridgren.se" class="footer-link fadeup-st"
-              >Email</a
-            >
-            <a href="/newsletter" class="footer-link fadeup-st">Newsletter</a>
+            <a href="mailto:daniel@fridgren.se" class="footer-link">Email</a>
+            <a href="/newsletter" class="footer-link">Newsletter</a>
           </nav>
         </div>
       </div>
@@ -81,54 +79,38 @@ import PageWrapper from "./PageWrapper.astro";
   // Set initial state - paths hidden
   gsap.set(["#footer-path-3"], {
     scaleY: 0,
-    transformOrigin: "bottom",
   });
 
   gsap.set(["#footer-path-1", "#footer-path-2"], {
     scaleX: 0,
-    transformOrigin: "left",
   });
 
   // Create staggered animation when footer scrolls into view
   ScrollTrigger.create({
     trigger: ".footer",
-    start: "top 95%",
+    start: "top bottom-=300",
     once: true,
     onEnter: () => {
-      gsap.to("#footer-path-3", {
+      gsap.to(["#footer-path-3"], {
+        opacity: 1,
         scaleY: 1,
         duration: 0.6,
         ease: "power2.out",
-      });
-      gsap.to("#footer-path-1", {
-        scaleX: 1,
-        duration: 0.6,
-        ease: "power2.out",
-        delay: 0.15,
-      });
-      gsap.to("#footer-path-2", {
-        scaleX: 1,
-        duration: 0.6,
-        ease: "power2.out",
-        delay: 0.3,
+        stagger: 0.15,
       });
     },
   });
-
-  // Override fadeup-st animations for footer elements
-  const footerFadeups = gsap.utils.toArray(".footer .fadeup-st");
-
   ScrollTrigger.create({
     trigger: ".footer",
-    start: "top 95%",
+    start: "top bottom-=300",
     once: true,
     onEnter: () => {
-      gsap.to(footerFadeups, {
+      gsap.to(["#footer-path-1", "#footer-path-2"], {
         opacity: 1,
-        y: 0,
-        duration: 0.9,
-        ease: "power4.out",
-        stagger: 0.05,
+        scaleX: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        stagger: 0.15,
       });
     },
   });
