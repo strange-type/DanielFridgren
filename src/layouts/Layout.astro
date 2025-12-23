@@ -67,6 +67,11 @@ const { title, desc, type, coverImage } = Astro.props;
     </main>
 
     <style is:global>
+      /* Prevent horizontal overflow from full-width elements */
+      body {
+        overflow-x: hidden;
+      }
+
       /* Improve Page speed */
       /* https://css-tricks.com/almanac/properties/c/content-visibility/ */
       img {
