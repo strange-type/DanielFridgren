@@ -16,45 +16,54 @@ import PageWrapper from "./PageWrapper.astro";
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M105 0V20H98.25H51V0H105Z" fill="var(--color-bg)"></path>
-          <path d="M105 67V87H94.375H20V67H105Z" fill="var(--color-bg)"></path>
           <path
+            id="footer-path-1"
+            d="M105 0V20H98.25H51V0H105Z"
+            fill="var(--color-bg)"></path>
+          <path
+            id="footer-path-2"
+            d="M105 67V87H94.375H20V67H105Z"
+            fill="var(--color-bg)"></path>
+          <path
+            id="footer-path-3"
             d="M20 156L8.85556e-07 156L1.73793e-06 136.5L7.70453e-06 -8.74227e-07L20 0L20 156Z"
             fill="var(--color-bg)"></path>
         </svg>
-        <p class="footer-copyright">
+        <p class="footer-copyright fadeup-st">
           © {new Date().getFullYear()} Daniel Fridgren<br />Malmö, Sweden
         </p>
       </div>
 
       <div class="footer-nav">
         <div class="footer-column">
-          <h3 class="footer-heading">ABOUT</h3>
+          <h3 class="footer-heading fadeup-st">ABOUT</h3>
           <nav>
-            <a href="/about" class="footer-link">About</a>
-            <a href="/cases" class="footer-link">Work</a>
-            <a href="/blog" class="footer-link">Blog</a>
-            <a href="/colophon" class="footer-link">Colophon</a>
+            <a href="/about" class="footer-link fadeup-st">About</a>
+            <a href="/cases" class="footer-link fadeup-st">Work</a>
+            <a href="/blog" class="footer-link fadeup-st">Blog</a>
+            <a href="/colophon" class="footer-link fadeup-st">Colophon</a>
           </nav>
         </div>
 
         <div class="footer-column">
-          <h3 class="footer-heading">CONTACT</h3>
+          <h3 class="footer-heading fadeup-st">CONTACT</h3>
           <nav>
             <a
               href="https://linkedin.com/in/fridgren"
               target="_blank"
               rel="noopener noreferrer"
-              class="footer-link">LinkedIn</a
+              class="footer-link fadeup-st">LinkedIn</a
             >
             <a
               href="https://x.com/fridgren"
               target="_blank"
               rel="noopener noreferrer"
-              class="footer-link">Twitter</a
+              class="footer-link fadeup-st">Twitter</a
             >
-            <a href="mailto:daniel@fridgren.se" class="footer-link">Email</a>
-            <a href="/newsletter" class="footer-link">Newsletter</a>
+            <a href="mailto:daniel@fridgren.se" class="footer-link fadeup-st"
+              >Email</a
+            >
+            <a href="/newsletter" class="footer-link fadeup-st">Newsletter</a>
           </nav>
         </div>
       </div>
@@ -62,6 +71,71 @@ import PageWrapper from "./PageWrapper.astro";
     <Spacer size="large" />
   </footer>
 </PageWrapper>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Set initial state - paths hidden
+  gsap.set(["#footer-path-3"], {
+    scaleY: 0,
+  });
+
+  gsap.set(["#footer-path-1", "#footer-path-2"], {
+    scaleX: 0,
+  });
+
+  // Create staggered animation when footer scrolls into view
+  ScrollTrigger.create({
+    trigger: ".footer",
+    start: "top bottom-=300",
+    once: true,
+    onEnter: () => {
+      gsap.to(["#footer-path-3"], {
+        opacity: 1,
+        scaleY: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        stagger: 0.15,
+      });
+    },
+  });
+  ScrollTrigger.create({
+    trigger: ".footer",
+    start: "top bottom-=300",
+    once: true,
+    onEnter: () => {
+      gsap.to(["#footer-path-1", "#footer-path-2"], {
+        opacity: 1,
+        scaleX: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        stagger: 0.15,
+      });
+    },
+  });
+
+  // Override fadeup-st animations for footer elements
+  // Animate all footer fadeup-st elements together with consistent stagger
+  const footerFadeups = gsap.utils.toArray(".footer .fadeup-st");
+
+  ScrollTrigger.create({
+    trigger: ".footer",
+    start: "top bottom-=200",
+    once: true,
+    onEnter: () => {
+      gsap.to(footerFadeups, {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power4.out",
+        stagger: 0.05,
+      });
+    },
+  });
+</script>
 
 <style>
   /* TV static noise texture overlay */
@@ -131,7 +205,7 @@ import PageWrapper from "./PageWrapper.astro";
     left: -10%;
     width: 120%;
     height: 120%;
-    opacity: 0.15;
+    opacity: 0.2;
     z-index: 0;
     pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
