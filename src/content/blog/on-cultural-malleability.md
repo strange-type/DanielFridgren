@@ -1,6 +1,6 @@
 ---
 title: "On Culture And Adaptability"
-description: "On cultural malleability, generational blind spots, and why societies adapt through cultural change rather than technology."
+description: "How culture quietly drives societal adaptability behind the scenes of technology."
 pubDate: "2025-10-03"
 draft: false
 tags: ["culture", "adaptation", "systems thinking", "design thinking"]

@@ -1,6 +1,6 @@
 ---
-title: "What Truly Matters Doesn’t Scale"
-description: "Why dominant investment models overlook the slow, non-scalable investments that sustains resilience and long-term societal health."
+title: "What Matters Doesn’t Scale"
+description: "Why dominant investment models overlook the non-scalable sustaining resilience and long-term societal health."
 pubDate: "2025-11-10"
 draft: false
 tags: ["scalability", "systems-thinking", "resilience"]

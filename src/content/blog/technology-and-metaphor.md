@@ -1,6 +1,6 @@
 ---
-title: "The Metaphors We Build Into Technology"
-description: "How technologies reflect the metaphors of their time, and what ecological systems reveal about alternative ways of building."
+title: "Our Metaphors Colors Everything"
+description: "How technologies reflect the metaphors of their time, and what we can learn by examining the metaphors we take for granted."
 pubDate: "2025-08-19"
 draft: false
 tags: ["techno-optimism", "ecology", "metaphor"]
