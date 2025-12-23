@@ -109,26 +109,6 @@ const { title, desc, type, coverImage } = Astro.props;
   ScrollTrigger.config({
     autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
   });
-
-  // Refresh ScrollTrigger after fonts and images load
-  window.addEventListener("load", () => {
-    ScrollTrigger.refresh();
-  });
-
-  // Additional refresh on resize and orientation change for mobile
-  let resizeTimer: ReturnType<typeof setTimeout> | undefined;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 250);
-  });
-
-  window.addEventListener("orientationchange", () => {
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 500);
-  });
 </script>
 
 <script type="module">
