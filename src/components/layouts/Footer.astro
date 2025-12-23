@@ -78,62 +78,70 @@ import PageWrapper from "./PageWrapper.astro";
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // Set initial state - paths hidden
-  gsap.set(["#footer-path-3"], {
-    scaleY: 0,
-  });
+  // Wait for DOM to be ready
+  document.addEventListener("DOMContentLoaded", () => {
+    // Set initial state - paths hidden
+    gsap.set(["#footer-path-3"], {
+      scaleY: 0,
+    });
 
-  gsap.set(["#footer-path-1", "#footer-path-2"], {
-    scaleX: 0,
-  });
+    gsap.set(["#footer-path-1", "#footer-path-2"], {
+      scaleX: 0,
+    });
 
-  // Create staggered animation when footer scrolls into view
-  ScrollTrigger.create({
-    trigger: ".footer",
-    start: "top bottom-=300",
-    once: true,
-    onEnter: () => {
-      gsap.to(["#footer-path-3"], {
-        opacity: 1,
-        scaleY: 1,
-        duration: 0.6,
-        ease: "power2.out",
-        stagger: 0.15,
-      });
-    },
-  });
-  ScrollTrigger.create({
-    trigger: ".footer",
-    start: "top bottom-=300",
-    once: true,
-    onEnter: () => {
-      gsap.to(["#footer-path-1", "#footer-path-2"], {
-        opacity: 1,
-        scaleX: 1,
-        duration: 0.6,
-        ease: "power2.out",
-        stagger: 0.15,
-      });
-    },
-  });
+    // Create staggered animation when footer scrolls into view
+    ScrollTrigger.create({
+      trigger: ".footer",
+      start: "top bottom-=100",
+      once: true,
+      onEnter: () => {
+        gsap.to(["#footer-path-3"], {
+          opacity: 1,
+          scaleY: 1,
+          duration: 0.6,
+          ease: "power2.out",
+          stagger: 0.15,
+        });
+      },
+    });
+    ScrollTrigger.create({
+      trigger: ".footer",
+      start: "top bottom-=100",
+      once: true,
+      onEnter: () => {
+        gsap.to(["#footer-path-1", "#footer-path-2"], {
+          opacity: 1,
+          scaleX: 1,
+          duration: 0.6,
+          ease: "power2.out",
+          stagger: 0.15,
+        });
+      },
+    });
 
-  // Override fadeup-st animations for footer elements
-  // Animate all footer fadeup-st elements together with consistent stagger
-  const footerFadeups = gsap.utils.toArray(".footer .fadeup-st");
+    // Override fadeup-st animations for footer elements
+    // Animate all footer fadeup-st elements together with consistent stagger
+    const footerFadeups = gsap.utils.toArray(".footer .fadeup-st");
 
-  ScrollTrigger.create({
-    trigger: ".footer",
-    start: "top bottom-=200",
-    once: true,
-    onEnter: () => {
-      gsap.to(footerFadeups, {
-        opacity: 1,
-        y: 0,
-        duration: 0.9,
-        ease: "power4.out",
-        stagger: 0.05,
-      });
-    },
+    ScrollTrigger.create({
+      trigger: ".footer",
+      start: "top bottom-=50",
+      once: true,
+      onEnter: () => {
+        gsap.to(footerFadeups, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "power4.out",
+          stagger: 0.05,
+        });
+      },
+    });
+
+    // Refresh ScrollTrigger after a short delay to ensure proper calculations
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
   });
 </script>
 
