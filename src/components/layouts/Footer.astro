@@ -29,39 +29,44 @@ import PageWrapper from "./PageWrapper.astro";
             d="M20 156L8.85556e-07 156L1.73793e-06 136.5L7.70453e-06 -8.74227e-07L20 0L20 156Z"
             fill="var(--color-bg)"></path>
         </svg>
-        <p class="footer-copyright">
+        <p class="footer-copyright footer-animate">
           © {new Date().getFullYear()} Daniel Fridgren<br />Malmö, Sweden
         </p>
       </div>
 
       <div class="footer-nav">
         <div class="footer-column">
-          <h3 class="footer-heading">ABOUT</h3>
+          <h3 class="footer-heading footer-animate">ABOUT</h3>
           <nav>
-            <a href="/about" class="footer-link">About</a>
-            <a href="/cases" class="footer-link">Work</a>
-            <a href="/blog" class="footer-link">Blog</a>
-            <a href="/colophon" class="footer-link">Colophon</a>
+            <a href="/about" class="footer-link footer-animate">About</a>
+            <a href="/cases" class="footer-link footer-animate">Work</a>
+            <a href="/blog" class="footer-link footer-animate">Blog</a>
+            <a href="/colophon" class="footer-link footer-animate">Colophon</a>
           </nav>
         </div>
 
         <div class="footer-column">
-          <h3 class="footer-heading">CONTACT</h3>
+          <h3 class="footer-heading footer-animate">CONTACT</h3>
           <nav>
             <a
               href="https://linkedin.com/in/fridgren"
               target="_blank"
               rel="noopener noreferrer"
-              class="footer-link">LinkedIn</a
+              class="footer-link footer-animate">LinkedIn</a
             >
             <a
               href="https://x.com/fridgren"
               target="_blank"
               rel="noopener noreferrer"
-              class="footer-link">Twitter</a
+              class="footer-link footer-animate">Twitter</a
             >
-            <a href="mailto:daniel@fridgren.se" class="footer-link">Email</a>
-            <a href="/newsletter" class="footer-link">Newsletter</a>
+            <a
+              href="mailto:daniel@fridgren.se"
+              class="footer-link footer-animate">Email</a
+            >
+            <a href="/newsletter" class="footer-link footer-animate"
+              >Newsletter</a
+            >
           </nav>
         </div>
       </div>
@@ -85,12 +90,19 @@ import PageWrapper from "./PageWrapper.astro";
     scaleX: 0,
   });
 
+  // Set initial state for text elements
+  gsap.set(".footer-animate", {
+    opacity: 0,
+    y: 20,
+  });
+
   // Create staggered animation when footer scrolls into view
   ScrollTrigger.create({
     trigger: ".footer",
     start: "top bottom-=300",
     once: true,
     onEnter: () => {
+      // Animate logo paths
       gsap.to(["#footer-path-3"], {
         opacity: 1,
         scaleY: 1,
@@ -98,19 +110,23 @@ import PageWrapper from "./PageWrapper.astro";
         ease: "power2.out",
         stagger: 0.15,
       });
-    },
-  });
-  ScrollTrigger.create({
-    trigger: ".footer",
-    start: "top bottom-=300",
-    once: true,
-    onEnter: () => {
+
       gsap.to(["#footer-path-1", "#footer-path-2"], {
         opacity: 1,
         scaleX: 1,
         duration: 0.6,
         ease: "power2.out",
         stagger: 0.15,
+      });
+
+      // Animate text elements with stagger
+      gsap.to(".footer-animate", {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "power2.out",
+        stagger: 0.08,
+        delay: 0.3,
       });
     },
   });
