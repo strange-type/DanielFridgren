@@ -69,7 +69,6 @@ const { title, desc, type, coverImage } = Astro.props;
     <style is:global>
       /* Prevent horizontal overflow from full-width elements */
       body {
-        overflow-x: hidden;
         position: relative;
       }
 
@@ -77,8 +76,6 @@ const { title, desc, type, coverImage } = Astro.props;
       /* https://css-tricks.com/almanac/properties/c/content-visibility/ */
       img {
         content-visibility: auto;
-        /* Prevent flickering during scroll animations */
-        contain-intrinsic-size: auto 400px;
       }
 
       /* Ensure footer is always above page backgrounds */
