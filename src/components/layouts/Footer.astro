@@ -100,7 +100,6 @@ import Spacer from "../Spacer.astro";
     onEnter: () => {
       // Animate logo paths
       gsap.to(["#footer-path-3"], {
-        opacity: 1,
         scaleY: 1,
         duration: 0.6,
         ease: "power2.out",
@@ -108,10 +107,9 @@ import Spacer from "../Spacer.astro";
       });
 
       gsap.to(["#footer-path-1", "#footer-path-2"], {
-        opacity: 1,
         scaleX: 1,
         duration: 0.6,
-        ease: "power2.out",
+        ease: "power1.out",
         stagger: 0.15,
       });
 
