@@ -3,3 +3,24 @@
 
 [functions]
   node_bundler = "esbuild"
+
+# Redirect all www to non-www
+[[redirects]]
+  from = "https://www.fridgren.se/*"
+  to = "https://fridgren.se/:splat"
+  status = 301
+  force = true
+
+# Redirect all http to https (www)
+[[redirects]]
+  from = "http://www.fridgren.se/*"
+  to = "https://fridgren.se/:splat"
+  status = 301
+  force = true
+
+# Redirect all http to https (non-www)
+[[redirects]]
+  from = "http://fridgren.se/*"
+  to = "https://fridgren.se/:splat"
+  status = 301
+  force = true
