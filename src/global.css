@@ -684,6 +684,12 @@ mux-player {
     grid-template-rows: auto auto;
     grid-row-gap: var(--space-sm);
   }
+
+  .grid-columns-2-reverse {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    grid-row-gap: var(--space-sm);
+  }
 }
 
 
