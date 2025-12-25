@@ -667,6 +667,17 @@ mux-player {
   position: relative;
 }
 
+.grid-columns-2-reverse {
+  grid-column-gap: 4rem;
+  grid-row-gap: 5rem;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-columns: 1fr;
+  display: grid;
+  position: relative;
+}
+
+
 @media (max-width: 768px) {
   .grid-columns-2 {
     grid-template-columns: 1fr;
