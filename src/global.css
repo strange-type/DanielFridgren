@@ -739,16 +739,18 @@ mux-player {
   width: 100%;
   height: auto;
   display: block;
+  filter: brightness(0.80);
   transition:
     transform 240ms ease,
-    opacity 240ms ease;
+    opacity 240ms ease,
+    filter 240ms ease;
 }
 
 .portfolio-card-header {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: var(--space-l);
-  align-items: baseline;
+  align-items: top;
   width: 100%;
 }
 
@@ -765,7 +767,7 @@ mux-player {
 }
 
 .portfolio-card-title {
-  font-size: var(--fs-md);
+  font-size: var(--fs-base);
   line-height: var(--leading-base);
   color: var(--color-muted);
   transition: color 220ms ease;
@@ -813,6 +815,7 @@ mux-player {
 .portfolio .portfolio-item:hover .portfolio-figure img {
   transform: scale(1.03);
   opacity: 0.98;
+  filter: brightness(1);
 }
 
 
