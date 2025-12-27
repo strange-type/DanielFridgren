@@ -28,7 +28,7 @@ const logosHtml = logoSvgs
 	.map((l) => `<div class="logo-item fadeup-st">${l.svg}</div>`)
 	.join("");
 
-//gathering cases for work section
+//gathering work items for work section
 const modules = import.meta.glob("../content/work/*.md", {
 	eager: true,
 }) as Record<string, any>;
