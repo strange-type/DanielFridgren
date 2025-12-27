@@ -55,7 +55,7 @@ const { frontmatter, prev, next } = Astro.props;
         <div class="grid-blog">
           <aside class="blog-side">
             <div class="post-date">
-              {new Date(frontmatter.pubDate).toLocaleDateString("en-GB", {
+              {new Date(frontmatter.pubDate).toLocaleDateString("en-US", {
                 day: "numeric",
                 month: "short",
                 year: "numeric",
