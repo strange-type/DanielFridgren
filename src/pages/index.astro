@@ -28,8 +28,8 @@ const logosHtml = logoSvgs
 	.map((l) => `<div class="logo-item fadeup-st">${l.svg}</div>`)
 	.join("");
 
-//gathering cases for work section
-const modules = import.meta.glob("../content/cases/*.md", {
+//gathering work items for work section
+const modules = import.meta.glob("../content/work/*.md", {
 	eager: true,
 }) as Record<string, any>;
 
@@ -43,7 +43,7 @@ const posts = moduleKeys
 		const slug = fm.slug || filename;
 		return {
 			...fm,
-			url: `/cases/${slug}`,
+			url: `/work/${slug}`,
 			__path: path,
 		};
 	})

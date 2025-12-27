@@ -1,11 +1,11 @@
 ---
-// src/pages/cases/[slug].astro
+// src/pages/work/[slug].astro
 import CaseLayout from '../../layouts/CaseLayout.astro';
 
-const modules = import.meta.glob('../../content/cases/*.md');
+const modules = import.meta.glob('../../content/work/*.md');
 
 export async function getStaticPaths() {
-  const all = import.meta.glob('../../content/cases/*.md', { eager: true }) as Record<string, any>;
+  const all = import.meta.glob('../../content/work/*.md', { eager: true }) as Record<string, any>;
   return Object.keys(all).map((p) => {
     const slug = p.split('/').pop()?.replace('.md', '') ?? '';
     return { params: { slug } };
