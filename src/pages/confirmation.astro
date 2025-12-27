@@ -10,12 +10,12 @@ import PageWrapper from "../components/layouts/PageWrapper.astro";
         desc="Thank you for subscribing to the newsletter"
     >
         <Spacer size="2xl" />
-        <div class="container mx-auto px-4 py-16 max-w-2xl">
-            <h1 class="text-4xl md:text-5xl font-bold mb-6">Thank You!</h1>
+        <div class="confirmation-container">
+            <h1>Thank You!</h1>
 
             <Spacer size="small" />
 
-            <p class="text mb-8">
+            <p class="text">
                 You've successfully subscribed to the newsletter. Please check
                 your email to confirm your subscription.
             </p>
@@ -23,7 +23,7 @@ import PageWrapper from "../components/layouts/PageWrapper.astro";
             <Spacer size="small" />
 
             <p class="text">
-                <a href="/" class="underline hover:no-underline"
+                <a href="/"
                     >Return to homepage</a
                 >
             </p>
@@ -31,3 +31,15 @@ import PageWrapper from "../components/layouts/PageWrapper.astro";
         <Spacer size="2xl" />
     </Layout>
 </PageWrapper>
+
+<style>
+    .confirmation-container {
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 4rem 1rem;
+    }
+
+    .confirmation-container h1 {
+        margin-bottom: 1.5rem;
+    }
+</style>
