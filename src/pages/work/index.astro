@@ -5,7 +5,7 @@ import PageWrapper from "../../components/layouts/PageWrapper.astro";
 import ContactSection from "../../components/layouts/ContactSection.astro";
 import SEO from "../../components/seo.astro";
 
-const modules = import.meta.glob("../../content/cases/*.md", {
+const modules = import.meta.glob("../../content/work/*.md", {
   eager: true,
 }) as Record<string, any>;
 
@@ -19,7 +19,7 @@ const posts = moduleKeys
     const slug = fm.slug || filename;
     return {
       ...fm,
-      url: `/cases/${slug}`,
+      url: `/work/${slug}`,
       __path: path,
     };
   })
