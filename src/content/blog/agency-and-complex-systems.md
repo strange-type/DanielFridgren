@@ -17,7 +17,7 @@ This centralized command blueprint has been the main approach in most human ende
 
 And there’s a deeper pattern here: our assumption that intelligence relies on centralized control.
 
-The ”central command” blueprint is our current metaphor for how brains works. I’m crazy enough to view things otherwise, so maybe you should stop reading now. My view is that intelligence does not need brains. And this text is really a short story about letting go of the myth of a single center in our minds, organizations and even our civilizations.
+The central command blueprint is our current metaphor for how brains works. I’m crazy enough to view things otherwise, so maybe you should stop reading now. My view is that intelligence does not need brains. And this text is really a short story about letting go of the myth of a single center in our minds, organizations and even our civilizations.
 
 I generally dislike definitions of intelligence. They limit and narrow down in favor of measurability. But there is something to Marvin Minskys way of defining this property that opens up instead. According to him, intelligence is something that emerges from a “loosely-knitted league of almost separate agencies with almost independent goals.”
 
