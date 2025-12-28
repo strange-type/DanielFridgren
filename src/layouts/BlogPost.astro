@@ -127,7 +127,7 @@ const { frontmatter, prev, next } = Astro.props;
             </div>
           </aside>
 
-          <article class="blog-main">
+          <article>
             <SEO
               title={frontmatter.title}
               description={frontmatter.description}
@@ -147,11 +147,11 @@ const { frontmatter, prev, next } = Astro.props;
               </span>
             </p>
 
-            <section class="blogpost-content prose fadeup-st">
+            <section class="prose fadeup-st">
               <slot />
             </section>
             <Spacer size="large" />
-            <nav class="post-nav fadeup-st" aria-label="Post navigation">
+            <nav class="fadeup-st" aria-label="Post navigation">
               <div class="post-nav-alt-inline">
                 {prev && (
                   <a class="inline prev" href={prev.url} rel="prev">
@@ -241,21 +241,6 @@ const { frontmatter, prev, next } = Astro.props;
     }
   }
 
-  .blog-main {
-    /* Main blog article container */
-  }
-
-  .blogpost-header {
-    /* Blog post header container */
-  }
-
-  .blogpost-content {
-    /* Blog post content container */
-  }
-
-  .post-nav {
-    /* Post navigation container */
-  }
 
   .post-date {
     font-size: var(--fs-sm);
