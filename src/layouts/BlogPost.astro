@@ -241,6 +241,22 @@ const { frontmatter, prev, next } = Astro.props;
     }
   }
 
+  .blog-main {
+    /* Main blog article container */
+  }
+
+  .blogpost-header {
+    /* Blog post header container */
+  }
+
+  .blogpost-content {
+    /* Blog post content container */
+  }
+
+  .post-nav {
+    /* Post navigation container */
+  }
+
   .post-date {
     font-size: var(--fs-sm);
     color: var(--color-muted);
@@ -293,6 +309,14 @@ const { frontmatter, prev, next } = Astro.props;
   .post-nav-alt-inline .inline .nav-title {
     font-weight: 600;
     color: var(--color-heading);
+  }
+
+  .post-nav-alt-inline .prev {
+    /* Previous post navigation link */
+  }
+
+  .post-nav-alt-inline .next {
+    /* Next post navigation link */
   }
 
   @media (max-width: 900px) {
