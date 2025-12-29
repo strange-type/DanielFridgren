@@ -22,9 +22,30 @@ const blogCollection = defineCollection({
         heroImage: z.string().optional(),
         heroImageCaption: z.string().optional(),
     }),
+});
 
+const workCollection = defineCollection({
+    schema: z.object({
+        title: z.string(),
+        slug: z.string().optional(),
+        date: z.string(),
+        type: z.string().optional(),
+        client: z.string().optional(),
+        description: z.string().optional(),
+        heroImage: z.string().optional(),
+        ogImage: z.string().optional(),
+        secondaryImage: z.string().optional(),
+        tags: z.array(z.string()).optional(),
+        seoKeywords: z.array(z.string()).optional(),
+        playbackId: z.string().optional(),
+        playbackAccent: z.string().optional(),
+        thumbnailTime: z.number().optional(),
+        loop: toBoolean.optional(),
+        autoplay: z.string().optional(),
+    }),
 });
 
 export const collections = {
     blog: blogCollection,
+    work: workCollection,
 };
