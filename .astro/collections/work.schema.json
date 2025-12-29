@@ -1,0 +1,73 @@
+{
+  "$ref": "#/definitions/work",
+  "definitions": {
+    "work": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "client": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "heroImage": {
+          "type": "string"
+        },
+        "ogImage": {
+          "type": "string"
+        },
+        "secondaryImage": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "seoKeywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "playbackId": {
+          "type": "string"
+        },
+        "playbackAccent": {
+          "type": "string"
+        },
+        "thumbnailTime": {
+          "type": "number"
+        },
+        "loop": {
+          "type": "boolean"
+        },
+        "autoplay": {
+          "type": "string"
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "date"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

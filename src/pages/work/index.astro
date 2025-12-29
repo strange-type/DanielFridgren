@@ -4,48 +4,19 @@ import Spacer from "../../components/Spacer.astro";
 import PageWrapper from "../../components/layouts/PageWrapper.astro";
 import ContactSection from "../../components/layouts/ContactSection.astro";
 import SEO from "../../components/seo.astro";
+import { getCollection } from "astro:content";
 
-const modules = import.meta.glob("../../content/work/*.md", {
-  eager: true,
-}) as Record<string, any>;
-
-const moduleKeys = Object.keys(modules || {});
-
-const posts = moduleKeys
-  .map((path) => {
-    const mod = (modules as Record<string, any>)[path];
-    const fm = (mod as any).frontmatter || {};
-    const filename = path.match(/([^/\\]+)\.md$/)?.[1] || "";
-    const slug = fm.slug || filename;
-    return {
-      ...fm,
-      url: `/work/${slug}`,
-      __path: path,
-    };
-  })
+const workItems = await getCollection("work");
+const posts = workItems
+  .map((item) => ({
+    ...item.data,
+    slug: item.slug,
+    url: `/work/${item.slug}`,
+  }))
   .sort(
     (a, b) => (Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0),
   );
 ---
-
-<title>Work</title>
-<meta
-  name="description"
-  content="Selected case studies in UX, research and product design."
-/>
-<link rel="canonical" href="https://fridgren.se/work/" />
-
-<meta property="og:title" content="Work | Daniel Fridgren" />
-<meta
-  property="og:description"
-  content="Selected case studies in UX, research and product design."
-/>
-<meta
-  property="og:image"
-  content="https://fridgren.se/images/og-image.png"
-/>
-<meta property="og:url" content="https://fridgren.se/work/" />
-<meta property="og:type" content="page" />
 
 <Layout title="Work">
   <SEO
@@ -71,12 +42,12 @@ const posts = moduleKeys
                 <a
                   class="portfolio-item link-unstyled fadeup-st"
                   href={p.url}
-                  aria-label={`Open case study about ${p.title || p.__path}`}
+                  aria-label={`Open case study about ${p.title || p.slug}`}
                 >
-                  {p.heroImage || p.image ? (
+                  {p.heroImage ? (
                     <figure class="portfolio-figure">
                       <img
-                        src={p.heroImage || p.image || "/images/og-image.png"}
+                        src={p.heroImage || "/images/og-image.png"}
                         alt={p.title || ""}
                         loading="lazy"
                       />
@@ -84,11 +55,9 @@ const posts = moduleKeys
                   ) : null}
 
                   <div class="portfolio-card-header fadeup-st">
-                    <div class="text portfolio-card-title">
-                      {p.title || p.excerpt || ""}
-                    </div>
+                    <div class="text portfolio-card-title">{p.title || ""}</div>
                     <h3 class="portfolio-card-subtitle">
-                      {p.client || p.__path}
+                      {p.client || p.slug}
                     </h3>
                   </div>
                 </a>
@@ -98,11 +67,8 @@ const posts = moduleKeys
 
           {
             posts.length === 0 ? (
-              <div class="text-muted">
-                <p>No case posts found. Diagnostic info (development only):</p>
-                <pre style="white-space:pre-wrap; background:#f6f6f6; padding:8px; border-radius:4px;">
-                  {JSON.stringify(Object.keys(modules || {}), null, 2)}
-                </pre>
+              <div class="text">
+                <p>No case posts found.</p>
               </div>
             ) : null
           }

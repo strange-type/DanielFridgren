@@ -5,6 +5,7 @@ import Spacer from "../components/Spacer.astro";
 import PageWrapper from "../components/layouts/PageWrapper.astro";
 import ContactSection from "../components/layouts/ContactSection.astro";
 import { getCollection } from "astro:content";
+import { formatDate } from "../utils/date";
 import fs from "fs";
 
 // gather SVG logos from public/images/logos at build time
@@ -29,24 +30,13 @@ const logosHtml = logoSvgs
 	.join("");
 
 //gathering work items for work section
-const modules = import.meta.glob("../content/work/*.md", {
-	eager: true,
-}) as Record<string, any>;
-
-const moduleKeys = Object.keys(modules || {});
-
-const posts = moduleKeys
-	.map((path) => {
-		const mod = (modules as Record<string, any>)[path];
-		const fm = (mod as any).frontmatter || {};
-		const filename = path.match(/([^/\\]+)\.md$/)?.[1] || "";
-		const slug = fm.slug || filename;
-		return {
-			...fm,
-			url: `/work/${slug}`,
-			__path: path,
-		};
-	})
+const allWorkItems = await getCollection("work");
+const posts = allWorkItems
+	.map((item) => ({
+		...item.data,
+		slug: item.slug,
+		url: `/work/${item.slug}`,
+	}))
 	.sort(
 		(a, b) =>
 			(Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0),
@@ -59,14 +49,6 @@ const allBlogPosts = (await getCollection("blog"))
 
 // Get the 2 most recent posts
 const featuredPosts = allBlogPosts.slice(0, 2);
-
-// Format date helper
-const formatDate = (date: string) =>
-	new Date(date).toLocaleDateString("en-US", {
-		month: "short",
-		day: "2-digit",
-		year: "numeric",
-	});
 ---
 
 <script>
@@ -293,14 +275,13 @@ const formatDate = (date: string) =>
 								<a
 									class="portfolio-item link-unstyled fadeup-st"
 									href={p.url}
-									aria-label={`Open case study about ${p.title || p.__path}`}
+									aria-label={`Open case study about ${p.title || p.slug}`}
 								>
-									{p.heroImage || p.image ? (
+									{p.heroImage ? (
 										<figure class="portfolio-figure">
 											<img
 												src={
 													p.heroImage ||
-													p.image ||
 													"/images/og-image.png"
 												}
 												alt={p.title || ""}
@@ -311,10 +292,10 @@ const formatDate = (date: string) =>
 
 									<div class="portfolio-card-header">
 										<div class="portfolio-card-title">
-											{p.description || p.excerpt || ""}
+											{p.description || ""}
 										</div>
 										<h3 class="portfolio-card-subtitle">
-											{p.client || p.__path}
+											{p.client || p.slug}
 										</h3>
 									</div>
 								</a>
@@ -327,16 +308,8 @@ const formatDate = (date: string) =>
 						posts.length === 0 ? (
 								<div class="text">
 								<p>
-									No case posts found. Diagnostic info
-									(development only):
+									No case posts found.
 								</p>
-								<pre style="white-space:pre-wrap; background:#f6f6f6; padding:8px; border-radius:4px;">
-									{JSON.stringify(
-										Object.keys(modules || {}),
-										null,
-										2,
-									)}
-								</pre>
 							</div>
 						) : null
 					}
