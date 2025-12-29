@@ -1,7 +1,6 @@
 const { EMAIL_TOKEN } = process.env;
-import fetch from 'node-fetch';
 
-exports.handler = async (event, context) => {
+export const handler = async (event, context) => {
     const email = JSON.parse(event.body).data.email
     console.log(`Received a submission: ${email}`)
 
@@ -23,4 +22,4 @@ exports.handler = async (event, context) => {
         statusCode: 200,
         body: JSON.stringify({ message: 'Success' })
     }
-}
+};
