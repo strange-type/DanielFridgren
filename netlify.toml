@@ -4,13 +4,6 @@
 [functions]
   node_bundler = "esbuild"
 
-# Connect Netlify Forms to function
-[[plugins]]
-  package = "@netlify/plugin-functions"
-
-[build.environment]
-  NODE_VERSION = "18"
-
 # Redirect all www to non-www
 [[redirects]]
   from = "https://www.fridgren.se/*"
