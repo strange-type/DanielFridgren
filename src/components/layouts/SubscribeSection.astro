@@ -25,9 +25,7 @@ import Spacer from "../Spacer.astro";
           <form
             class="form-newsletter fadeup-st"
             name="newsletter"
-            method="POST"
-            action="/confirmation"
-            data-netlify="true"
+            id="newsletter-form"
           >
             <label for="email" class="form-label"> Email Address </label>
             <div class="form-group">
@@ -53,3 +51,31 @@ import Spacer from "../Spacer.astro";
     </div>
   </div>
 </section>
+
+<script>
+  const form = document.getElementById("newsletter-form");
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = (document.getElementById("email") as HTMLInputElement)
+        .value;
+
+      try {
+        const response = await fetch("/.netlify/functions/subscribe-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: { email } }),
+        });
+
+        if (response.ok) {
+          window.location.href = "/confirmation";
+        } else {
+          alert("Subscription failed. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Subscription failed. Please try again.");
+      }
+    });
+  }
+</script>
