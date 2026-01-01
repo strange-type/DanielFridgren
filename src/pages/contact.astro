@@ -36,22 +36,7 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
                     </div>
                     <Spacer size="small" />
 
-                    <!-- Hidden form for Netlify detection -->
-                    <form name="contact" data-netlify="true" hidden>
-                        <input type="text" name="name" />
-                        <input type="email" name="email" />
-                        <textarea name="message"></textarea>
-                        <input type="text" name="website" />
-                    </form>
-
-                    <form
-                        class="form-contact fadeup-st"
-                        name="contact"
-                        method="POST"
-                        action="/confirmation?type=contact"
-                        data-netlify="true"
-                    >
-                        <input type="hidden" name="form-name" value="contact" />
+                    <form class="form-contact fadeup-st" id="contact-form">
                         <input
                             type="hidden"
                             name="form-start-time"
@@ -117,10 +102,17 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
                         <button
                             type="submit"
                             class="button"
+                            id="submit-button"
                             data-umami-event="Contact Form Submit"
                         >
                             Send Message
                         </button>
+                        <p
+                            id="form-status"
+                            class="text-sm"
+                            style="margin-top: var(--space-2xs); display: none;"
+                        >
+                        </p>
                     </form>
 
                     <Spacer size="2xl" />
@@ -169,6 +161,58 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
             if (formStartTime) {
                 formStartTime.value = Date.now().toString();
             }
+
+            // Handle form submission
+            const form = document.getElementById(
+                "contact-form",
+            ) as HTMLFormElement;
+            const submitButton = document.getElementById(
+                "submit-button",
+            ) as HTMLButtonElement;
+            const statusMessage = document.getElementById(
+                "form-status",
+            ) as HTMLParagraphElement;
+
+            form?.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                // Disable button and show loading state
+                submitButton.disabled = true;
+                submitButton.textContent = "Sending...";
+                statusMessage.style.display = "none";
+
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(
+                        "/.netlify/functions/contact",
+                        {
+                            method: "POST",
+                            body: new URLSearchParams(formData as any),
+                        },
+                    );
+
+                    if (response.ok) {
+                        // Redirect to confirmation page
+                        window.location.href = "/confirmation?type=contact";
+                    } else {
+                        const data = await response.json();
+                        statusMessage.textContent =
+                            data.error ||
+                            "Something went wrong. Please try again.";
+                        statusMessage.style.display = "block";
+                        statusMessage.style.color = "var(--color-red)";
+                        submitButton.disabled = false;
+                        submitButton.textContent = "Send Message";
+                    }
+                } catch (error) {
+                    statusMessage.textContent =
+                        "Network error. Please try again.";
+                    statusMessage.style.display = "block";
+                    statusMessage.style.color = "var(--color-red)";
+                    submitButton.disabled = false;
+                    submitButton.textContent = "Send Message";
+                }
+            });
         });
     </script>
 </Layout>
