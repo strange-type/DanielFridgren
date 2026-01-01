@@ -1,4 +1,5 @@
 ---
+import { ViewTransitions } from "astro:transitions";
 import "../global.css";
 import Footer from "../components/layouts/Footer.astro";
 import Navbar from "../components/layouts/navbar/Navbar.astro";
@@ -52,6 +53,8 @@ const { title, desc, type, coverImage } = Astro.props;
       defer
       src="https://static.cloudflareinsights.com/beacon.min.js"
       data-cf-beacon='{"token": "c2d1eb89e36d42b3af5daa6253a5f323"}'></script>
+
+    <ViewTransitions />
   </head>
   <body>
     <HyphenopolyClient />
@@ -88,18 +91,51 @@ const { title, desc, type, coverImage } = Astro.props;
   </body>
 </html>
 
-<script>
-  import "../scripts/gsap-init";
+<script is:inline>
+  // Initialize GSAP immediately - inline script runs before module scripts
+  (async function () {
+    const gsap = await import("https://cdn.skypack.dev/gsap@3");
+    const ScrollTrigger = await import(
+      "https://cdn.skypack.dev/gsap@3/ScrollTrigger"
+    );
+
+    window.gsap = gsap.gsap || gsap.default;
+    window.ScrollTrigger = ScrollTrigger.ScrollTrigger || ScrollTrigger.default;
+
+    window.gsap.registerPlugin(window.ScrollTrigger);
+
+    window.ScrollTrigger.config({
+      autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+    });
+
+    // Signal that GSAP is ready
+    window.gsapReady = true;
+    window.dispatchEvent(new Event("gsap-ready"));
+  })();
 </script>
 
 <script>
   import { initFadeUpAnimations } from "../scripts/fadeup-animations";
+  import { initFooterAnimation } from "../scripts/footer-animation";
 
-  // Run on initial load
-  initFadeUpAnimations();
+  function initAllAnimations() {
+    initFadeUpAnimations();
+    initFooterAnimation();
+  }
+
+  // Wait for GSAP to be ready
+  if (window.gsapReady) {
+    initAllAnimations();
+  } else {
+    window.addEventListener("gsap-ready", initAllAnimations, { once: true });
+  }
 
   // Run on every page navigation (View Transitions)
   document.addEventListener("astro:page-load", () => {
-    initFadeUpAnimations();
+    if (window.gsapReady) {
+      initAllAnimations();
+    } else {
+      window.addEventListener("gsap-ready", initAllAnimations, { once: true });
+    }
   });
 </script>

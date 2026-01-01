@@ -2,7 +2,7 @@
 import Spacer from "../Spacer.astro";
 ---
 
-<footer class="footer" transition:persist>
+<footer class="footer">
   <Spacer size="2xl" />
   <div class="footer-grid">
     <div class="footer-left">
@@ -67,18 +67,6 @@ import Spacer from "../Spacer.astro";
   </div>
   <Spacer size="large" />
 </footer>
-
-<script>
-  import { initFooterAnimation } from "../../scripts/footer-animation";
-
-  // Run on initial load
-  initFooterAnimation();
-
-  // Run on every page navigation
-  document.addEventListener("astro:page-load", () => {
-    initFooterAnimation();
-  });
-</script>
 
 <style>
   .footer {
