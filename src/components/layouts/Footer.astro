@@ -72,7 +72,14 @@ import Spacer from "../Spacer.astro";
 
 <script>
   import { initFooterAnimation } from "../../scripts/footer-animation";
+  
+  // Run on initial load
   initFooterAnimation();
+  
+  // Run on every page navigation
+  document.addEventListener("astro:page-load", () => {
+    initFooterAnimation();
+  });
 </script>
 
 <style>

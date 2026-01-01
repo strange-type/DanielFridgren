@@ -2,6 +2,11 @@
  * Initialize fade-up animations for elements with .fadeup-st class
  */
 export async function initFadeUpAnimations() {
+    // Kill existing ScrollTriggers to prevent duplicates on page navigation
+    if (window.ScrollTrigger) {
+        window.ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    }
+
     try {
         // Register ScrollToPlugin if available (dynamic import) with CDN fallback
         try {

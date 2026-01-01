@@ -562,6 +562,13 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 	import { initMuxPlayerFallback } from "../scripts/mux-player-fallback";
 	import { initServiceHighlight } from "../scripts/service-highlight";
 	
+	// Run on initial load
 	initMuxPlayerFallback("baxter-player", "/images/baxter.png", "Baxter dialysis user interface");
 	initServiceHighlight();
+	
+	// Run on every page navigation
+	document.addEventListener("astro:page-load", () => {
+		initMuxPlayerFallback("baxter-player", "/images/baxter.png", "Baxter dialysis user interface");
+		initServiceHighlight();
+	});
 </script>

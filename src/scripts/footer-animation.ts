@@ -7,6 +7,13 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 export function initFooterAnimation() {
     gsap.registerPlugin(ScrollTrigger);
 
+    // Kill existing footer ScrollTriggers to prevent duplicates
+    ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.vars.trigger === ".footer") {
+            trigger.kill();
+        }
+    });
+
     // Set initial state - paths hidden
     gsap.set(["#footer-path-3"], {
         scaleY: 0,
