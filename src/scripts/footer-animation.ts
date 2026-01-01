@@ -15,12 +15,12 @@ export function initFooterAnimation() {
     });
 
     // Set initial state - paths hidden
-    gsap.set(["#footer-path-3"], {
+    gsap.set(["#footer-path-1"], {
         scaleY: 0,
     });
 
-    gsap.set(["#footer-path-1", "#footer-path-2"], {
-        scaleX: 0,
+    gsap.set(["#footer-path-2"], {
+        opacity: 0,
     });
 
     // Set initial state for text elements
@@ -37,17 +37,17 @@ export function initFooterAnimation() {
         invalidateOnRefresh: true,
         onEnter: () => {
             // Animate logo paths
-            gsap.to(["#footer-path-3"], {
+            gsap.to(["#footer-path-1"], {
                 scaleY: 1,
                 duration: 0.6,
                 ease: "power2.out",
-                stagger: 0.15,
+                stagger: 0.25,
             });
 
-            gsap.to(["#footer-path-1", "#footer-path-2"], {
-                scaleX: 1,
-                duration: 0.6,
-                ease: "power1.out",
+            gsap.to(["#footer-path-2"], {
+                opacity: 1,
+                duration: 1.6,
+                ease: "power2.out",
                 stagger: 0.15,
             });
 
