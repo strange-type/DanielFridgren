@@ -26,17 +26,9 @@ import Spacer from "../components/Spacer.astro";
                                 thoughts on emergence, cognition, and the
                                 patterns that shape our digital world.
                             </p>
-                            <!-- Hidden form for Netlify detection -->
-                            <form name="newsletter" data-netlify="true" hidden>
-                                <input type="email" name="email" />
-                            </form>
-
                             <form
                                 class="form-newsletter fadeup-st"
-                                name="newsletter"
-                                method="POST"
-                                action="/confirmation"
-                                data-netlify="true"
+                                id="newsletter-form"
                             >
                                 <label for="email" class="form-label">
                                     Email Address
@@ -51,10 +43,20 @@ import Spacer from "../components/Spacer.astro";
                                         placeholder="your@email.com"
                                         data-umami-event="newsletter-subscribe"
                                     />
-                                    <button type="submit" class="button">
+                                    <button
+                                        type="submit"
+                                        class="button"
+                                        id="newsletter-submit"
+                                    >
                                         Subscribe
                                     </button>
                                 </div>
+                                <p
+                                    id="newsletter-status"
+                                    class="text-sm"
+                                    style="margin-top: var(--space-2xs); display: none;"
+                                >
+                                </p>
                             </form>
                             <Spacer size="xs" />
                             <p class="text-sm prose fadeup-st">
@@ -68,4 +70,66 @@ import Spacer from "../components/Spacer.astro";
             </div>
         </main>
     </PageWrapper>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById(
+                "newsletter-form",
+            ) as HTMLFormElement;
+            const submitButton = document.getElementById(
+                "newsletter-submit",
+            ) as HTMLButtonElement;
+            const statusMessage = document.getElementById(
+                "newsletter-status",
+            ) as HTMLParagraphElement;
+
+            form?.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const emailInput = document.getElementById(
+                    "email",
+                ) as HTMLInputElement;
+                const email = emailInput.value;
+
+                // Disable button and show loading state
+                submitButton.disabled = true;
+                submitButton.textContent = "Subscribing...";
+                statusMessage.style.display = "none";
+
+                try {
+                    const response = await fetch(
+                        "/.netlify/functions/subscribe-email",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ data: { email } }),
+                        },
+                    );
+
+                    if (response.ok) {
+                        // Redirect to confirmation page
+                        window.location.href = "/confirmation";
+                    } else {
+                        const data = await response.json();
+                        statusMessage.textContent =
+                            data.message ||
+                            "Something went wrong. Please try again.";
+                        statusMessage.style.display = "block";
+                        statusMessage.style.color = "var(--color-red)";
+                        submitButton.disabled = false;
+                        submitButton.textContent = "Subscribe";
+                    }
+                } catch (error) {
+                    statusMessage.textContent =
+                        "Network error. Please try again.";
+                    statusMessage.style.display = "block";
+                    statusMessage.style.color = "var(--color-red)";
+                    submitButton.disabled = false;
+                    submitButton.textContent = "Subscribe";
+                }
+            });
+        });
+    </script>
 </Layout>
