@@ -97,7 +97,7 @@ const { title, desc, type, coverImage } = Astro.props;
 
   // Run on initial load
   initFadeUpAnimations();
-  
+
   // Run on every page navigation (View Transitions)
   document.addEventListener("astro:page-load", () => {
     initFadeUpAnimations();
