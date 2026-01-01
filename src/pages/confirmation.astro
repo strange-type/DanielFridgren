@@ -2,43 +2,17 @@
 import Layout from "../layouts/Layout.astro";
 import Spacer from "../components/Spacer.astro";
 import PageWrapper from "../components/layouts/PageWrapper.astro";
-
-// Get the type parameter from URL (defaults to 'newsletter')
-const type = Astro.url.searchParams.get("type") || "newsletter";
-
-// Define content based on type
-const content = {
-    newsletter: {
-        title: "Subscription Confirmed",
-        desc: "Thank you for subscribing to the newsletter",
-        heading: "Thank You!",
-        message:
-            "You've successfully subscribed to the newsletter. Please check your email to confirm your subscription.",
-    },
-    contact: {
-        title: "Message Sent",
-        desc: "Your message has been sent successfully",
-        heading: "Message Sent!",
-        message:
-            "Thank you for reaching out. I will get back to you as soon as possible.",
-    },
-};
-
-const currentContent =
-    content[type as keyof typeof content] || content.newsletter;
 ---
 
 <PageWrapper>
-    <Layout title={currentContent.title} desc={currentContent.desc}>
+    <Layout title="Thank You" desc="Your submission has been received">
         <Spacer size="2xl" />
         <div class="confirmation-container">
-            <h1>{currentContent.heading}</h1>
+            <h1 id="confirmation-heading">Thank You!</h1>
 
             <Spacer size="small" />
 
-            <p class="text">
-                {currentContent.message}
-            </p>
+            <p class="text" id="confirmation-message">Loading...</p>
 
             <Spacer size="small" />
 
@@ -49,6 +23,40 @@ const currentContent =
         <Spacer size="2xl" />
     </Layout>
 </PageWrapper>
+
+<script>
+    // Define content based on type - client-side
+    const content = {
+        newsletter: {
+            heading: "Thank You!",
+            message:
+                "You've successfully subscribed to the newsletter. Please check your email to confirm your subscription.",
+        },
+        contact: {
+            heading: "Message Sent!",
+            message:
+                "Thank you for reaching out. I will get back to you as soon as possible.",
+        },
+    };
+
+    // Get type from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get("type") || "newsletter";
+
+    // Update content
+    const currentContent =
+        content[type as keyof typeof content] || content.newsletter;
+
+    const headingEl = document.getElementById("confirmation-heading");
+    const messageEl = document.getElementById("confirmation-message");
+
+    if (headingEl) headingEl.textContent = currentContent.heading;
+    if (messageEl) messageEl.textContent = currentContent.message;
+
+    // Update document title
+    document.title =
+        type === "contact" ? "Message Sent" : "Subscription Confirmed";
+</script>
 
 <style>
     .confirmation-container {
