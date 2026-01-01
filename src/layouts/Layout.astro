@@ -95,13 +95,11 @@ const { title, desc, type, coverImage } = Astro.props;
 <script>
   import { initFadeUpAnimations } from "../scripts/fadeup-animations";
 
-  // Wait for DOM and GSAP to be ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-      initFadeUpAnimations();
-    });
-  } else {
-    // DOM is already ready
+  // Run on initial load
+  initFadeUpAnimations();
+  
+  // Run on every page navigation (View Transitions)
+  document.addEventListener("astro:page-load", () => {
     initFadeUpAnimations();
-  }
+  });
 </script>
