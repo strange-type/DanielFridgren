@@ -117,10 +117,12 @@ const { title, desc, type, coverImage } = Astro.props;
 <script>
   import { initFadeUpAnimations } from "../scripts/fadeup-animations";
   import { initFooterAnimation } from "../scripts/footer-animation";
+  import { initNavbar } from "../scripts/navbar";
 
   function initAllAnimations() {
     initFadeUpAnimations();
     initFooterAnimation();
+    initNavbar();
   }
 
   // Wait for GSAP to be ready
