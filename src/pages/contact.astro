@@ -35,13 +35,93 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
                         together? I'm always open to new opportunities and collaborations.
                     </div>
                     <Spacer size="small" />
-                    <a
-                        href="mailto:daniel@fridgren.se"
-                        class="button fadeup-st"
-                        data-umami-event="Contact Page Click"
-                        target="_blank"
-                        rel="noopener noreferrer">Get in touch</a
+
+                    <!-- Hidden form for Netlify detection -->
+                    <form name="contact" data-netlify="true" hidden>
+                        <input type="text" name="name" />
+                        <input type="email" name="email" />
+                        <textarea name="message"></textarea>
+                        <input type="text" name="website" />
+                    </form>
+
+                    <form
+                        class="form-contact fadeup-st"
+                        name="contact"
+                        method="POST"
+                        action="/confirmation"
+                        data-netlify="true"
                     >
+                        <input type="hidden" name="form-name" value="contact" />
+                        <input
+                            type="hidden"
+                            name="form-start-time"
+                            id="form-start-time"
+                        />
+
+                        <!-- Honeypot field -->
+                        <div
+                            style="position: absolute; left: -5000px;"
+                            aria-hidden="true"
+                        >
+                            <label for="website">
+                                Leave this field empty
+                                <input
+                                    type="text"
+                                    name="website"
+                                    id="website"
+                                    tabindex="-1"
+                                    autocomplete="off"
+                                />
+                            </label>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="name" class="form-label"> Name </label>
+                            <input
+                                class="form-input"
+                                type="text"
+                                id="name"
+                                name="name"
+                                required
+                                placeholder="Your name"
+                            />
+                        </div>
+
+                        <div class="form-field">
+                            <label for="email" class="form-label">
+                                Email Address
+                            </label>
+                            <input
+                                class="form-input"
+                                type="email"
+                                id="email"
+                                name="email"
+                                required
+                                placeholder="your@email.com"
+                            />
+                        </div>
+
+                        <div class="form-field">
+                            <label for="message" class="form-label">
+                                Message
+                            </label>
+                            <textarea
+                                class="form-input form-textarea"
+                                id="message"
+                                name="message"
+                                required
+                                placeholder="Your message..."
+                                rows="6"></textarea>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="button"
+                            data-umami-event="Contact Form Submit"
+                        >
+                            Send Message
+                        </button>
+                    </form>
 
                     <Spacer size="2xl" />
                     <Spacer size="xl" />
@@ -58,5 +138,37 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
         .contact-image {
             padding: 20px;
         }
+
+        .form-contact {
+            margin-top: var(--space-m);
+            max-width: 44ch;
+        }
+
+        .form-field {
+            margin-bottom: var(--space-s);
+        }
+
+        .form-contact .form-input {
+            width: 100%;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+            line-height: 1.5;
+        }
     </style>
+
+    <script>
+        // Set form start time for bot detection
+        document.addEventListener("DOMContentLoaded", () => {
+            const formStartTime = document.getElementById(
+                "form-start-time",
+            ) as HTMLInputElement;
+            if (formStartTime) {
+                formStartTime.value = Date.now().toString();
+            }
+        });
+    </script>
 </Layout>
