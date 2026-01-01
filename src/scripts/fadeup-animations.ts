@@ -2,10 +2,14 @@
  * Initialize fade-up animations for elements with .fadeup-st class
  */
 export async function initFadeUpAnimations() {
-    // Kill existing ScrollTriggers to prevent duplicates on page navigation
-    if (window.ScrollTrigger) {
-        window.ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    // Wait for GSAP to be available
+    if (!window.gsap || !window.ScrollTrigger) {
+        console.warn('GSAP not ready yet');
+        return;
     }
+
+    // Kill existing ScrollTriggers to prevent duplicates on page navigation
+    window.ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
     try {
         // Register ScrollToPlugin if available (dynamic import) with CDN fallback
@@ -54,6 +58,9 @@ export async function initFadeUpAnimations() {
                 delay: isInitiallyVisible ? i * 0.1 : 0,
             });
         });
+
+        // Refresh ScrollTrigger after all animations are set up
+        window.ScrollTrigger.refresh();
     } catch (err) {
         console.error("GSAP init/import failed:", err);
     }
