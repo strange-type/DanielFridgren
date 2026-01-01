@@ -12,7 +12,8 @@ const { SENDGRID_API_KEY, SENDGRID_FROM_EMAIL, CONTACT_EMAIL } = process.env;
 
 // Configure SendGrid
 sgMail.setApiKey(SENDGRID_API_KEY);
-sgMail.setDataResidency('eu');
+// Note: setDataResidency is only available if using EU regional sending
+// sgMail.setDataResidency('eu');
 
 /**
  * Clean and validate rate limiting
@@ -41,11 +42,11 @@ function validateFormData(data) {
 
     // Check required fields
     if (!data.get('name') || data.get('name').trim().length < 2) {
-        errors.push('Name is required and must be at least 2 characters');
+        errors.push('A name is required and must be at least 2 characters');
     }
 
     if (!data.get('email') || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.get('email'))) {
-        errors.push('Valid email is required');
+        errors.push('A valid email is required');
     }
 
     if (!data.get('message') || data.get('message').trim().length < 10) {
