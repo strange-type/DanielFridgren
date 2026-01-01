@@ -32,18 +32,6 @@ import { Icon } from "astro-icon/components";
 
 <MobileMenu />
 
-<script>
-  import { initNavbar } from "../../../scripts/navbar";
-
-  // Run on initial load
-  initNavbar();
-
-  // Run on every page navigation
-  document.addEventListener("astro:page-load", () => {
-    initNavbar();
-  });
-</script>
-
 <style>
   .navbar {
     display: flex;
