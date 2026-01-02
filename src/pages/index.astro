@@ -327,7 +327,7 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 											<time class="blog-card-date" datetime={post.data.pubDate}>
 												{formatDate(post.data.pubDate)}
 											</time>
-											<h3 class="service-item">{post.data.title}</h3>
+											<h3 class="heading-sub-lg">{post.data.title}</h3>
 											{post.data.description && (
 												<p class="blog-card-description">
 													{post.data.description}
@@ -452,7 +452,7 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 		flex-direction: column;
 		padding: var(--space-l);
 		margin-right: var(--space-xl);
-		border-left: 2px solid var(--color-very-subtle);
+
 		text-decoration: none;
 		background: var(--color-gray-50);
 	}
