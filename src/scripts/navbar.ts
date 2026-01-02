@@ -1,13 +1,32 @@
 /**
  * Initialize navbar behavior: mobile menu toggle and shy navbar on scroll
  */
+
+// Store event handlers so we can remove them
+let menuToggleHandler: (() => void) | null = null;
+let scrollHandler: (() => void) | null = null;
+
+export function cleanupNavbar() {
+    const menuToggle = document.getElementById("menu-toggle");
+
+    if (menuToggleHandler) {
+        menuToggle?.removeEventListener("click", menuToggleHandler);
+    }
+    if (scrollHandler) {
+        window.removeEventListener("scroll", scrollHandler);
+    }
+}
+
 export function initNavbar() {
+    // Clean up existing listeners first
+    cleanupNavbar();
+
     const menuToggle = document.getElementById("menu-toggle");
     const mobileMenu = document.getElementById("mobile-menu");
     const navbar = document.querySelector(".navbar");
 
     // Mobile menu toggle
-    menuToggle?.addEventListener("click", () => {
+    menuToggleHandler = () => {
         mobileMenu?.classList.toggle("open");
         menuToggle?.classList.toggle("open");
         const isOpen = mobileMenu?.classList.contains("open");
@@ -21,11 +40,23 @@ export function initNavbar() {
             document.body.style.overflow = "auto";
             document.body.style.paddingRight = "0";
         }
-    });
+    };
+
+    menuToggle?.addEventListener("click", menuToggleHandler);
 
     // Shy navbar behavior
     let lastScrollTop = 0;
     let ticking = false;
+
+    scrollHandler = () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                handleScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    };
 
     const handleScroll = () => {
         const scrollTop =
@@ -50,13 +81,5 @@ export function initNavbar() {
         lastScrollTop = scrollTop;
     };
 
-    window.addEventListener("scroll", () => {
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                handleScroll();
-                ticking = false;
-            });
-            ticking = true;
-        }
-    });
+    window.addEventListener("scroll", scrollHandler);
 }
