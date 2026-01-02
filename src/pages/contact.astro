@@ -173,8 +173,14 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
                 "form-status",
             ) as HTMLParagraphElement;
 
-            form?.addEventListener("submit", async (e) => {
+            if (!form || !submitButton || !statusMessage) {
+                console.error("Form elements not found");
+                return;
+            }
+
+            form.addEventListener("submit", async (e) => {
                 e.preventDefault();
+                e.stopPropagation();
 
                 // Disable button and show loading state
                 submitButton.disabled = true;
@@ -183,11 +189,21 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
 
                 try {
                     const formData = new FormData(form);
+                    
+                    // Manually convert FormData to URLSearchParams for Safari compatibility
+                    const params = new URLSearchParams();
+                    formData.forEach((value, key) => {
+                        params.append(key, value.toString());
+                    });
+
                     const response = await fetch(
                         "/.netlify/functions/contact",
                         {
                             method: "POST",
-                            body: new URLSearchParams(formData as any),
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded",
+                            },
+                            body: params.toString(),
                         },
                     );
 
@@ -205,6 +221,7 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
                         submitButton.textContent = "Send Message";
                     }
                 } catch (error) {
+                    console.error("Form submission error:", error);
                     statusMessage.textContent =
                         "Network error. Please try again.";
                     statusMessage.style.display = "block";
