@@ -307,45 +307,41 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 			<Spacer size="large" />
 			
 				<section id="blog-featured" class="section">
+				<div class="service-item">
+					<h1 class="fadeup-st">Latest from the blog</h1>
+					<div class="text fadeup-st">
+						Recent thoughts on design, complexity and technology.
+					</div>
+					<Spacer size="small" />
 					
-						<div class="grid-columns-2-reverse">
-							<div>
-								<h1 class="fadeup-st">Latest from the blog</h1>
-									<div class="text fadeup-st">
-									Recent thoughts on design, complexity and technology.
-									</div>
-							</div>
-						<div>	
-				
-							<div class="blog-cards prose">
-								{featuredPosts.map((post) => (
-									<a
-										href={`/blog/${post.slug}`}
-										class="blog-card fadeup-st"
-									>
-										<div class="blog-card-content">
-											<time class="blog-card-date" datetime={post.data.pubDate}>
-												{formatDate(post.data.pubDate)}
-											</time>
-											<h3 class="heading-sub-lg">{post.data.title}</h3>
-											{post.data.description && (
-												<p class="blog-card-description">
-													{post.data.description}
-												</p>
-											)}
-										</div>
-									</a>
-								))}
-							</div>
-							<Spacer size="small" />
+					<div class="blog-cards">
+						{featuredPosts.map((post) => (
+							<a
+								href={`/blog/${post.slug}`}
+								class="blog-card fadeup-st"
+							>
+								<div class="blog-card-content">
+									<time class="blog-card-date" datetime={post.data.pubDate}>
+										{formatDate(post.data.pubDate)}
+									</time>
+									<h3 class="heading-sub-lg">{post.data.title}</h3>
+									{post.data.description && (
+										<p class="blog-card-description">
+											{post.data.description}
+										</p>
+									)}
+								</div>
+							</a>
+						))}
+					</div>
+					
+					<Spacer size="small" />
+					<div class="button-container-right">
 						<a
 							href="/blog/"
 							class="button fadeup-st"
-							data-umami-event="All blog posts">All blog posts</a>	
-						
-						</div>
+							data-umami-event="All blog posts">All blog posts</a>
 					</div>
-						
 				</div>
 			</section>
 			<Spacer size="2xl" />
@@ -424,7 +420,12 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 		}
 	}
 
-	/* Service text highlight effect */
+	.service-item p {
+		color: var(--color-fg);
+	}
+
+
+	/* Service text highlight effect
 	.service-item p {
 		color: var(--color-subtle);
 		transition: color 0.25s ease;
@@ -438,11 +439,13 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 		color: var(--color-fg);
 	}
 
+	*/
+
 	/* Work cards stacked layout */
 
 	.blog-cards {
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
 		gap: var(--space-m);
 		margin-top: 0;
 	}
@@ -451,9 +454,9 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 		display: flex;
 		flex-direction: column;
 		padding: var(--space-l);
-		margin-right: var(--space-xl);
 		text-decoration: none;
 		background: var(--color-gray-50);
+		transition: all 0.2s ease;
 	}
 
 	.blog-card:hover {
@@ -461,6 +464,11 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 		background: var(--color-white);
 		transform: translateY(-2px);
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+	}
+
+	.button-container-right {
+		display: flex;
+		justify-content: flex-end;
 	}
 
 	.blog-card-content {
@@ -491,12 +499,17 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 
 	@media (max-width: 768px) {
 		.blog-cards {
+			grid-template-columns: 1fr;
 			gap: var(--space-m);
 			margin-top: var(--space-m);
 		}
 
 		.blog-card {
 			padding: var(--space-l);
+		}
+
+		.button-container-right {
+			justify-content: left;
 		}
 	}
 
@@ -549,15 +562,15 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 
 <script>
 	import { initMuxPlayerFallback } from "../scripts/mux-player-fallback";
-	import { initServiceHighlight } from "../scripts/service-highlight";
+	// import { initServiceHighlight } from "../scripts/service-highlight";
 	
 	// Run on initial load
 	initMuxPlayerFallback("baxter-player", "/images/baxter.png", "Baxter dialysis user interface");
-	initServiceHighlight();
+	// initServiceHighlight();
 	
 	// Run on every page navigation
 	document.addEventListener("astro:page-load", () => {
 		initMuxPlayerFallback("baxter-player", "/images/baxter.png", "Baxter dialysis user interface");
-		initServiceHighlight();
+		// initServiceHighlight();
 	});
 </script>
