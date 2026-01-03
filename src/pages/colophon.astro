@@ -22,25 +22,27 @@ import ContactSection from "../components/layouts/ContactSection.astro";
                             href="https://en.wikipedia.org/wiki/Colophon_(publishing)"
                             target="_blank"
                             rel="noopener noreferrer">colophon</a
-                        > is a text that documents how a work was produced.
-                        Dating back to ancient manuscripts, it contains details about things like
-                        materials, tools and place of creation. For a website, it explains
-                        how it was made.
+                        > is a text that documents how a work was produced. Dating
+                        back to ancient manuscripts, it contains details about things
+                        like materials, tools and place of creation. For a website,
+                        it explains how it was made.
                         <Spacer size="xs" />
                     </div>
                     <div class="text fadeup-st">
-                        I designed and built the site myself, using modern developer tools - including AI-assisted code completion to refactor, and optimize more efficiently. The codebase lives
-                        in a private GitHub repository. I chose a code-first
-                        workflow to retain full control over structure and
-                        presentation. The backbone is <a
+                        I designed and built the site myself, using modern
+                        developer tools - including AI-assisted code completion
+                        to refactor, and optimize more efficiently. The codebase
+                        lives in a private GitHub repository. I chose a
+                        code-first workflow to retain full control over
+                        structure and presentation. The backbone is <a
                             href="https://astro.build"
                             target="_blank"
                             rel="noopener noreferrer">Astro</a
                         >, chosen for its static-first model and restrained use
-                        of client-side JavaScript. The interface is built
-                        with plain HTML, CSS, and a small amount of JavaScript. 
-                        All blog posts and case material are written in Markdown
-                        and structured using Astro Content Collections. 
+                        of client-side JavaScript. The interface is built with
+                        plain HTML, CSS, and a small amount of JavaScript. All
+                        blog posts and case material are written in Markdown and
+                        structured using Astro Content Collections.
                         <Spacer size="xs" />
                         The visual system is defined through CSS design tokens. Spacing,
                         typography, colour, rhythm, and motion are expressed as variables
@@ -66,18 +68,27 @@ import ContactSection from "../components/layouts/ContactSection.astro";
                             href="https://www.cloudflare.com/"
                             target="_blank"
                             rel="noopener noreferrer">Cloudflare</a
-                        >. Analytics are handled via <a
+                        >.
+                        <Spacer size="xs" />
+                        Analytics are handled via <a
                             href="https://umami.is/"
                             target="_blank"
                             rel="noopener noreferrer">Umami</a
                         >. No behavioural tracking or cross-site profiling is
-                        used. Newsletter subscriptions are processed server-side
-                        using Netlify Functions, which forward form submissions
-                        to <a
+                        used. Contact form submissions are handled server-side
+                        using Netlify Functions, which process submissions and
+                        deliver them via <a
+                            href="https://sendgrid.com/"
+                            target="_blank"
+                            rel="noopener noreferrer">SendGrid</a
+                        >. Newsletter subscriptions follow a similar pattern:
+                        processed through Netlify Functions and forwarded to <a
                             href="https://kit.com/"
                             target="_blank"
                             rel="noopener noreferrer">Kit</a
-                        > without adding client-side JavaScript.
+                        >, which handles subscriber management. Both approaches
+                        keep forms functional without requiring client-side
+                        JavaScript.
                     </div>
                 </div>
             </div>
