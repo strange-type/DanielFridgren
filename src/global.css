@@ -179,7 +179,7 @@
   --color-gray-200: #CECDC3;
   --color-gray-150: #DAD8CE;
   --color-gray-100: #E6E4D9;
-  --color-gray-50: #fafafa;
+  --color-gray-50: #f0efef;
 
   --color-yellow: #AD8301;
   --color-orange: #BC5215;
@@ -193,7 +193,7 @@
 
   --color-muted: var(--color-gray-600);
   --color-subtle: var(--color-gray-300);
-  --color-very-subtle: var(--color-gray-150);
+  --color-very-subtle: var(--color-gray-50);
 
   --svg-icon-filter: none;
 }
@@ -498,7 +498,7 @@ picture {
   font-size: var(--fs-base);
   line-height: var(--leading-base);
   font-weight: 500;
-  margin-bottom: var(--space-2xs);
+  margin-bottom: var(--space-3xs);
 }
 
 /* BUTTON */
@@ -868,12 +868,13 @@ mux-player {
 
 .timeline-marker {
   position: absolute;
-  left: 1px;
-  top: 5px;
-  width: 14px;
-  height: 14px;
+  left: 3px;
+  top: 8px;
+  width: 10px;
+  height: 10px;
   background: var(--color-bg);
   border: 2px solid var(--color-subtle);
+
   border-radius: 50%;
   z-index: 1;
 }
@@ -882,13 +883,13 @@ mux-player {
   font-weight: 500;
   font-size: var(--fs-xs);
   color: var(--color-subtle);
-  margin-bottom: 0.45rem;
+  margin-bottom: 0;
   text-transform: uppercase;
   letter-spacing: 0.025em;
 }
 
 .timeline-description {
-  margin-top: var(--space-12);
+  margin-top: var(--space-3xs);
   color: var(--color-muted);
   font-size: var(--fs-sm);
   margin-bottom: 0;
@@ -1115,3 +1116,63 @@ span.metadata {
   margin-bottom: var(--space-m);
 }
 */
+
+/* About page layout */
+.about-content {
+  position: relative;
+}
+
+.about-text-wrapper {
+  width: 100%;
+}
+
+.about-image-desktop {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  overflow: hidden;
+  float: right;
+  margin-left: var(--space-m);
+  margin-bottom: var(--space-m);
+  shape-outside: circle(50%);
+}
+
+.about-image-desktop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-image-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding-top: var(--space-xs);
+    padding-bottom: var(--space-xs);
+    align-items: center;
+  }
+
+  .about-image-desktop {
+    display: none;
+  }
+
+  .about-image-mobile {
+    display: block;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: var(--space-sm);
+  }
+
+  .about-image-mobile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
