@@ -23,23 +23,21 @@ I generally dislike definitions of intelligence. They limit and narrow down in f
 
 And like anyone who has been in enough hours of therapy knows - the brain is no monopoly. It can rather be a harsh ecology, where competition breeds emergent cooperation. Or at least thats what you want as the outcome from it. Embrace and accept yourself just as you are. A never ending endeavor, as “I” believes it is in control.
 
-What’s striking is how this pattern repeats at every scale. The way our inner agencies negotiate is not so different from how larger collectives work. If this sounds abstract, look at one of the clearest examples we have: an ant hive.
+What’s striking is how this pattern repeats at every scale. The way our inner agencies function is not so different from how larger collectives work. If this sounds abstract, look at one of the clearest examples we have: an ant hive.
 
-In an ant hive, who is in control? No single ant have the full perspective of the hive. For what we know they may argue amongst themselves about whether they have free will or not. In my humble opinion, they are free agents. But also governed by something larger. The hive has agency. A kind of will. How does the hive choose what to do? We sometimes call it distributed governance, or emergent behavior.
+In an ant hive, who is in control? No single ant have the full perspective of the hive. For what we know they may argue amongst themselves about whether they have free will or not. In my humble opinion, they are free agents. But also governed by something larger. The hive has agency. A kind of will.
 
-Forces emerge, acting like an invisible hand controlled by no single ant. I’d like to frame this as “the spirits of the hive”, rather than “hive mind”, because I suggest there are multitudes here.
-
-These forces seem to have intent, agenda - an intelligence of sorts. 
+How does the hive choose what to do? We sometimes call it distributed governance, or emergent behavior. Forces emerge, acting like an invisible hand controlled by no single ant. These forces seem to have intent, agenda - an intelligence of sorts. I’d like to frame this as “the spirits of the hive”, rather than “hive mind”, because I suggest there are multitudes here.
 
 Some of these spirits are pulling towards growth. More territory, more workers. Other spirits pull in the opposite direction towards conservation. Then there are spirits of exploration. Scouts wandering without instruction, following weak signals. Most return with nothing. Some never return. And occasionally a scout finds a food source or a nesting site that rewires the entire colony’s behavior.
 
 There are spirits of sacrifice: ants born into roles that guarantee death: workers that rupture their own bodies to release toxins, scouts that cross lethal terrain knowing most will not return. No ant chooses this.
 
-None of these forces is “in charge.” They overlap, interfere, amplify. At any given moment, the colony is a temporary settlement between incompatible pulls: grow, maintain, explore. What we perceive as the hive’s decision is merely the visible outcome.
+None of these forces is “in charge.” They overlap and interfere. At any given moment, the colony is a temporary settlement between incompatible pulls: grow, maintain, explore. What we perceive as the hive’s decision is merely the visible outcome.
 
 The hive isn’t unique. Every complex collective generates patterns of behavior that exceed what any individual can perceive or intend. And so, in every complex collective - may it be a collective of ants, or a global human society - these emergent willpowers emerge. Larger than individuals and impossible to fully understand by means of rational thinking.
 
-Humanity very recently stopped using the old words to describe these forces. They were names of old gods and other entities. Angels, daemons, egregores. We also started to believe we are entitled to full control. That we can use rationality and science for this. But there has always been a dialectic interchange between us and these emergent forces.
+Humanity very recently stopped using the old words to describe these forces. They were names of old gods and other entities. Angels, daemons, egregores. We also started to believe we are entitled to control, and that we can use rationality for this. But there has always been a dialectic interchange between us and other emergent forces.
 
 It is time for us to rediscover and understand these forces again. Some people brush upon it when dealing with complexity theory, but most of us don’t see these forces for what they truly are, and we still grasp for ways to interact with them.
 
