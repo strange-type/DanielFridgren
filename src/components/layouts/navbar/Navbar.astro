@@ -47,9 +47,14 @@ import { Icon } from "astro-icon/components";
     animation: fadeIn 0.5s 0.2s forwards;
     opacity: 0;
     z-index: 1001;
-    mix-blend-mode: difference;
     transition: transform 0.3s ease-in-out;
     transform: translateY(0);
+  }
+
+  @media (prefers-color-scheme: light) {
+    .navbar {
+      mix-blend-mode: difference;
+    }
   }
 
   .navbar.navbar-hidden {
@@ -99,7 +104,14 @@ import { Icon } from "astro-icon/components";
 
   .navbar,
   .navbar * {
-    color: white;
+    color: var(--color-bg);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .navbar,
+    .navbar * {
+      color: var(--color-fg);
+    }
   }
 
   .menu-toggle {
