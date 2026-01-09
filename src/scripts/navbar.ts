@@ -28,11 +28,16 @@ export function initNavbar() {
     // Fade in navbar only on first load
     if (!sessionStorage.getItem('navbarFaded')) {
         if (window.gsap) {
-            window.gsap.fromTo(navbar, 
+            window.gsap.fromTo(navbar,
                 { opacity: 0 },
                 { opacity: 1, duration: 0.5, delay: 0.2 }
             );
             sessionStorage.setItem('navbarFaded', 'true');
+        }
+    } else {
+        // Already faded in before, make sure it's visible
+        if (navbar instanceof HTMLElement) {
+            navbar.style.opacity = '1';
         }
     }
 
