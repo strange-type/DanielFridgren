@@ -18,6 +18,9 @@ let fullTitle: string;
 if (!pathname || pathname === "/") {
   // Homepage: avoid duplicating site name
   fullTitle = title || siteName;
+} else if (pubDate) {
+  // Blog posts: use only the title
+  fullTitle = title || siteName;
 } else {
   // Other pages: append site name
   fullTitle = title ? `${title} — ${siteName}` : siteName;
