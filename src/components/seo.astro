@@ -31,6 +31,10 @@ const metaType = pubDate ? "article" : "website";
 const defaultDescription =
   "Senior UX Design for product leaders. Helping organisations build complex products with simple user flows — from discovery to final implementation.";
 const metaDescription = description || defaultDescription;
+
+// Default OG image
+const defaultOgImage = `${SITE}/images/og-image.png`;
+const metaOgImage = ogImage || defaultOgImage;
 ---
 
 <!-- site name for crawlers / social -->
@@ -84,7 +88,7 @@ const metaDescription = description || defaultDescription;
   <meta property="og:description" content={metaDescription} />
   <meta property="og:url" content={url} />
   <meta property="og:type" content={metaType} />
-  {ogImage && <meta property="og:image" content={ogImage} />}
+  <meta property="og:image" content={metaOgImage} />
 
   <!-- Article published time -->
   {pubDate && <meta property="article:published_time" content={pubDate} />}
@@ -93,6 +97,7 @@ const metaDescription = description || defaultDescription;
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={fullTitle} />
   <meta name="twitter:description" content={metaDescription} />
+  <meta name="twitter:image" content={metaOgImage} />
 
   <link rel="alternate" type="application/rss+xml" href="/rss.xml" />
 </head>
