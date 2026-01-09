@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import "../global.css";
 import Footer from "../components/layouts/Footer.astro";
 import Navbar from "../components/layouts/navbar/Navbar.astro";
@@ -26,18 +26,18 @@ const { title, desc, type, coverImage } = Astro.props;
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="/images/favicon/favicon-32x32-1.png"
+      href="/images/favicon/favicon-32x32.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="16x16"
-      href="/images/favicon/favicon-16x16-1.png"
+      href="/images/favicon/favicon-16x16.png"
     />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href="/images/favicon/apple-touch-icon-1.png"
+      href="/images/favicon/apple-touch-icon.png"
     />
     <link rel="manifest" href="/manifest.json" />
 
@@ -54,7 +54,7 @@ const { title, desc, type, coverImage } = Astro.props;
       src="https://static.cloudflareinsights.com/beacon.min.js"
       data-cf-beacon='{"token": "c2d1eb89e36d42b3af5daa6253a5f323"}'></script>
 
-    <ViewTransitions />
+    <ClientRouter />
   </head>
   <body>
     <HyphenopolyClient />
