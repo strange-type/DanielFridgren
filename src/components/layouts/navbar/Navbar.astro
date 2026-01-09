@@ -11,10 +11,10 @@ import { Icon } from "astro-icon/components";
       <span class="sr-only">Home</span>
       <Logo />
     </a>
-    <!--
+
     <div class="brand-text">
-      <a href="/" aria-label="home">Daniel Fridgren</a>
-    </div> -->
+      <a href="/" aria-label="home">Fridgren</a>
+    </div>
   </div>
 
   <div class="nav-right">
@@ -45,8 +45,9 @@ import { Icon } from "astro-icon/components";
     margin: 0 auto;
     padding: var(--space-2xs) var(--space-l) var(--space-m) var(--space-m);
     z-index: 1001;
-    transition: transform 0.45s ease-in-out;
+    transition: transform 0.4s ease-in-out;
     transform: translateY(0);
+    opacity: 0;
   }
 
   @media (prefers-color-scheme: light) {
@@ -73,7 +74,7 @@ import { Icon } from "astro-icon/components";
   .nav-left {
     display: flex;
     align-items: center;
-    gap: var(--space-s);
+    gap: var(--space-2xs);
   }
 
   .nav-right {

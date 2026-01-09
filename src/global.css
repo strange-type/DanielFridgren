@@ -178,7 +178,7 @@
   --color-gray-200: #CECDC3;
   --color-gray-150: #DAD8CE;
   --color-gray-100: #E6E4D9;
-  --color-gray-50: #fbfbfb;
+  --color-gray-50: #F2F0E5;
 
   --color-yellow: #AD8301;
   --color-orange: #BC5215;
@@ -391,8 +391,8 @@ ol[role="list"] {
 /* Links */
 a {
   text-decoration: 2px underline;
-  text-decoration-color: var(--color-very-subtle);
-  text-underline-offset: 4px;
+  text-decoration-color: var(--color-subtle);
+  text-underline-offset: 2px;
   font-family: var(--font-body);
   color: var(--color-fg);
   /* position: relative; */
@@ -838,9 +838,7 @@ mux-player {
 /* Timeline Styles */
 .timeline {
   position: relative;
-  max-width: 56ch;
-  margin: var(--space-l) 0 var(--space-xl) 0;
-  font-family: var(--font-sans);
+
 }
 
 /* Timeline line */
@@ -1139,7 +1137,7 @@ span.metadata {
   border-radius: 50%;
   overflow: hidden;
   float: right;
-  margin-left: var(--space-m);
+  margin-left: var(--space-xxl);
   margin-bottom: var(--space-m);
   shape-outside: circle(50%);
 }
