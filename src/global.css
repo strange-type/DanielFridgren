@@ -447,7 +447,6 @@ picture {
   font-size: var(--fs-base);
   line-height: var(--leading-base);
   max-width: var(--measure-preferred);
-  hyphens: auto;
   color: var(--color-fg);
   margin-bottom: 0;
 }
@@ -457,7 +456,6 @@ picture {
   font-size: var(--fs-md);
   line-height: var(--leading-base);
   max-width: var(--measure-preferred);
-  hyphens: auto;
   color: var(--color-fg);
   margin-bottom: 0;
 }

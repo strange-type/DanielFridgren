@@ -44,9 +44,6 @@ importers:
       gsap:
         specifier: ^3.13.0
         version: 3.13.0
-      hyphenopoly:
-        specifier: ^6.0.0
-        version: 6.0.0
       lottie-web:
         specifier: ^5.12.2
         version: 5.12.2
@@ -1579,10 +1576,6 @@ packages:
   https-proxy-agent@7.0.6:
     resolution: {integrity: sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==}
     engines: {node: '>= 14'}
-
-  hyphenopoly@6.0.0:
-    resolution: {integrity: sha512-42M87fsJSu0jRiCZqlVsaBwY5onH6/6y5akaLW794wsc2M4hLj875ZeloQG8yLhlaSQRZEgxz/SQAVn5LVVthg==}
-    engines: {node: '>=18'}
 
   iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
@@ -4195,8 +4188,6 @@ snapshots:
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
-
-  hyphenopoly@6.0.0: {}
 
   iconv-lite@0.6.3:
     dependencies:
