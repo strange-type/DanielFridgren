@@ -25,6 +25,13 @@ const { frontmatter, prev, next } = Astro.props;
 ---
 
 <Layout>
+  <SEO
+    slot="head"
+    title={frontmatter.title}
+    description={frontmatter.description}
+    pathname={`/blog/${frontmatter.slug ?? ""}`}
+    pubDate={frontmatter.pubDate}
+  />
   <PageWrapper>
     {
       frontmatter.heroImage && (
@@ -64,13 +71,6 @@ const { frontmatter, prev, next } = Astro.props;
           </aside>
 
           <article class="blog-main">
-            <SEO
-              title={frontmatter.title}
-              description={frontmatter.description}
-              pathname={`/blog/${frontmatter.slug ?? ""}`}
-              pubDate={frontmatter.pubDate}
-            />
-
             <header class="blogpost-header">
               <h1>{frontmatter.title}</h1>
               <p class="blogpost-meta">
@@ -128,13 +128,6 @@ const { frontmatter, prev, next } = Astro.props;
           </aside>
 
           <article>
-            <SEO
-              title={frontmatter.title}
-              description={frontmatter.description}
-              pathname={`/blog/${frontmatter.slug ?? ""}`}
-              pubDate={frontmatter.pubDate}
-            />
-
             <p class="blogpost-meta fadeup-st">
               {frontmatter.readingTime ?? "—"} min read
               <span class="meta-date-mobile">
