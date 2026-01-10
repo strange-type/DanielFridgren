@@ -68,36 +68,34 @@ const metaOgImage = ogImage || defaultOgImage;
   }
 </script>
 
-<head>
-  <title>{fullTitle}</title>
+<title>{fullTitle}</title>
 
-  <!-- Always emit a meta description (page-specific or fallback) -->
-  <meta name="description" content={metaDescription} />
+<!-- Always emit a meta description (page-specific or fallback) -->
+<meta name="description" content={metaDescription} />
 
-  {
-    Array.isArray(keywords) && keywords.length > 0 && (
-      <meta name="keywords" content={keywords.join(", ")} />
-    )
-  }
+{
+  Array.isArray(keywords) && keywords.length > 0 && (
+    <meta name="keywords" content={keywords.join(", ")} />
+  )
+}
 
-  <!-- canonical -->
-  <link rel="canonical" href={url} />
+<!-- canonical -->
+<link rel="canonical" href={url} />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content={fullTitle} />
-  <meta property="og:description" content={metaDescription} />
-  <meta property="og:url" content={url} />
-  <meta property="og:type" content={metaType} />
-  <meta property="og:image" content={metaOgImage} />
+<!-- Open Graph -->
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={metaDescription} />
+<meta property="og:url" content={url} />
+<meta property="og:type" content={metaType} />
+<meta property="og:image" content={metaOgImage} />
 
-  <!-- Article published time -->
-  {pubDate && <meta property="article:published_time" content={pubDate} />}
+<!-- Article published time -->
+{pubDate && <meta property="article:published_time" content={pubDate} />}
 
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={fullTitle} />
-  <meta name="twitter:description" content={metaDescription} />
-  <meta name="twitter:image" content={metaOgImage} />
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={metaDescription} />
+<meta name="twitter:image" content={metaOgImage} />
 
-  <link rel="alternate" type="application/rss+xml" href="/rss.xml" />
-</head>
+<link rel="alternate" type="application/rss+xml" href="/rss.xml" />

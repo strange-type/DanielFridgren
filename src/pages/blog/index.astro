@@ -16,12 +16,13 @@ const visible = posts
 ---
 
 <Layout>
+  <SEO
+    slot="head"
+    title="Blog"
+    description="Insights on design, complexity and technology."
+    pathname={Astro.url.pathname}
+  />
   <PageWrapper>
-    <SEO
-      title="Blog — Daniel Fridgren"
-      description="Insights on product design, discovery and UX practice from Daniel Fridgren."
-      pathname={Astro.url.pathname}
-    />
     <main role="main" aria-labelledby="blog-heading">
       <Spacer size="xl" />
 
