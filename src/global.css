@@ -675,6 +675,8 @@ mux-player {
 }
 
 
+
+
 @media (max-width: 768px) {
   .grid-columns-2 {
     grid-template-columns: 1fr;
@@ -687,6 +689,7 @@ mux-player {
     grid-template-rows: auto auto;
     grid-row-gap: var(--space-sm);
   }
+
 }
 
 
@@ -1137,6 +1140,7 @@ span.metadata {
   float: right;
   margin-left: var(--space-xxl);
   margin-bottom: var(--space-m);
+  margin-top: var(--space-96);
   shape-outside: circle(50%);
 }
 
@@ -1164,6 +1168,10 @@ span.metadata {
     display: none;
   }
 
+  .about-title-desktop {
+    display: none;
+  }
+
   .about-image-mobile {
     display: block;
     width: 200px;
@@ -1178,4 +1186,6 @@ span.metadata {
     height: 100%;
     object-fit: cover;
   }
+
+
 }
