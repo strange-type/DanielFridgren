@@ -14,15 +14,15 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
 
 <Layout title={title} desc={desc}>
     <PageWrapper>
-        <Spacer size="2xl" />
+        <Spacer size="xl" />
         <main>
-            <div class="grid-columns-2">
-                <div>
-                    <h1 class="title-display fadeup-st">Contact</h1>
-                </div>
-                <div>
-                    <Spacer size="xs" />
+            <div>
+                <h1 class="title-display fadeup-st">Contact</h1>
+            </div>
 
+            <Spacer size="small" />
+            <div class="grid-columns-2-reverse">
+                <div>
                     <div class="contact-text text fadeup-st prose">
                         Based in Malmö, Sweden, I work across strategic and
                         hands-on layers of design: from product discovery and
@@ -34,8 +34,8 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
                         Want to connect, discuss ideas, a project or explore working
                         together? A short note is more than enough.
                     </div>
-                    <Spacer size="small" />
-
+                </div>
+                <div>
                     <form class="form-contact fadeup-st" id="contact-form">
                         <input
                             type="hidden"
@@ -132,7 +132,6 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
         }
 
         .form-contact {
-            margin-top: var(--space-m);
             max-width: 44ch;
         }
 
@@ -189,7 +188,7 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
 
                 try {
                     const formData = new FormData(form);
-                    
+
                     // Manually convert FormData to URLSearchParams for Safari compatibility
                     const params = new URLSearchParams();
                     formData.forEach((value, key) => {
@@ -201,7 +200,8 @@ const { title = "Contact", desc = "Get in touch with me" } = Astro.props;
                         {
                             method: "POST",
                             headers: {
-                                "Content-Type": "application/x-www-form-urlencoded",
+                                "Content-Type":
+                                    "application/x-www-form-urlencoded",
                             },
                             body: params.toString(),
                         },
