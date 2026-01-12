@@ -186,37 +186,29 @@
   --color-red: #AF3029;
   --color-sea-blue: #205EA6;
 
-  /* Semantic aliases for theming */
+  /* Light theme */
   --color-bg: var(--color-white);
   --color-fg: var(--color-black);
-
   --color-muted: var(--color-gray-600);
   --color-subtle: var(--color-gray-300);
   --color-very-subtle: var(--color-gray-50);
-
   --svg-icon-filter: none;
 }
 
-/* TEMPORARY DISABLED DARK THEME */
+/* Dark theme */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-bg: var(--color-black);
     --color-fg: var(--color-white);
-
     --color-muted: var(--color-gray-300);
     --color-subtle: var(--color-gray-600);
     --color-very-subtle: var(--color-gray-900);
-
     --svg-icon-filter: invert(1) hue-rotate(180deg);
-
-
   }
 }
 
 
-
-
-/* utility: constrain readable measure and center content */
+/* utility: constrain content for readability */
 .prose {
   max-width: clamp(var(--measure-min), var(--measure-preferred), var(--measure-max));
   margin-left: 0;
@@ -638,7 +630,6 @@ blockquote em {
 
 mux-player {
   width: 100%;
-  max-width: 1600px;
   display: block;
   aspect-ratio: 16 / 9;
   margin-top: 0;
