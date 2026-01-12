@@ -108,7 +108,7 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 					<p class="title-section fadeup-st">About</p>
 					<div class="prose">
 						<h1 class="fadeup-st">
-							Senior UX & Service Design for leaders shaping digital services
+							Senior UX & service design for leaders shaping digital services
 						</h1>
 						<br />
 						<div class="text fadeup-st">
@@ -355,9 +355,8 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 	/* Full bleed hero section */
 	.section-hero.full-bleed {
 		width: 100vw;
-		max-width: 1600px;
-		margin-left: 50%;
-		transform: translateX(-50%);
+		margin-left: calc(-50vw + 50%);
+		margin-right: calc(-50vw + 50%);
 		margin-top: 0;
 		margin-bottom: var(--space-xl);
 	}
@@ -365,17 +364,13 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 	.section-hero.full-bleed mux-player {
 		width: 100%;
 		height: auto;
+		max-width: none;
+		display: block;
 	}
 
 	@media (max-width: 768px) {
 		.section-hero.full-bleed {
 			margin-top: calc(-1 * var(--space-s));
-		}
-	}
-
-	@media (max-width: 1600px) {
-		.section-hero.full-bleed {
-			width: 100vw;
 		}
 	}
 
