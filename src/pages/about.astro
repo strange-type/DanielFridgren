@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import PageWrapper from "../components/layouts/PageWrapper.astro";
 import Spacer from "../components/Spacer.astro";
 import ContactSection from "../components/layouts/ContactSection.astro";
+import danielImage from "../assets/images/daniel-fridgren.png";
 ---
 
 <Layout
@@ -15,16 +16,10 @@ import ContactSection from "../components/layouts/ContactSection.astro";
             <div>
                 <div class="about-content">
                     <div class="about-image-mobile fadeup-st">
-                        <img
-                            src="/src/assets/images/daniel-fridgren.png"
-                            alt="Daniel Fridgren"
-                        />
+                        <img src={danielImage.src} alt="Daniel Fridgren" />
                     </div>
                     <div class="about-image-desktop fadeup-st">
-                        <img
-                            src="/src/assets/images/daniel-fridgren.png"
-                            alt="Daniel Fridgren"
-                        />
+                        <img src={danielImage.src} alt="Daniel Fridgren" />
                     </div>
                     <div class="about-text-wrapper">
                         <h1 class="title-display fadeup-st about-title-desktop">
