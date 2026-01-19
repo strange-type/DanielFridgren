@@ -847,7 +847,7 @@ mux-player {
 
 .timeline-item {
   position: relative;
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-xxl);
   padding-left: 2.5rem;
 }
 
@@ -1117,10 +1117,14 @@ span.metadata {
 /* About page layout */
 .about-content {
   position: relative;
+  max-width: 70%;
+
 }
 
 .about-text-wrapper {
   width: 100%;
+  max-width: var(--measure-preferred);
+
 }
 
 .about-image-desktop {
@@ -1131,7 +1135,8 @@ span.metadata {
   float: right;
   margin-left: var(--space-xxl);
   margin-bottom: var(--space-m);
-  margin-top: var(--space-96);
+  margin-top: var(--space-128);
+  margin-right: var(--space-m);
   shape-outside: circle(50%);
 }
 
