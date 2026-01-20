@@ -17,6 +17,16 @@ This repository contains a personal website built with Astro, TypeScript, and MD
 
 ## Code Style and Conventions
 
+- Prefer writing clear code and use inline comments sparingly
+- **TypeScript strict mode** for all code
+- **Prefer functional patterns** over class-based components
+- **Small, focused components** with single responsibility
+- **Use .astro extension** for Astro components
+- **Keep changes minimal** - avoid over-engineering this small personal site
+- **Maintain consistency** with existing patterns
+- **Formatted with Prettier** (prettier-plugin-astro configured)
+- For TypeScript/JavaScript/CSS: Document all methods, types and interfaces with JSDoc comments
+
 ### General Guidelines
 
 - Use TypeScript for all new code
@@ -61,8 +71,18 @@ public/           # Static assets
 
 ### Styling
 
-- Global styles are in `src/global.css`
+The site uses **custom CSS with design tokens** (CSS custom properties), not Tailwind CSS or other utility-first frameworks.
 
+- **Global styles**: `src/global.css` (~1,150 lines, 24KB)
+  - CSS reset
+  - Design tokens (spacing, colors, typography, etc.)
+  - Base element styles
+  - Utility classes (`.prose`, `.text`, `.button`, etc.)
+  - Component styles (some component-specific styles exist here but should ideally be scoped)
+- **Component-scoped styles**: Individual `.astro` files can include `<style>` blocks for component-specific CSS
+- **Spacing system**: T-shirt sizing convention (`--space-3xs` through `--space-xxl`, plus `--space-80/96/128/160` for larger values)
+- **Font weights**: 300 (light), 400 (regular), 500 (medium), 600 (demi-bold) - with minimal italic usage
+- **Dark mode**: Automatic via `prefers-color-scheme` media query
 
 ### Integrations
 
