@@ -176,7 +176,7 @@ const { frontmatter, prev, next } = Astro.props;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     margin-top: calc(-1 * var(--space-2xl));
-    margin-bottom: var(--space-64);
+    margin-bottom: var(--space-xxl);
     height: 60vh;
     min-height: 400px;
     max-height: 700px;
@@ -273,7 +273,7 @@ const { frontmatter, prev, next } = Astro.props;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: var(--space-8);
+    gap: var(--space-2xs);
   }
   .post-nav-alt-inline .inline {
     font-size: var(--fs-sm);
@@ -299,13 +299,13 @@ const { frontmatter, prev, next } = Astro.props;
   @media (max-width: 900px) {
     .post-nav-alt-inline {
       flex-direction: column;
-      gap: var(--space-12);
+      gap: var(--space-xs);
     }
   }
   @media (max-width: 640px) {
     .post-nav-alt-inline {
       flex-direction: column;
-      gap: var(--space-8);
+      gap: var(--space-2xs);
       align-items: stretch;
     }
     .post-nav-alt-inline .inline {
