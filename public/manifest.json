@@ -1,5 +1,17 @@
 {
-    "name": "Daniel Fridgren - Senior UX Designer helping teams create meaningful digital products. Combining two decades of UX and product design expertise with sharp strategic thinking.",
+    "icons": [
+        {
+            "src": "/images/favicon/favicon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/favicon/favicon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "name": "Daniel Fridgren - Senior UX and service design for leaders shaping digital services. Works with organizations facing complex design and service challenges — from early discovery through to final implementation.",
     "short_name": "Daniel Fridgren",
     "start_url": "/",
     "display": "standalone"
