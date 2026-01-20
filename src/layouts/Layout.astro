@@ -103,34 +103,29 @@ const { title, desc, type, coverImage } = Astro.props;
   </body>
 </html>
 
-<script is:inline>
-  // Initialize GSAP immediately - inline script runs before module scripts
-  (async function () {
-    const gsap = await import("https://cdn.skypack.dev/gsap@3");
-    const ScrollTrigger = await import(
-      "https://cdn.skypack.dev/gsap@3/ScrollTrigger"
-    );
-
-    window.gsap = gsap.gsap || gsap.default;
-    window.ScrollTrigger = ScrollTrigger.ScrollTrigger || ScrollTrigger.default;
-
-    window.gsap.registerPlugin(window.ScrollTrigger);
-
-    window.ScrollTrigger.config({
-      autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
-    });
-
-    // Signal that GSAP is ready
-    window.gsapReady = true;
-    window.dispatchEvent(new Event("gsap-ready"));
-  })();
-</script>
-
 <script>
+  // Import GSAP from local node_modules
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { initFadeUpAnimations } from "../scripts/fadeup-animations";
   import { initFooterAnimation } from "../scripts/footer-animation";
   import { initNavbar } from "../scripts/navbar";
   import { initMobileMenuLinks } from "../scripts/mobile-menu";
+
+  // Make GSAP globally available
+  window.gsap = gsap;
+  window.ScrollTrigger = ScrollTrigger;
+
+  // Register ScrollTrigger plugin
+  gsap.registerPlugin(ScrollTrigger);
+
+  ScrollTrigger.config({
+    autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+  });
+
+  // Signal that GSAP is ready
+  window.gsapReady = true;
+  window.dispatchEvent(new Event("gsap-ready"));
 
   function initAllAnimations() {
     initFadeUpAnimations();
@@ -149,21 +144,12 @@ const { title, desc, type, coverImage } = Astro.props;
     document.body.style.paddingRight = "0";
   }
 
-  // Wait for GSAP to be ready
-  if (window.gsapReady) {
-    initAllAnimations();
-  } else {
-    window.addEventListener("gsap-ready", initAllAnimations, { once: true });
-  }
+  // Initialize immediately
+  initAllAnimations();
 
   // Run on every page navigation (View Transitions)
   document.addEventListener("astro:page-load", () => {
     closeMobileMenu();
-
-    if (window.gsapReady) {
-      initAllAnimations();
-    } else {
-      window.addEventListener("gsap-ready", initAllAnimations, { once: true });
-    }
+    initAllAnimations();
   });
 </script>
