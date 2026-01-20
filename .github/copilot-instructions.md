@@ -4,8 +4,8 @@ This repository contains a personal website built with Astro, TypeScript, and MD
 
 ## Project Overview
 
-- **Tech Stack**: Astro, TypeScript, MDX
-- **Package Manager**: pnpm (version 10.28.1+)
+- **Tech Stack**: Astro, TypeScript, MDX, Tailwind CSS
+- **Package Manager**: pnpm (version 10.24.0+)
 - **Purpose**: Personal website featuring a blog and case studies
 
 ## Development Commands
@@ -61,8 +61,9 @@ public/           # Static assets
 
 ### Styling
 
+- Tailwind CSS v4.1.5+ is used for styling
 - Global styles are in `src/global.css`
-
+- Use Tailwind utility classes in component templates
 
 ### Integrations
 
