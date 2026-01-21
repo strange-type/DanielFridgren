@@ -89,7 +89,7 @@ Configured in `astro.config.mjs`:
 
 - **Video**: `@mux/mux-player` for video playback
 - **Email**: `@sendgrid/mail` for transactional emails
-- **Animations**: `gsap` for animations, `lottie-web` + `astro-integration-lottie` for Lottie animations
+- **Animations**: `gsap@^3.13.0` (local npm package, not CDN) for animations with ScrollTrigger plugin, `lottie-web` + `astro-integration-lottie` for Lottie animations
 - **SEO**: SEO component at `src/components/seo.astro`
 
 ### TypeScript Configuration
@@ -126,9 +126,11 @@ The site uses **custom CSS with design tokens** (CSS custom properties), not Tai
   - Utility classes (`.prose`, `.text`, `.button`, etc.)
   - Component styles (some component-specific styles exist here but should ideally be scoped)
 - **Component-scoped styles**: Individual `.astro` files can include `<style>` blocks for component-specific CSS
-- **Spacing system**: T-shirt sizing convention (`--space-3xs` through `--space-xxl`, plus `--space-80/96/128/160` for larger values)
-- **Font weights**: 300 (light), 400 (regular), 500 (medium), 600 (demi-bold) - with minimal italic usage
+- **Spacing system**: T-shirt sizing convention (`--space-3xs` through `--space-xxl`, plus `--space-80/96/128/160` for larger values). Note: Previously had duplicate numeric tokens (`--space-4` through `--space-64`) which have been consolidated.
+- **Font weights**: 300 (light), 400 (regular), 500 (medium) with italic variants loaded. Font weight 600 was removed as unused. Minimal italic usage across the site.
+- **Font files**: 6 font files (~1.7MB total) - TT Norms Pro Compact in Normal/Regular/Medium weights + italic variants
 - **Dark mode**: Automatic via `prefers-color-scheme` media query
+- **Animations**: GSAP with ScrollTrigger - elements with `.fadeup-st` class start hidden (`opacity: 0`) and animate in on scroll
 
 ## Code Style
 
