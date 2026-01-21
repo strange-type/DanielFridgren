@@ -22,42 +22,62 @@ import ContactSection from "../components/layouts/ContactSection.astro";
                             href="https://en.wikipedia.org/wiki/Colophon_(publishing)"
                             target="_blank"
                             rel="noopener noreferrer">colophons</a
-                        > outline how a work was produced.
+                        > outline how a work was produced. This one describes the
+                        tools and decisions behind this site.
                         <Spacer size="xs" />
                     </div>
                     <div class="text fadeup-st">
-                        I designed and built the site myself, using modern
-                        developer tools - including AI-assisted code completion
-                        to refactor, and optimize more efficiently. The codebase
-                        lives in a private GitHub repository. I chose a
-                        code-first workflow to retain full control over
-                        structure and presentation. The backbone is <a
+                        I designed and built it myself using modern developer
+                        tools, including AI-assisted code completion for
+                        refactoring and optimization. The codebase lives in a <a
+                            href="https://github.com/strange-type/DanielFridgren"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >public GitHub repository</a
+                        > under multi-licensing: source code is MIT-licensed for
+                        free use, while content and design remain copyrighted. I
+                        chose a code-first workflow to retain full control over structure
+                        and presentation.
+                        <Spacer size="xs" />
+                        The backbone is <a
                             href="https://astro.build"
                             target="_blank"
-                            rel="noopener noreferrer">Astro</a
-                        >, chosen for its static-first model and restrained use
-                        of client-side JavaScript. The interface is built with
-                        plain HTML, CSS, and a small amount of JavaScript. All
-                        blog posts and case material are written in Markdown and
-                        structured using Astro Content Collections.
+                            rel="noopener noreferrer">Astro 5.16+</a
+                        >, selected for its static-first architecture, content
+                        collections system, and minimal client-side JavaScript.
+                        The interface combines plain HTML and CSS with <a
+                            href="https://www.typescriptlang.org/"
+                            target="_blank"
+                            rel="noopener noreferrer">TypeScript</a
+                        > in strict mode for type safety. All blog posts and case
+                        studies are written in <a
+                            href="https://mdxjs.com/"
+                            target="_blank"
+                            rel="noopener noreferrer">MDX</a
+                        > and validated through Zod schemas in Astro Content Collections,
+                        ensuring consistent frontmatter structure across all content.
                         <Spacer size="xs" />
-                        The visual system is defined through CSS design tokens. Spacing,
-                        typography, colour, rhythm, and motion are expressed as variables
-                        and reused consistently across the site, allowing the design
-                        to be adjusted at a systemic level rather than page by page.
-                        Typography is set using a fluid scale based on clamp(), adapting
+                        The visual system is defined through custom CSS design tokens.
+                        Spacing follows a t-shirt sizing convention, while typography,
+                        color, and rhythm are expressed as CSS custom properties
+                        and applied consistently across the site. This systemic approach
+                        allows design adjustments at the token level rather than
+                        page by page. Typography is set using a fluid scale, adapting
                         across screen sizes with attention to line length, leading,
-                        and contrast.
+                        and contrast. The typeface is TT Norms Pro Compact, loaded
+                        locally in three weights (300, 400, 500) with italic variants.
                         <Spacer size="xs" />
-                        Motion is defined through <a
+                        Motion is powered by <a
                             href="https://gsap.com/"
                             target="_blank"
-                            rel="noopener noreferrer">GSAP</a
-                        >, used sparingly and disabled for users who prefer
-                        reduced motion. Accessibility considerations: focus
-                        states, contrast, and semantic structure, are treated as
-                        defaults rather than additions. The site is deployed as
-                        a static build on <a
+                            rel="noopener noreferrer">GSAP 3.13</a
+                        > with ScrollTrigger, bundled locally rather than loaded
+                        from a CDN. Animations are used sparingly and respect prefers-reduced-motion
+                        for users who prefer minimal animation. Accessibility considerations—focus
+                        states, contrast ratios, semantic HTML, and ARIA labels—are
+                        treated as defaults rather than additions.
+                        <Spacer size="xs" />
+                        The site is deployed as a static build on <a
                             href="https://www.netlify.com/"
                             target="_blank"
                             rel="noopener noreferrer">Netlify</a
@@ -65,16 +85,19 @@ import ContactSection from "../components/layouts/ContactSection.astro";
                             href="https://www.cloudflare.com/"
                             target="_blank"
                             rel="noopener noreferrer">Cloudflare</a
-                        >.
-                        <Spacer size="xs" />
-                        Analytics are handled via <a
+                        >. After each build, the sitemap is automatically
+                        submitted to search engines via IndexNow for faster
+                        indexing. Analytics are handled via <a
                             href="https://umami.is/"
                             target="_blank"
                             rel="noopener noreferrer">Umami</a
-                        >. No behavioural tracking or cross-site profiling is
-                        used. Contact form submissions are handled server-side
-                        using Netlify Functions, which process submissions and
-                        deliver them via <a
+                        >—privacy-focused with no behavioural tracking or
+                        cross-site profiling.
+                        <Spacer size="xs" />
+                        Contact form submissions are processed server-side using
+                        Netlify Functions with rate limiting and spam protection
+                        (honeypot fields and minimum form fill times), then delivered
+                        via <a
                             href="https://sendgrid.com/"
                             target="_blank"
                             rel="noopener noreferrer">SendGrid</a
@@ -83,9 +106,17 @@ import ContactSection from "../components/layouts/ContactSection.astro";
                             href="https://kit.com/"
                             target="_blank"
                             rel="noopener noreferrer">Kit</a
-                        >, which handles subscriber management. Both approaches
-                        keep forms functional without requiring client-side
-                        JavaScript.
+                        > for subscriber management. Both approaches keep forms functional
+                        without requiring client-side JavaScript. Video playback
+                        is handled via
+                        <a
+                            href="https://www.mux.com/"
+                            target="_blank"
+                            rel="noopener noreferrer">Mux</a
+                        > for optimized streaming.
+                        <Spacer size="xs" />
+                        Overall a fun project, though perhaps a bit overengineered
+                        for a personal portfolio.
                     </div>
                 </div>
             </div>
