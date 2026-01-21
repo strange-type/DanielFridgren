@@ -12,12 +12,13 @@ import Spacer from "../Spacer.astro";
         viewBox="0 0 136 139"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        class="footer-logo"
       >
-        <rect width="136" height="32" fill="var(--color-bg)"></rect>
-        <path d="M104 51H136V83H107.556H104V51Z" fill="var(--color-bg)"></path>
+        <rect width="136" height="32" fill="currentColor"></rect>
+        <path d="M104 51H136V83H107.556H104V51Z" fill="currentColor"></path>
         <path
           d="M104 83.0005C74.5418 83.0007 46.1273 104.809 35.948 138.6H2.97046C14.0856 88.3166 55.1016 51.0007 104 51.0005V83.0005Z"
-          fill="var(--color-bg)"></path>
+          fill="currentColor"></path>
       </svg>
 
       <p class="footer-copyright footer-animate">
@@ -95,8 +96,16 @@ import Spacer from "../Spacer.astro";
   }
 
   .footer-logo {
-    width: 52.5px;
-    height: 78px;
+    width: 136px;
+    height: 139px;
+    color: var(--color-bg);
+  }
+
+  /* Ensure logo is always white (matches footer text color) */
+  @media (prefers-color-scheme: dark) {
+    .footer-logo {
+      color: var(--color-black);
+    }
   }
 
   .footer-copyright {

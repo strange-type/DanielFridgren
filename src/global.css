@@ -1082,7 +1082,6 @@ span.metadata {
 .about-content {
   position: relative;
   max-width: 70%;
-
 }
 
 .about-text-wrapper {
@@ -1122,6 +1121,7 @@ span.metadata {
     padding-top: var(--space-xs);
     padding-bottom: var(--space-xs);
     align-items: center;
+    max-width: 100%;
   }
 
   .about-image-desktop {
