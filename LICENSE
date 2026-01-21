@@ -1,0 +1,80 @@
+# Multi-License Repository
+
+This repository contains source code, creative content, and third-party images, each licensed under different terms.
+
+## 1. Source Code - MIT License
+
+The source code in this repository (including but not limited to TypeScript, JavaScript, CSS, configuration files, and build scripts) is licensed under the MIT License:
+
+```
+MIT License
+
+Copyright (c) 2025 Daniel Fridgren
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## 2. Content & Design - All Rights Reserved
+
+The creative content and design in this repository (including but not limited to blog post text, case studies, graphics, design assets, fonts, logos, and written content in MDX files) is **NOT** covered by the MIT License and remains:
+
+**© 2025 Daniel Fridgren - All Rights Reserved**
+
+You may NOT:
+- Use the design, visual assets, or branding for your own projects
+- Republish or redistribute the blog posts or case study content
+- Use the TT Norms Pro font files (covered by their own license)
+- Copy the visual design, layout, or styling for commercial purposes
+
+You MAY:
+- View the source code to learn from implementation patterns
+- Reference the code structure in your own projects (under MIT terms)
+- Fork and modify the code for your own use (under MIT terms)
+- Use code snippets as examples in documentation or tutorials
+
+## 3. Blog Post Images - Unsplash License
+
+Images in `public/images/blog-images/` are sourced from [Unsplash](https://unsplash.com) and are subject to the [Unsplash License](https://unsplash.com/license):
+
+**Unsplash License Summary:**
+- ✅ Free to use for commercial and non-commercial purposes
+- ✅ No permission needed
+- ✅ Modification and redistribution allowed
+- ✅ Attribution appreciated but not required
+- ❌ Cannot be sold as-is or in a competing stock photo service
+- ❌ Cannot be compiled to replicate Unsplash
+
+**Photo Credits:**
+- Images by various Unsplash photographers (see individual photo pages for attribution)
+- All photos are linked from their respective Unsplash URLs in the blog post frontmatter
+
+---
+
+## Summary
+
+| Asset Type | License | Usage Rights |
+|------------|---------|--------------|
+| **Source Code** | MIT | Free to use, modify, distribute |
+| **Written Content & Design** | All Rights Reserved | Copyrighted, do not copy |
+| **Blog Post Images** | Unsplash License | Free to use with Unsplash terms |
+| **Font Files** | TT Norms Pro License | Subject to font license |
+
+---
+
+**Questions about licensing?** Contact: daniel@fridgren.se
