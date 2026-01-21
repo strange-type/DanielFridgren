@@ -51,161 +51,167 @@ import Spacer from "../Spacer.astro";
           >
           <a href="/newsletter" class="footer-link footer-animate">Newsletter</a
           >
+          <a
+            href="https://github.com/strange-type/DanielFridgren"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-link footer-animate">GitHub</a
+          >
         </nav>
       </div>
     </div>
+    <Spacer size="large" />
   </div>
-  <Spacer size="large" />
-</footer>
 
-<style>
-  .footer {
-    background-color: var(--color-fg);
-    color: var(--color-bg);
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    margin-bottom: 0;
-    will-change: auto;
-  }
-
-  .footer-container {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: var(--space-128) var(--space-l);
-  }
-
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: var(--space-2xl);
-    align-items: start;
-    position: relative;
-    z-index: 1;
-  }
-
-  .footer-left {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-lg);
-    margin-left: var(--space-xl);
-    align-self: start;
-  }
-
-  .footer-logo {
-    width: 136px;
-    height: 139px;
-    color: var(--color-bg);
-  }
-
-  /* Ensure logo is always white (matches footer text color) */
-  @media (prefers-color-scheme: dark) {
-    .footer-logo {
-      color: var(--color-black);
+  <style>
+    .footer {
+      background-color: var(--color-fg);
+      color: var(--color-bg);
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      margin-bottom: 0;
+      will-change: auto;
     }
-  }
 
-  .footer-copyright {
-    font-size: var(--fs-xs);
-    font-family: var(--font-sans);
-    font-weight: 400;
-    color: var(--color-muted);
-    line-height: var(--leading-loose);
-    margin: 20px 0;
-  }
-
-  .footer-nav {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(150px, 200px));
-    gap: var(--space-2xl);
-    align-self: start;
-  }
-
-  .footer-column {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-  }
-
-  .footer-column nav {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-  }
-
-  .footer-heading {
-    font-size: var(--fs-xs);
-    font-family: var(--font-sans);
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    color: var(--color-muted);
-    margin: 0 0 0.35rem 0;
-  }
-
-  .footer-link {
-    font-size: var(--fs-sm);
-    font-family: var(--font-sans);
-    font-weight: 400;
-    line-height: var(--leading-base);
-    color: var(--color-bg);
-    text-decoration: none;
-    transition: color 0.2s ease;
-    margin-bottom: var(--space-2xs);
-  }
-
-  .footer-link:hover {
-    color: var(--color-gray-300);
-  }
-
-  /* Animation class used by GSAP */
-  .footer-animate {
-    /* Animated by GSAP script */
-  }
-
-  @media (max-width: 768px) {
     .footer-container {
-      padding: var(--space-2xl) var(--space-m);
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: var(--space-128) var(--space-l);
     }
 
     .footer-grid {
-      grid-template-columns: 1fr;
-      gap: var(--space-xl);
-    }
-    .footer-column {
-      margin-left: var(--space-xl);
-    }
-
-    .footer-link {
-      line-height: var(--leading-loose);
-    }
-  }
-
-  @media (max-width: 576px) {
-    .footer-container {
-      padding: var(--space-xl) var(--space-s);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-2xl);
+      align-items: start;
+      position: relative;
+      z-index: 1;
     }
 
     .footer-left {
-      order: 1;
-      margin-left: var(--space-m);
-    }
-
-    .footer-nav {
-      order: 2;
-      grid-template-columns: repeat(2, 1fr);
+      display: flex;
+      flex-direction: column;
       gap: var(--space-lg);
+      margin-left: var(--space-xl);
+      align-self: start;
     }
 
-    .footer-column {
-      margin-left: var(--space-m);
+    .footer-logo {
+      width: 136px;
+      height: 139px;
+      color: var(--color-bg);
+    }
+
+    /* Ensure logo is always white (matches footer text color) */
+    @media (prefers-color-scheme: dark) {
+      .footer-logo {
+        color: var(--color-black);
+      }
     }
 
     .footer-copyright {
-      order: 3;
-      margin-top: 20px;
+      font-size: var(--fs-xs);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      color: var(--color-muted);
+      line-height: var(--leading-loose);
+      margin: 20px 0;
     }
-  }
-</style>
+
+    .footer-nav {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(150px, 200px));
+      gap: var(--space-2xl);
+      align-self: start;
+    }
+
+    .footer-column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .footer-column nav {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .footer-heading {
+      font-size: var(--fs-xs);
+      font-family: var(--font-sans);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--color-muted);
+      margin: 0 0 0.35rem 0;
+    }
+
+    .footer-link {
+      font-size: var(--fs-sm);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      line-height: var(--leading-base);
+      color: var(--color-bg);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      margin-bottom: var(--space-2xs);
+    }
+
+    .footer-link:hover {
+      color: var(--color-gray-300);
+    }
+
+    /* Animation class used by GSAP */
+    .footer-animate {
+      /* Animated by GSAP script */
+    }
+
+    @media (max-width: 768px) {
+      .footer-container {
+        padding: var(--space-2xl) var(--space-m);
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+      }
+      .footer-column {
+        margin-left: var(--space-xl);
+      }
+
+      .footer-link {
+        line-height: var(--leading-loose);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .footer-container {
+        padding: var(--space-xl) var(--space-s);
+      }
+
+      .footer-left {
+        order: 1;
+        margin-left: var(--space-m);
+      }
+
+      .footer-nav {
+        order: 2;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-lg);
+      }
+
+      .footer-column {
+        margin-left: var(--space-m);
+      }
+
+      .footer-copyright {
+        order: 3;
+        margin-top: 20px;
+      }
+    }
+  </style>
+</footer>
