@@ -29,7 +29,7 @@ const { frontmatter, prev, next } = Astro.props;
     slot="head"
     title={frontmatter.title}
     description={frontmatter.description}
-    pathname={`/blog/${frontmatter.slug ?? ""}`}
+    pathname={`/blog/${frontmatter.slug ?? ""}/`}
     pubDate={frontmatter.pubDate}
   />
   <PageWrapper>

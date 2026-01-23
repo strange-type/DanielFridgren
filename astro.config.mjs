@@ -8,5 +8,6 @@ import icon from "astro-icon";
 // https://astro.build/config
 export default defineConfig({
   site: "https://fridgren.se",
+  trailingSlash: "always",
   integrations: [robots(), sitemap(), astroLLMsGenerator(), icon()],
 });
