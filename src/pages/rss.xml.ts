@@ -15,11 +15,11 @@ export async function GET() {
   const items = visible.map((p) => `
     <item>
       <title><![CDATA[${p.data.title}]]></title>
-      <link>${SITE}/blog/${p.slug}</link>
+      <link>${SITE}/blog/${p.slug}/</link>
       <pubDate>${new Date(p.data.pubDate).toUTCString()}</pubDate>
       <description><![CDATA[${p.data.description ?? ''}]]></description>
       <author>Daniel Fridgren</author>
-      <guid isPermaLink="true">${SITE}/blog/${p.slug}</guid>
+      <guid isPermaLink="true">${SITE}/blog/${p.slug}/</guid>
     </item>
   `).join('\n');
 

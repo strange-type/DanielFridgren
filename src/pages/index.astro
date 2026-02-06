@@ -35,7 +35,7 @@ const posts = allWorkItems
 	.map((item) => ({
 		...item.data,
 		slug: item.slug,
-		url: `/work/${item.slug}`,
+		url: `/work/${item.slug}/`,
 	}))
 	.sort(
 		(a, b) =>
@@ -317,7 +317,7 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 					<div class="blog-cards">
 						{featuredPosts.map((post) => (
 							<a
-								href={`/blog/${post.slug}`}
+								href={`/blog/${post.slug}/`}
 								class="blog-card fadeup-st"
 							>
 								<div class="blog-card-content">
