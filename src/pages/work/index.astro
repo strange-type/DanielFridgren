@@ -11,7 +11,7 @@ const posts = workItems
   .map((item) => ({
     ...item.data,
     slug: item.slug,
-    url: `/work/${item.slug}`,
+    url: `/work/${item.slug}/`,
   }))
   .sort(
     (a, b) => (Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0),

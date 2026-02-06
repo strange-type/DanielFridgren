@@ -37,7 +37,7 @@ const visible = posts
             {
               visible.map((post: any) => (
                 <li class="post-list-item fadeup-st">
-                  <a class="post-link" href={`/blog/${post.slug}`}>
+                  <a class="post-link" href={`/blog/${post.slug}/`}>
                     <time
                       class="post-date metadata"
                       datetime={String(post.data.pubDate)}
