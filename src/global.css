@@ -1,6 +1,30 @@
+/**
+ * @license
+ * MyFonts Webfont Build ID 3867246, 2020-12-16T11:57:38-0500
+ * 
+ * The fonts listed in this notice are subject to the End User License
+ * Agreement(s) entered into by the website owner. All other parties are 
+ * explicitly restricted from using the Licensed Webfonts(s).
+ * 
+ * You may obtain a valid license at the URLs below.
+ * 
+ * Webfont: TT Norms Pro Compact Italic by TypeType
+ * URL: https://www.myfonts.com/collections/typetype-foundry
+
+ * Webfont: TT Norms Pro Compact Medium by TypeType
+ * URL: https://www.myfonts.com/collections/typetype-foundry
+
+ * Webfont: TT Norms Pro Compact Regular by TypeType
+ * URL: https://www.myfonts.com/collections/typetype-foundry
+ 
+ * © 2026 MyFonts Inc. */
+
+
 @font-face {
   font-family: "TT Norms Pro";
-  src: url("/fonts/TTNormsProCompact-Regular.ttf") format("truetype");
+  src:
+    url("/fonts/TTNormsProCompactRegular/font.woff2") format("woff2"),
+    url("/fonts/TTNormsProCompactRegular/font.woff") format("woff");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -8,7 +32,9 @@
 
 @font-face {
   font-family: "TT Norms Pro";
-  src: url("/fonts/TTNormsProCompact-Italic.ttf") format("truetype");
+  src:
+    url("/fonts/TTNormsProCompactItalic/font.woff2") format("woff2"),
+    url("/fonts/TTNormsProCompactItalic/font.woff") format("woff");
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -16,7 +42,9 @@
 
 @font-face {
   font-family: "TT Norms Pro";
-  src: url("/fonts/TTNormsProCompact-Medium.ttf") format("truetype");
+  src:
+    url("/fonts/TTNormsProCompactMedium/font.woff2") format("woff2"),
+    url("/fonts/TTNormsProCompactMedium/font.woff") format("woff");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
