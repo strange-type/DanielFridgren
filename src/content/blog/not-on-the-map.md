@@ -9,7 +9,7 @@ heroImage: "/images/blog-images/postnord-paketbox.jpg"
 heroImageCaption: "Photo by PostNord"
 ---
 
-Nobody decided to make things harder for old people at package lockers. The decision that was made, somewhere in a meeting about a new solution, was surely to make things more accessible and efficient. The smart package locker is more efficient, the Bluetooth handshake is seamless, the app that replaces the person behind the counter is an improvement, at least by every metric that gets measured.
+Nobody decided to make things harder for old people at package lockers. The decision that was made, somewhere in a meeting about a new solution, was surely to streamline the logistics process. And the smart package locker is more efficient, the Bluetooth handshake is seamless, the app that replaces the person behind the counter is an improvement - at least by every metric that gets measured.
 
 I thought about this a while ago, after helping an old man outside a PostNord smart locker. With the bewilderment of someone who just realized the rules changed while they weren't there, he showed me his phone, where all he had was the SMS he’d got. He was used to being able to say a four-digit identifier to a person behind a counter. Now there was no counter, no person, and no four digits. Instead he needed an app, but had forgotten his App Store password. By the time we got the locker open, he could have walked to the old pickup point and back home again.
 
