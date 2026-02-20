@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
-    "@astrojs/sitemap": "^3.6.0",
+    "@astrojs/sitemap": "^3.7.0",
     "@iconify-json/heroicons": "^1.2.3",
     "@mux/mux-player": "^3.4.0",
     "@sendgrid/mail": "^8.1.6",
-    "astro": "^5.16.4",
+    "astro": "^5.17.3",
     "astro-config": "^0.2.1",
     "astro-icon": "^1.1.5",
     "astro-integration-lottie": "^0.3.2",
