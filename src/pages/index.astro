@@ -34,8 +34,8 @@ const allWorkItems = await getCollection("work");
 const posts = allWorkItems
 	.map((item) => ({
 		...item.data,
-		slug: item.slug,
-		url: `/work/${item.slug}/`,
+		slug: item.id,
+		url: `/work/${item.id}/`,
 	}))
 	.sort(
 		(a, b) =>
@@ -317,7 +317,7 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 					<div class="blog-cards">
 						{featuredPosts.map((post) => (
 							<a
-								href={`/blog/${post.slug}/`}
+								href={`/blog/${post.id}/`}
 								class="blog-card fadeup-st"
 							>
 								<div class="blog-card-content">

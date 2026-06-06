@@ -10,8 +10,8 @@ const workItems = await getCollection("work");
 const posts = workItems
   .map((item) => ({
     ...item.data,
-    slug: item.slug,
-    url: `/work/${item.slug}/`,
+    slug: item.id,
+    url: `/work/${item.id}/`,
   }))
   .sort(
     (a, b) => (Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0),
