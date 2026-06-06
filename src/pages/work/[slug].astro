@@ -1,13 +1,13 @@
 ---
 // src/pages/work/[slug].astro
 import CaseLayout from "../../layouts/CaseLayout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
   const workItems = await getCollection("work");
   return workItems.map((item) => ({
-    params: { slug: item.slug },
+    params: { slug: item.id },
   }));
 }
 
@@ -15,14 +15,14 @@ const { slug } = Astro.params;
 if (!slug) throw new Error("Missing slug param");
 
 const workItems = await getCollection("work");
-const workItem = workItems.find((item) => item.slug === slug);
+const workItem = workItems.find((item) => item.id === slug);
 
 if (!workItem) {
   throw new Response(null, { status: 404 });
 }
 
-const { Content } = await workItem.render();
-const frontmatter = { ...workItem.data, slug: workItem.slug };
+const { Content } = await render(workItem);
+const frontmatter = { ...workItem.data, slug: workItem.id };
 ---
 
 <CaseLayout {frontmatter}>
