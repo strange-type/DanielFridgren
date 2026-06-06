@@ -5,8 +5,8 @@ import Spacer from "../components/Spacer.astro";
 ---
 
 <Layout
-    title="About Me"
-    desc="Designer and developer focused on creating meaningful digital experiences"
+    title="Newsletter - Daniel Fridgren"
+    desc="Thoughts on UX, service design, healthcare, digital transformation and complex systems."
 >
     <PageWrapper>
         <Spacer size="xl" />
@@ -21,10 +21,15 @@ import Spacer from "../components/Spacer.astro";
                             <Spacer size="xs" />
 
                             <p class="text prose fadeup-st">
-                                Subscribe to receive occasional updates about
-                                design, technology, and complex systems. I share
-                                thoughts on emergence, cognition, and the
-                                patterns that shape our digital world.
+                                Occasional notes on design, digital services,
+                                healthcare, complexity and technology.
+                                Reflections on design, healthcare, complexity
+                                and the systems we live inside. I write about
+                                digital services, organisations, technology and
+                                the often messy reality behind change. Sometimes
+                                practical lessons from design work, sometimes
+                                broader questions about how people, systems and
+                                institutions shape each other.
                             </p>
                             <form
                                 class="form-newsletter fadeup-st"
@@ -48,7 +53,7 @@ import Spacer from "../components/Spacer.astro";
                                         class="button"
                                         id="newsletter-submit"
                                     >
-                                        Subscribe
+                                        Join the newsletter
                                     </button>
                                 </div>
                                 <p
@@ -60,8 +65,8 @@ import Spacer from "../components/Spacer.astro";
                             </form>
                             <Spacer size="xs" />
                             <p class="text-sm prose fadeup-st">
-                                Your email will only be used to send you
-                                newsletter updates. You can unsubscribe at any
+                                No spam. Just occasional updates when I have
+                                something worth sharing. Unsubscribe at any
                                 time.
                             </p>
                         </div>
@@ -119,7 +124,7 @@ import Spacer from "../components/Spacer.astro";
                         statusMessage.style.display = "block";
                         statusMessage.style.color = "var(--color-red)";
                         submitButton.disabled = false;
-                        submitButton.textContent = "Subscribe";
+                        submitButton.textContent = "Join the newsletter";
                     }
                 } catch (error) {
                     statusMessage.textContent =
@@ -127,7 +132,7 @@ import Spacer from "../components/Spacer.astro";
                     statusMessage.style.display = "block";
                     statusMessage.style.color = "var(--color-red)";
                     submitButton.disabled = false;
-                    submitButton.textContent = "Subscribe";
+                    submitButton.textContent = "Join the newsletter";
                 }
             });
         });
