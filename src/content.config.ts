@@ -1,5 +1,5 @@
-// src/content/config.ts
 import { z, defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
 
 const toBoolean = z.preprocess((val) => {
     if (typeof val === 'string') {
@@ -11,6 +11,7 @@ const toBoolean = z.preprocess((val) => {
 }, z.boolean());
 
 const blogCollection = defineCollection({
+    loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
     schema: z.object({
         title: z.string(),
         description: z.string().optional(),
@@ -25,6 +26,7 @@ const blogCollection = defineCollection({
 });
 
 const workCollection = defineCollection({
+    loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/work' }),
     schema: z.object({
         title: z.string(),
         slug: z.string().optional(),
