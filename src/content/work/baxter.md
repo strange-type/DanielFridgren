@@ -1,10 +1,10 @@
 ---
-title: "UX for next-generation medical devices"
+title: "Exploring Interaction Models Through Prototyping"
 slug: "baxter"
 date: "2015-03-14"
 type: "case"
 client: "Baxter"
-description: "How can iterative prototyping reveal the right interaction model for next-generation dialysis machines?"
+description: "Using interactive prototypes to explore how clinicians understand machine state, risk and treatment progress."
 heroImage: "/images/baxter.png"
 ogImage: "/images/baxter.png"
 secondaryImage: "/images/baxter1.png"
@@ -31,10 +31,18 @@ loop: true
 autoplay: "any"
 ---
 
-At Baxter, I worked on the interaction model for a next-generation dialysis machine, collaborating closely with clinical experts to define how the device should behave in real treatment scenarios. The work unfolded through a series of exploratory prototypes: three intentionally different interpretations of how critical information, system status, user actions, and alarms could coexist in a high-stakes clinical environment without competing for attention.
+In a clinical environment, confusion is expensive.
 
-My responsibility spanned ideation, UX, and UI design. Early in the project, much of the effort focused on understanding the workflow of dialysis from a clinician’s perspective—how they navigate setup and priming, troubleshooting, monitoring, and end-of-treatment routines, often while handling multiple patients or responding to unexpected events. These observations informed the core interaction principles: clarity under pressure, predictable system behavior, and the ability to surface urgent information instantly without obscuring essential context.
+Dialysis treatment requires clinicians to monitor complex processes, respond to alarms and maintain awareness of machine state over extended periods of time. The interface is not simply a control panel. It is part of the safety system itself.
 
-Prototyping became the main vehicle for exploration and alignment. We built and tested interactive scenarios to evaluate how different layouts, interaction patterns, and alarm hierarchies affected clinicians’ ability to understand machine state at a glance. Each prototype took a distinct stance: one prioritized visual hierarchy and spatial grouping, another emphasized temporal sequencing and guided actions. The third explored adaptive interfaces that shifted according to treatment phase. This divergence helped us identify which design principles consistently improved safety and operator confidence.
+Rather than moving directly toward a solution, we explored the problem through three deliberately different interactive prototypes. Each represented a distinct interpretation of how information, alarms and user actions should be organised within the system.
 
-The project gave me practical insight into the cognitive demands, time pressure, and regulatory constraints that define interaction design in acute-care environments. It sharpened my ability to design for clarity in highly technical contexts, where the cost of confusion is high and the interface is a critical part of clinical safety.
+The challenge helping clinicians maintain situational awareness while moving between routine tasks and unexpected events. The resulting design centred on clarity under pressure, predictable behaviour and the ability to distinguish what required immediate action from what could safely wait.
+
+Rather than converging on a solution too early, we explored multiple interpretations of the problem.
+
+One prototype prioritised visual hierarchy and spatial grouping. Another emphasised temporal sequencing and guided actions. A third explored interfaces that adapted to the current treatment phase. These early prototypes provided a way understand which interaction principles helped clinicians build and maintain an accurate mental model of the machine's state.
+
+Also, in safety-critical environments too many alerts can be problematic. Part of the design effort focused on understanding how urgency, visibility and timing could be balanced so that important signals stood out without overwhelming the clinician.
+
+In many digital products, friction is an inconvenience, but in clinical environments confusion can become a real safety issue. For me, this project reinforced the importance of understanding cognition, attention and decision-making in situations where the stakes are high.
