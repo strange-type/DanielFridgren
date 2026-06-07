@@ -26,11 +26,9 @@ seoKeywords:
 ---
 As Refined grew, teams needed a way to learn from customers and reduce uncertainty without depending on designers to drive every discovery effort.
 
-The challenge wasn't to create more process, but instead to help product teams become more capable and self-sufficient while maintaining the quality of discovery work.
+The goal wasn't to impose a rigid methodology, but to offer a lightweight, modular toolkit that teams could use on their own terms. To avoid creating more process, and instead help product teams become more capable and self-sufficient.
 
-The goal wasn't to impose a rigid methodology, but to offer a lightweight, modular toolkit that teams could use on their own terms.
-
-It shifted discovery from being "early user research" by designers to something teams could participate in directly. The result was not more research, but better decisions made closer to where the work happened.
+This shifted discovery from being "early user research" by designers to something teams could participate in directly. The result was not more research, but better decisions made closer to where the work happened.
 
 
 <figure class="figure-inline">
@@ -46,6 +44,6 @@ The same principle guided the design sprints I facilitated around major product 
   <em>- Raj Sehmi, Customer Success Lead at Refined</em>
 </blockquote>
 
-This experience refined how I think about organisational change.
+In one way, this experience refined how I think about organisational change. The most effective tools are rarely the most sophisticated, but the ones that help people develop capability without adding more process or overhead.
 
-The most effective tools are rarely the most sophisticated, but the ones that help people develop capability without adding more process or overhead. And in the end, a discovery playbook can become a way of changing how teams learn and make decisions together.
+And in the end, a discovery playbook can become a way of changing how teams learn and make decisions together.
