@@ -1,10 +1,10 @@
 ---
-title: "Designing future-focused energy experiences"
+title: "Designing a Smart Home Ecosystem"
 slug: "eon"
 date: "2014-10-13"
 type: "case"
 client: "E.ON"
-description: "How do you design a coherent smart-home interaction model that unifies energy insights, device control, and security into one ecosystem?"
+description: "How do you help people understand and control a complex smart-home ecosystem without requiring them to understand the technology behind it?"
 heroImage: "/images/eon.png"
 image: "/images/eon.png"
 ogImage: "/images/eon.png"
