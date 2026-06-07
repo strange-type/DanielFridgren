@@ -42,10 +42,4 @@ How are devices introduced into the system? How do routines interact with manual
 
 Because many of these interactions involved behaviours unfolding over time, static wireframes were often inadequate. Interactive prototypes became a way to explore how automation, energy insights and security signals would interact in real situations. They helped expose assumptions, align stakeholders and reveal usability issues long before implementation.
 
-Overall, the work was about shaping not just individual features, but the underlying logic of a smart-home ecosystem.
-
-Looking back, the work wasn't primarily about energy, lighting or security.
-
-It was about helping people understand and trust a complex system operating largely in the background of everyday life.
-
-The challenge was not designing individual features, but designing the logic that connected them.
+Overall, the work was about shaping not just individual features, but the underlying logic of a smart-home ecosystem. Looking back, the work wasn't primarily about lighting or security but about helping people understand and trust a system that operated largely in the background of everyday life.
