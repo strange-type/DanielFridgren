@@ -1,15 +1,15 @@
 ---
 title: "Not on the Map"
-description: "On smart lockers, food kiosks, and the invisible infrastructure that disappears when we optimize for what we can measure."
+description: "What disappears when we optimize services for efficiency, and quietly automate away human discretion?"
 pubDate: "2026-02-20"
 draft: false
-tags: ["service design", "systems thinking", "efficiency", "human discretion", "automation"]
+tags: ["service design", "public services", "systems thinking", "efficiency", "human discretion", "automation"]
 author: "Daniel Fridgren"
 heroImage: "/images/blog-images/postnord-paketbox.jpg"
 heroImageCaption: "Photo by PostNord"
 ---
 
-Nobody decided to make things harder for old people at package lockers. The decision that was made, somewhere in a meeting about a new solution, was surely to make things more accessible and efficient. The smart package locker is more efficient, the Bluetooth handshake is seamless, the app that replaces the person behind the counter is an improvement, at least by every metric that gets measured.
+Nobody set out to make things harder for old people at package lockers. The decision that was made, somewhere in a meeting about a new solution, was surely to make things more accessible and efficient. The smart package locker is more efficient, the Bluetooth handshake is seamless, the app that replaces the person behind the counter is an improvement, at least by every metric that gets measured.
 
 What gets lost in the process of streamlining for efficiency?
 
@@ -35,7 +35,11 @@ So what would it mean to design differently? Not to reject technology or automat
 
 The first question is about what's *actually* there. While mapping the user journey, ask what the interaction contains that the map won't show. The hospital receptionist who notices you've been waiting too long and catches someone's eye on your behalf. The GP visit where a regular and a doctor have built a shorthand over the years that makes the consultation more information dense. What happens between the scripted steps is far from being just irrelevancies. It’s accumulated knowledge, the capacity to deviate from protocol when the situation demands it. If your journey map takes no account of judgment, presence, or the knowledge that accumulates between people, you're not mapping the service, but its skeleton.
 
-The second question is about what atrophies. <a href="https://nautil.us/will-ai-harm-us-better-to-ask-how-well-reckon-with-our-hybrid-nature-236098/" target="_blank" rel="noopener noreferrer">David Krakauer</a> distinguishes between tools that extend human capability and tools that replace it. The difference matters because replacement isn't neutral. A child who grows up ordering food from a screen doesn't just lack practice at speaking to strangers. They grow up in a world where that wasn't required of them. The question isn't just "can we automate this?" but "what happens to the muscle we're removing, and do we want to live in a world where it's gone?”.
+The second question is about what atrophies. Tools can either extend human capability or replace it.
+
+Replacement isn't trivial, even if it may seem so in the moment. A child who grows up ordering food from a screen doesn't simply miss practice speaking to strangers. They grow up in a world where that skill was never required.
+
+As <a href="https://nautil.us/will-ai-harm-us-better-to-ask-how-well-reckon-with-our-hybrid-nature-236098/" target="_blank" rel="noopener noreferrer">David Krakauer</a> puts it, we should care not only about what a tool enables, but also about what happens with what we stop doing. The question isn't just "can we automate this?" but "what happens to the muscle we're removing, and do we want to live in a world where it's gone?"
 
 The third question is: who gets to deviate? Every system is designed for a user it has imagined. The imagined user of the PostNord locker has a smartphone, a certain app, BankID. This is not the old man. The imagined user of the IKEA ordering screen eats from the preset menu. That's not my daughter. When they encountered the system, there was no one on the other side who could handle the situation and possible deviation gracefully.
 
