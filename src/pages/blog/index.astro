@@ -18,8 +18,8 @@ const visible = posts
 <Layout>
   <SEO
     slot="head"
-    title="Blog"
-    description="Writing at the intersection of systems thinking, design, and culture. Exploring emergence, adaptation, and the non-scalable forces that shape our world."
+    title="Writing"
+    description="Reflections on design, healthcare, complexity, technology and the systems we live inside."
     pathname={Astro.url.pathname}
   />
   <PageWrapper>
@@ -30,9 +30,13 @@ const visible = posts
         <div></div>
         <div>
           <h1 id="blog-heading" class="title-display prose fadeup-st">
-            Blog Posts
+            Writing
           </h1>
           <Spacer size="xs" />
+          <p class="text prose fadeup-st">
+            Reflections on design, healthcare, complexity, technology and the
+            systems we live inside.
+          </p>
           <ul class="post-list prose" aria-live="polite">
             {
               visible.map((post: any) => (
