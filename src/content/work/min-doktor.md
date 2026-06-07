@@ -1,5 +1,5 @@
 ---
-title: "Refining digiphysical care pathways"
+title: "Refining Digiphysical Care Pathways"
 slug: "min-doktor"
 date: "2020-08-16"
 type: "case"
