@@ -28,14 +28,24 @@ seoKeywords:
 - "smart home configuration flows"
 - "prototyping connected devices"
 ---
-During several consecutive projects at E.ON, I worked across both strategic and hands-on layers to help shape the user experience for their emerging smart-home platform. Across four initiatives over multiple years at TOPP, my role shifted depending on the maturity of the work: from early-stage framing and concept development to detailed design and implementation support.
+Most people don't think about home energy until something goes wrong.
 
-The exploration covered a wide spectrum of domains—energy intelligence, ambient device control, lighting, and home security. Early in the collaboration, much of the work focused on understanding how these domains could coexist in a single, coherent ecosystem rather than as a collection of disconnected features. This meant identifying the right mental models for homeowners, defining the boundaries of automation, and articulating where manual control should remain simple and transparent.
+Yet modern homes are increasingly shaped by a growing network of connected devices, automation rules, sensors and services. For homeowners, the challenge isn't understanding the technology itself, but to understand what the home is doing, why it's doing what it does, and how to stay in control.
 
-One significant part of the work was mapping and designing every layer of the system: onboarding flows, configuration pathways, device setup patterns, daily routines, notification models and edge-case scenarios.
+Across several projects with E.ON, I helped explore how energy management, lighting, device control and home security could become part of a single, coherent experience.
 
-Prototyping played a central role. We built interactive simulations to test how energy insights, control interfaces, and security signals could coexist on the same surfaces without overwhelming the user. These prototypes were used continuously: to validate the product direction with stakeholders, to align engineering and design teams, and to uncover subtle usability challenges that wouldn't show up in static wireframes.
+Energy monitoring, lighting, automation and security all come with their own logic. One of the central challenges was finding a mental model that allowed homeowners to understand the system as a whole, rather than as a collection of disconnected features.
 
-In the later stages, I supported internally at E.ON during implementation. This involved translating concepts into final deliverables, I produced detailed interaction and UI designs, clarified edge cases, and reviewed builds to ensure coherence in the final product.
+This required designing not only individual interactions, but the relationships between them.
+
+How are devices introduced into the system? How do routines interact with manual control? When should the system act automatically, and when should it ask for confirmation? Many of the design decisions were ultimately about helping people build trust in a system that was largely invisible.
+
+Because many of these interactions involved behaviours unfolding over time, static wireframes were often inadequate. Interactive prototypes became a way to explore how automation, energy insights and security signals would interact in real situations. They helped expose assumptions, align stakeholders and reveal usability issues long before implementation.
 
 Overall, the work was about shaping not just individual features, but the underlying logic of a smart-home ecosystem.
+
+Looking back, the work wasn't primarily about energy, lighting or security.
+
+It was about helping people understand and trust a complex system operating largely in the background of everyday life.
+
+The challenge was not designing individual features, but designing the logic that connected them.
