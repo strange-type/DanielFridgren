@@ -1,6 +1,6 @@
 ---
-title: "On Culture And Adaptability"
-description: "How culture quietly drives societal adaptability behind the scenes of technology."
+title: "The Most Powerful Technology"
+description: "Technology changes what we can do. Culture changes what we can imagine doing."
 pubDate: "2025-10-03"
 draft: false
 tags: ["culture", "adaptation", "systems thinking", "design thinking"]
@@ -9,7 +9,7 @@ heroImage: "/images/blog-images/wiki-sinaloa-raJrSL-LfVg-unsplash.jpg"
 heroImageCaption: "Photo by Wiki Sinaloa on Unsplash"
 ---
 
-Contrary to some popular narratives, I’d argue that humanity’s most powerful adaptive capacity is not technology, but culture. More precisely: *cultural malleability*.
+Contrary to some popular narratives, I’d argue that humanity’s most powerful adaptive capacity is not technology, but culture.
 
 Technology amplifies what a society is already capable of. Culture determines whether a society can change what it is capable of in the first place. It shapes what we consider normal, possible, and desirable, and therefore how we respond when circumstances change.
 
@@ -31,10 +31,14 @@ Navigating this requires specific capacities: the ability to stay with open ques
 
 These are not uniquely professional skills. They are civic ones, necessary wherever organizations or institutions are being reshaped.
 
+Interestingly, the same capacities appear in smaller systems too.
+
+Organizations often struggle with change for the same reason societies do: assumptions that once made sense become invisible, and therefore difficult to question.
+
 Design thinking, at its best, is a formalised practice of exactly this kind of work. Not the polishing of interfaces, but the disciplined act of probing, staying in uncertainty and exploration of what could exist - but doesn’t yet.
 
 Many of today’s challenges are not technical problems waiting for better tools, but cultural ones, rooted in values, assumptions and ways of thinking that no longer fit the conditions they operate within.
 
 The ability to notice this, to question assumptions without immediately replacing them, and to collectively explore alternatives is becoming increasingly important. It is slow work. Often uncomfortable. And difficult to optimise.
 
-But it is also the work that allows societies to adapt without tearing themselves apart. And it may be one of the most valuable capacities we can continue to cultivate.
+Technology helps us respond to change. Culture determines whether we can change ourselves. And in the long run, that may be the more important adaptation.
