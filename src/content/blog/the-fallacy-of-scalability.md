@@ -54,7 +54,9 @@ But funding that which doesn’t scale has mostly been left to countries—and t
 
 I believe we need to revisit this strategy.  
 
-Beneath the corporate and market layers sits a more foundational layer: the set of non-scalable investments that make societies viable in the first place. It includes care, education, trust, social cohesion and localized knowledge. A trusted GP relationship doesn't scale particularly well. Neither does a teacher who knows every child in a classroom. Yet both create forms of value that are difficult to replace once lost. This layer does not compound neatly, cannot be easily leveraged, and resists standardisation. Its value is systemic rather than transactional. Like externalised costs, it is rarely accounted for, nor visible on balance sheets. Yet everything above it depends on its continued health.
+Beneath the corporate and market layers sits a more foundational layer: the set of non-scalable investments that make societies viable in the first place. It includes care, education, trust, social cohesion and localized knowledge.
+
+A trusted GP relationship doesn't scale particularly well. Neither does a teacher who knows every child in a classroom. Yet both create forms of value that are difficult to replace once lost. This layer does not compound neatly, cannot be easily leveraged, and resists standardisation. Its value is systemic rather than transactional. Like externalised costs, it is rarely accounted for, nor visible on balance sheets. Yet everything above it depends on its continued health.
 
 Is there a systemic risk in ignoring the foundational layer that markets quietly depend on? With very few exceptions, corporations show little sustained interest in maintaining it.
 
