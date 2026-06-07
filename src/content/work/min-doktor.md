@@ -1,10 +1,10 @@
 ---
-title: "Refining digital healthcare experiences"
+title: "Refining digiphysical care pathways"
 slug: "min-doktor"
 date: "2020-08-16"
 type: "case"
 client: "Min Doktor"
-description: "How do you design healthcare journeys that stay clinically precise while remaining calm, clear, and usable for real patients?"
+description: "How do you design digital healthcare services that work for patients, clinicians and the realities of clinical practice?"
 heroImage: "/images/min-doktor.png"
 image: "/images/min-doktor.png"
 ogImage: "/images/min-doktor.png"
@@ -28,14 +28,26 @@ seoKeywords:
   - "health-tech product design"
 
 ---
-I joined Min Doktor to help refine the core experience across both patient and caregiver touchpoints. The work centered on translating clinical intent into clear, safe user flows: triage, consultation, follow-up, while navigating tight regulatory constraints and the very practical realities of patient behaviour. Much of the challenge was about creating clarity in moments where users are stressed, uncertain, or making decisions with medical consequences, and ensuring the interface supported the underlying clinical protocols.
+Digital healthcare is often framed as a technology challenge, but in reality its often more of coordination challenge.
 
-One highlight was a research initiative that followed Min Doktor's acquisition of Minutkliniken. I discovered that nurses were frequently becoming a bottleneck in the patient flow. By analysing their workload, we identified opportunities to gather essential information before the consultation. One solution was a self-check-in kiosk for use in the clinic, enabling patients to confirm their visit and update their details on arrival. Another was encouraging patients to fill out forms and provide relevant medical history in the app ahead of time, which reduced the administrative load on nurses.
+Patients, clinicians, regulations, operational workflows and reimbursement models all shape the experience. A seemingly simple interaction often sits on top of a surprisingly complex system.
+
+My role at Min Doktor focused on helping make that complexity easier to navigate for both patients and healthcare professionals.
+
+Following Min Doktor's acquisition of Minutkliniken, we explored how patients moved through the clinical journey. Research revealed that nurses were frequently becoming a bottleneck in the flow. Much of their time was spent collecting information that patients could potentially provide themselves before the consultation.
+
+Rather than optimising the nurses' work directly, we looked at how the system around them could work better.
+
+The result was a combination of interventions. Patients could complete forms and provide relevant medical history before arriving, while a self-service check-in kiosk helped reduce administrative work in the clinic itself.
+
+This way, we ensured that clinical time was spent where it created the most value.
 
 <figure class="figure-inline">
 <img src="/images/md-journey.png" alt="A simple user journey" />
 </figure>
 
-Working in this space meant constantly balancing precision with usability: interpreting clinical guidelines, understanding operational routines, and shaping interactions that met strict compliance requirements without becoming rigid or opaque. It required close collaboration with clinicians, product managers, and engineers to ensure that the experience was not just functional, but trustworthy and scalable across different care pathways.
+A recurring challenge was translating clinical intent into interactions that ordinary people could understand and act on. Medical guidelines are precise, but human behaviour more often is not.
+
+Much of the work involved finding ways to maintain clinical safety without creating experiences that felt bureaucratic or intimidating.
 
 All in all, the role deepened my grasp of healthcare's structural complexity, including the interplay between providers, patients, legislation, and economic incentives. It revealed how design decisions sit within a dense ecosystem of clinical safety, reimbursement models, and organisational workflow.
