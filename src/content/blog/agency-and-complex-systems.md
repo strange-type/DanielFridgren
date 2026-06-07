@@ -1,9 +1,9 @@
 ---
-title: "Out Of Control"
-description: "A reflection on why command-and-control thinking fails in complex systems, and why things like minds and societies are shaped more by emergent agencies we’ve forgotten how to notice."
+title: "The Myth of the Center"
+description: "What if intelligence doesn't live in a single mind, but emerges from countless interacting agencies?"
 pubDate: "2025-12-03"
 draft: false
-tags: ["complexity", "emergence", "distributed intelligence", "systems thinking"]
+tags: ["complexity", "emergence", "distributed intelligence", "systems thinking", "cognition"]
 author: "Daniel Fridgren"
 heroImage: "/images/blog-images/wiki-sinaloa-3TUgnpxL3sc-unsplash.jpg"
 heroImageCaption: "Photo by Wiki Sinaloa on Unsplash"
@@ -17,7 +17,11 @@ This centralized command blueprint has been the main approach in most human ende
 
 And there’s a deeper pattern here: our assumption that intelligence relies on centralized control.
 
-The central command blueprint is our current metaphor for how brains works. I’m crazy enough to view things otherwise, so maybe you should stop reading now. My view is that intelligence does not need brains. And this text is really a short story about letting go of the myth of a single center in our minds, organizations and even our civilizations.
+The central command blueprint is also our dominant metaphor for how minds work.
+
+I think that metaphor is incomplete.
+
+My view is that intelligence does not require a central controller, perhaps not even a brain. This essay is an attempt to explore what happens when we let go of the idea of a single center, whether in minds or organizations.
 
 I generally dislike definitions of intelligence. They limit and narrow down in favor of measurability. But there is something to Marvin Minskys way of defining this property that opens up instead. According to him, intelligence is something that emerges from a “loosely-knitted league of almost separate agencies with almost independent goals.”
 
