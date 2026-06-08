@@ -444,10 +444,16 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 		padding: var(--space-l);
 		text-decoration: none;
 		color: var(--color-fg);
-		background: var(--color-bg);
+		background: #FAFAFA;
 		border: 2px solid transparent;
 		border-radius: 4px;
 		transition: background 0.2s ease, color 0.2s ease;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.blog-card {
+			background: #050505;
+		}
 	}
 
 	.blog-card:hover {
