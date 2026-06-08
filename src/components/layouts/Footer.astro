@@ -106,7 +106,7 @@ import Spacer from "../Spacer.astro";
       color: var(--color-bg);
     }
 
-    /* Ensure logo is always white (matches footer text color) */
+    /* In dark mode the footer bg is white; force the logo to black */
     @media (prefers-color-scheme: dark) {
       .footer-logo {
         color: var(--color-black);
