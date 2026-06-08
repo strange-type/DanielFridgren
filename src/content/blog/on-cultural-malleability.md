@@ -41,4 +41,4 @@ Many of today’s challenges are not technical problems waiting for better tools
 
 The ability to notice this, to question assumptions without immediately replacing them, and to collectively explore alternatives is becoming increasingly important. It is slow work. Often uncomfortable. And difficult to optimise.
 
-Technology helps us respond to change. Culture determines whether we can change ourselves. And in the long run, that may be the more important adaptation.
+Technology helps us respond to change. Culture determines whether we can change ourselves. And in the long run that may be the more important adaptation.

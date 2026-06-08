@@ -45,4 +45,4 @@ Humanity very recently stopped using the old words to describe these forces. The
 
 It is time for us to rediscover and understand these forces again. Some people brush upon it when dealing with complexity theory, but most of us don’t see these forces for what they truly are, and we still grasp for ways to interact with them.
 
-Maybe rediscovery isn’t about reviving old gods, but about recovering our ability to notice the agencies that move through us. They’ve never left. We simply stopped speaking their names.
+Maybe rediscovery isn’t about reviving old gods, but about recovering our ability to notice the agencies that move through us, and never left. We simply stopped speaking their names.
