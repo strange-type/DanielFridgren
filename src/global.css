@@ -81,20 +81,20 @@
 
   /* Box Shadows */
   --box-shadow-sm:
-    0.2px 0.2px 0.8px -10px rgba(40, 10, 0, 0.014),
-    0.4px 0.4px 2px -10px rgba(40, 10, 0, 0.02),
-    0.8px 0.8px 3.8px -10px rgba(40, 10, 0, 0.025),
-    1.3px 1.3px 6.7px -10px rgba(40, 10, 0, 0.03),
-    2.5px 2.5px 12.5px -10px rgba(40, 10, 0, 0.036),
-    6px 6px 30px -10px rgba(40, 10, 0, 0.05);
+    0.2px 0.2px 0.8px -10px rgba(0, 0, 0, 0.014),
+    0.4px 0.4px 2px -10px rgba(0, 0, 0, 0.02),
+    0.8px 0.8px 3.8px -10px rgba(0, 0, 0, 0.025),
+    1.3px 1.3px 6.7px -10px rgba(0, 0, 0, 0.03),
+    2.5px 2.5px 12.5px -10px rgba(0, 0, 0, 0.036),
+    6px 6px 30px -10px rgba(0, 0, 0, 0.05);
 
   --box-shadow-md:
-    1px 0.9px 2.3px -3px rgba(30, 10, 10, 0.04),
-    2.4px 2.2px 5.5px -3px rgba(30, 10, 10, 0.05),
-    4.5px 4.1px 10.4px -3px rgba(30, 10, 10, 0.06),
-    8px 7.4px 18.5px -3px rgba(30, 10, 10, 0.07),
-    15px 13.8px 34.7px -3px rgba(30, 10, 10, 0.08),
-    36px 33px 83px -3px rgba(30, 10, 10, 0.2);
+    1px 0.9px 2.3px -3px rgba(0, 0, 0, 0.04),
+    2.4px 2.2px 5.5px -3px rgba(0, 0, 0, 0.05),
+    4.5px 4.1px 10.4px -3px rgba(0, 0, 0, 0.06),
+    8px 7.4px 18.5px -3px rgba(0, 0, 0, 0.07),
+    15px 13.8px 34.7px -3px rgba(0, 0, 0, 0.08),
+    36px 33px 83px -3px rgba(0, 0, 0, 0.2);
 
   --box-shadow-lg:
     0.2px 0.4px 0.8px -10px rgba(0, 0, 0, 0.03),
@@ -143,34 +143,34 @@
 
   /* Colors */
   --color-white: #FFFFFF;
-  /*--color-black: #100F0F; */
-  --color-black: #171717;
-  --color-gray-950: #1C1B1A;
-  --color-gray-900: #282726;
-  --color-gray-850: #343331;
-  --color-gray-800: #403E3C;
-  --color-gray-700: #575653;
-  --color-gray-600: #6F6E69;
-  --color-gray-500: #878580;
-  --color-gray-400: #9F9D96;
-  --color-gray-300: #B7B5AC;
-  --color-gray-200: #CECDC3;
-  --color-gray-150: #DAD8CE;
-  --color-gray-100: #E6E4D9;
-  --color-gray-50: #F2F0E5;
+  --color-black: #000000;
 
-  --color-yellow: #AD8301;
+  /* Cool blue-gray scale inspired by Superflux */
+  --color-gray-950: #151a1e;
+  --color-gray-900: #1e2428;
+  --color-gray-850: #272e33;
+  --color-gray-800: #32393e;
+  --color-gray-700: #49535a;
+  --color-gray-600: #626d75;
+  --color-gray-500: #7c8990;
+  --color-gray-400: #97a3ab;
+  --color-gray-300: #b2bfc6;
+  --color-gray-200: #c8d3d9;
+  --color-gray-150: #d5dde2;
+  --color-gray-100: #e1e7eb;
+  --color-gray-50: #edf1f3;
+
+  --color-red: #cf2e2e;
   --color-orange: #BC5215;
+  --color-yellow: #AD8301;
   --color-magenta: #A02F6F;
-  --color-red: #AF3029;
-  --color-sea-blue: #205EA6;
 
   /* Light theme */
-  --color-bg: var(--color-white);
+  --color-bg: #abb8c3;
   --color-fg: var(--color-black);
-  --color-muted: var(--color-gray-600);
-  --color-subtle: var(--color-gray-300);
-  --color-very-subtle: var(--color-gray-50);
+  --color-muted: var(--color-gray-700);
+  --color-subtle: var(--color-gray-500);
+  --color-very-subtle: var(--color-gray-200);
   --svg-icon-filter: none;
 }
 
@@ -180,9 +180,9 @@
     --color-bg: var(--color-black);
     --color-fg: var(--color-white);
     --color-muted: var(--color-gray-300);
-    --color-subtle: var(--color-gray-600);
-    --color-very-subtle: var(--color-gray-900);
-    --svg-icon-filter: invert(1) hue-rotate(180deg);
+    --color-subtle: var(--color-gray-700);
+    --color-very-subtle: var(--color-gray-950);
+    --svg-icon-filter: invert(1);
   }
 }
 
@@ -362,7 +362,7 @@ ol[role="list"] {
 /* Links */
 a {
   text-decoration: 2px underline;
-  text-decoration-color: var(--color-subtle);
+  text-decoration-color: var(--color-red);
   text-underline-offset: 2px;
   font-family: var(--font-body);
   color: var(--color-fg);
@@ -380,7 +380,7 @@ a:hover {
 }
 
 a:focus-visible {
-  outline: 3px solid rgba(53, 53, 52, 0.12);
+  outline: 3px solid rgba(0, 0, 0, 0.15);
   outline-offset: 4px;
 }
 
@@ -400,7 +400,7 @@ a:focus-visible {
 }
 
 .link-unstyled:focus-visible {
-  outline: 3px solid rgba(53, 53, 52, 0.12);
+  outline: 3px solid rgba(0, 0, 0, 0.15);
   outline-offset: 4px;
   text-decoration: none;
 }
@@ -1058,8 +1058,8 @@ span.metadata {
 }
 
 .form-input:focus {
-  border-color: var(--color-sea-blue);
-  outline: 2px solid var(--color-sea-blue);
+  border-color: var(--color-red);
+  outline: 2px solid var(--color-red);
   outline-offset: 0px;
 }
 
