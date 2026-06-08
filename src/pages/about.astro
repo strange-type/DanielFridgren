@@ -1,15 +1,19 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Seo from "../components/seo.astro";
 import PageWrapper from "../components/layouts/PageWrapper.astro";
 import Spacer from "../components/Spacer.astro";
 import ContactSection from "../components/layouts/ContactSection.astro";
 import danielImage from "../assets/images/daniel-fridgren.png";
 ---
 
-<Layout
-    title="About Daniel Fridgren - UX and service design"
-    desc="Senior UX and service designer in Malmö, working across healthcare, digital products and complex service systems."
->
+<Layout>
+    <Seo
+        slot="head"
+        title="About Daniel Fridgren - UX and service design"
+        description="UX and service designer based in Malmö, Sweden. Two decades of experience across healthcare, digital products, design agencies and public healthcare — working between strategy and delivery."
+        pathname={Astro.url.pathname}
+    />
     <PageWrapper>
         <Spacer size="xl" />
         <main>
