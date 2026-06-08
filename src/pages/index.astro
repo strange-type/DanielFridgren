@@ -443,10 +443,11 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 		flex-direction: column;
 		padding: var(--space-l);
 		text-decoration: none;
+		color: var(--color-fg);
 		background: #FAFAFA;
 		border: 2px solid transparent;
 		border-radius: 4px;
-		transition: border-color 0.2s ease, background-color 0.2s ease;
+		transition: background 0.2s ease, color 0.2s ease;
 	}
 
 	@media (prefers-color-scheme: dark) {
@@ -456,7 +457,13 @@ const featuredPosts = allBlogPosts.slice(0, 2);
 	}
 
 	.blog-card:hover {
-		border-color: var(--color-subtle);
+		background: var(--color-fg);
+		color: var(--color-bg);
+	}
+
+	.blog-card:hover .blog-card-date,
+	.blog-card:hover .blog-card-description {
+		color: var(--color-bg);
 	}
 
 	.button-container-right {
