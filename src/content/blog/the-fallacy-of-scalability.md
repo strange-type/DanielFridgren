@@ -41,14 +41,11 @@ When we scale education, we risk losing local context.
 
 When we scale supply chains, we often introduce hidden fragilities.
 
-The gains are real. But so are the losses. These losses are not accidental, but structural. Scalability favours short feedback loops and repeatability. Value which unfolds slowly, that is distributed across many people, or resists standardisation becomes hard to justify within dominant investment models. The returns are  delayed, indirect, and difficult to attribute. As a result, they fall outside what markets are well-equipped to fund, even when they are foundational to everything that follows.
+Scalability favours short feedback loops and repeatability. Value which unfolds slowly, that is distributed across many people, or resists standardisation becomes hard to justify within dominant investment models. The returns are  delayed, indirect, and difficult to attribute. As a result, they fall outside what markets are well-equipped to fund, even when they are foundational to everything that follows.
 
 There is another category of investment that receives far less attention: what might be called the foundational layer. These are investments whose value unfolds slowly, resists standardisation and rarely appears on a balance sheet. Care, education, trust, social cohesion and local knowledge all belong here.
 
 They do not scale particularly well. Yet everything else depends on them.
-
-
-
 
 But funding that which doesn’t scale has mostly been left to countries—and to a smaller extent charities and NGOs.
 
