@@ -44,7 +44,7 @@ import { Icon } from "astro-icon/components";
     right: 0;
     max-width: 100%;
     margin: 0 auto;
-    padding: var(--space-2xs) var(--space-l) var(--space-m) var(--space-m);
+    padding: calc(var(--space-2xs) + env(safe-area-inset-top, 0px)) var(--space-l) var(--space-m) var(--space-m);
     z-index: 1001;
     transition: transform 0.4s ease-in-out;
     transform: translateY(0);
@@ -141,13 +141,13 @@ import { Icon } from "astro-icon/components";
 
   @media (max-width: 768px) {
     .navbar {
-      padding: var(--space-xs) var(--space-s) var(--space-s) var(--space-s);
+      padding: calc(var(--space-xs) + env(safe-area-inset-top, 0px)) var(--space-s) var(--space-s) var(--space-s);
     }
   }
 
   @media screen and (max-width: 576px) {
     .navbar {
-      padding: var(--space-xs) calc(var(--space-2xs) * 0.1) 0 var(--space-s);
+      padding: calc(var(--space-xs) + env(safe-area-inset-top, 0px)) calc(var(--space-2xs) * 0.1) 0 var(--space-s);
     }
 
     .brand-text {
