@@ -34,7 +34,8 @@ const metaDescription = description || defaultDescription;
 
 // Default OG image
 const defaultOgImage = `${SITE}/images/og-image.png`;
-const metaOgImage = ogImage || defaultOgImage;
+const resolvedOgImage = ogImage?.startsWith("/") ? `${SITE}${ogImage}` : ogImage;
+const metaOgImage = resolvedOgImage || defaultOgImage;
 ---
 
 <!-- site name for crawlers / social -->
