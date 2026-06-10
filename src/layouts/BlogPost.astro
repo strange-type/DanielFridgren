@@ -99,13 +99,15 @@ const { frontmatter, prev, next } = Astro.props;
               <div class="post-nav-alt-inline">
                 {prev && (
                   <a class="inline prev" href={prev.url} rel="prev">
-                    ← <span class="nav-title">{prev.title}</span>
+                    <span class="nav-label">← Previous post</span>
+                    <span class="nav-title">{prev.title}</span>
                   </a>
                 )}
 
                 {next && (
                   <a class="inline next" href={next.url} rel="next">
-                    <span class="nav-title">{next.title}</span> →
+                    <span class="nav-label">Next post →</span>
+                    <span class="nav-title">{next.title}</span>
                   </a>
                 )}
               </div>
@@ -151,13 +153,15 @@ const { frontmatter, prev, next } = Astro.props;
               <div class="post-nav-alt-inline">
                 {prev && (
                   <a class="inline prev" href={prev.url} rel="prev">
-                    ← <span class="nav-title">{prev.title}</span>
+                    <span class="nav-label">← Previous post</span>
+                    <span class="nav-title">{prev.title}</span>
                   </a>
                 )}
 
                 {next && (
                   <a class="inline next" href={next.url} rel="next">
-                    <span class="nav-title">{next.title}</span> →
+                    <span class="nav-label">Next post →</span>
+                    <span class="nav-title">{next.title}</span>
                   </a>
                 )}
               </div>
@@ -283,12 +287,16 @@ const { frontmatter, prev, next } = Astro.props;
     color: var(--color-muted);
     text-decoration: none;
     display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .post-nav-alt-inline .inline .nav-label {
+    font-weight: 500;
+    color: var(--color-heading);
   }
   .post-nav-alt-inline .inline .nav-title {
-    font-weight: 600;
-    color: var(--color-heading);
+    font-weight: 400;
+    color: var(--color-muted);
   }
 
   .post-nav-alt-inline .prev {
