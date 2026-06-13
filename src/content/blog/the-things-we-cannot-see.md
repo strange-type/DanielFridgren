@@ -17,7 +17,7 @@ heroImageCaption: "Half Man by Kai Ziehl"
 
 What if some of our deepest assumptions are wrong?
 
-Not the ones about technology or economics, but more fundamental one, like the belief that what we perceive is a reasonable approximation of reality.
+Not the ones about technology or economics, but more fundamental ones, like the belief that what we perceive is a reasonable approximation of reality.
 
 Most of us move through the world as though reality and perception are roughly the same thing. We know our senses have limits, of course. We cannot see UV-light or detect magnetic fields. But these limitations often feel technical rather than profound. We assume that while we may miss some details, we are at least perceiving the important parts.
 
