@@ -26,7 +26,7 @@ Rationality convinces us so completely of its soundness that we go blind to ever
 
 Whatever reality is, it has many facets. No conscious agent perceives more than a fraction of what is there to be perceived. Each animal moves through its own world, shaped by what its mind makes of what its senses deliver. Each being finds its world to be everything there is. Some worlds overlap. Many don't.
 
-This is what Jain philosophy explains through the story of the blind men and the elephant. They are all right, and all wrong. Ultimately there is no point of view that is not partial.
+This is what Jain philosophy explains through the story of <a href="https://en.wikipedia.org/wiki/Blind_men_and_an_elephant" target="_blank" rel="noopener noreferrer">the blind men and the elephant</a>. They are all right, and all wrong. Ultimately there is no point of view that is not partial.
 
 The Rational Man clings to a monotheistic superstition about an abstract point of view that he calls objective.
 
