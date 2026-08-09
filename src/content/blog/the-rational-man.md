@@ -12,7 +12,7 @@ heroImage: "/images/blog-images/the-rational-man.jpg"
 
 *"Let's keep emotion out of this."*
 
-In some ways he is like a teenager. He thinks everyone else is wrong. They will never understand. But it doesn't matter. He has just discovered a way to win every argument, and has not yet noticed what winning costs him. He is embarrassed by anything he cannot put into words, but masks it with the certainty of objectivity.
+In some ways he is like a teenager. He thinks everyone else is wrong. They will never understand. He is thrilled by the power of winning arguments, and does not yet notice what winning costs him. Embarrassed by anything he cannot put into words, but masking it with the certainty of objectivity.
 
 In his view, nature is mechanism. And mechanism can be taken apart and understood. To him, it has no inside, no world of its own, nothing it would be like to be.
 
