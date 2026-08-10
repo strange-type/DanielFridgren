@@ -38,6 +38,4 @@ This is the bubble The Rational Man inhabits. He projects his view on everything
 
 When The Rational Man aims for wisdom, he operationalises it into steps that can be taken, sets up a committee that meets and submits a report, and checks the quarterly scores on various metrics.
 
-The opposite of the Rational Man? Not the irrational, but the one who knows she is blind. She can stand in a new room and be changed by what she hears. And starts to grasp the relations between those who can never reach fully into each other's worlds, but are deeply intertwined.
-
-*"I don't know. Say more."*
+The opposite of the Rational Man? Not the irrational, but the one who knows she is blind. She can stand in a new room and resonate, be changed by what she hears. Look in other ways. Intuit the relations between those who can never reach fully into each other’s worlds, but are deeply intertwined.
