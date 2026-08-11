@@ -18,11 +18,9 @@ In his view, nature is mechanism. And mechanism can be taken apart and understoo
 
 The Rational Man thinks he is entitled to use nature for his purposes. From his vantage point of ultimate objectivity it makes sense to control it to reach the outcomes he values.
 
-We shouldn't just discredit him. Facts matter. Emotions can lead us astray. Many things are measurable. Two contradictory claims cannot be true within the same system. Science is an immensely powerful tool.
+We shouldn't just discredit him. Facts matter. Emotions can lead us astray. Many things are measurable. Two contradictory claims cannot be true within the same system. And yes, science is an immensely powerful tool.
 
-But the danger comes when a powerful way of knowing mistakes its power for completeness.
-
-Rationality convinces us so completely of its soundness that we go blind to everything it dismisses.
+But a powerful way of knowing is not the same as completeness. Rationality convinces us so completely that we tend to go blind to everything it dismisses. 
 
 Whatever reality is, it has many facets. No conscious agent perceives more than a fraction of what is there to be perceived. Each animal moves through its own world, shaped by what its mind makes of what its senses deliver. Each being finds its world to be everything there is. Some worlds overlap. Many don't.
 
