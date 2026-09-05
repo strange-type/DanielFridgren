@@ -1,0 +1,22 @@
+{
+    "name": "Punkt",
+    "short_name": "Punkt",
+    "description": "Enkel todo-app inspirerad av Things — Inbox, Today, Upcoming, Logbook.",
+    "start_url": "/punkt/",
+    "scope": "/punkt/",
+    "display": "standalone",
+    "background_color": "#111827",
+    "theme_color": "#111827",
+    "icons": [
+        {
+            "src": "/punkt/icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/punkt/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

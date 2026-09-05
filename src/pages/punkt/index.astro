@@ -1,0 +1,603 @@
+---
+// Punkt is a standalone mini-app, deliberately not using the site's
+// shared Layout.astro: it needs its own manifest/start_url/scope so
+// "Add to Home Screen" installs *this* app, not fridgren.se.
+---
+
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Punkt</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#111827" />
+    <link rel="manifest" href="/punkt/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/punkt/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Punkt" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #111827;
+        --surface: #1b2333;
+        --border: #2c3650;
+        --text: #f3f4f6;
+        --muted: #9aa4b8;
+        --accent: #6ea8fe;
+        --danger: #f87171;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        padding-bottom: 4rem;
+      }
+
+      #gate {
+        max-width: 22rem;
+        margin: 4rem auto;
+        padding: 0 1rem;
+      }
+
+      #gate form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      main {
+        max-width: 32rem;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 3rem;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        margin: 0;
+      }
+
+      button {
+        font: inherit;
+        color: inherit;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 0.4rem 0.75rem;
+        cursor: pointer;
+      }
+
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #0b1220;
+        font-weight: 600;
+      }
+
+      button.icon {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.85rem;
+      }
+
+      input,
+      textarea,
+      select {
+        font: inherit;
+        color: var(--text);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.6rem;
+        width: 100%;
+      }
+
+      #add-form {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+
+      #add-form .row {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      #add-form .row > * {
+        flex: 1;
+      }
+
+      section {
+        margin-bottom: 2rem;
+      }
+
+      section h2 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+        margin: 0 0 0.5rem;
+      }
+
+      .date-group {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin: 0.75rem 0 0.25rem;
+      }
+
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+
+      li.task {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.6rem;
+        padding: 0.6rem 0.7rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+      }
+
+      li.task input[type="checkbox"] {
+        width: auto;
+        margin-top: 0.2rem;
+        accent-color: var(--accent);
+      }
+
+      .task-body {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .task-title {
+        word-break: break-word;
+      }
+
+      li.task.done .task-title {
+        text-decoration: line-through;
+        color: var(--muted);
+      }
+
+      .task-note {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 0.15rem;
+        white-space: pre-line;
+      }
+
+      .task-meta {
+        display: flex;
+        gap: 0.4rem;
+        margin-top: 0.4rem;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        font-size: 0.7rem;
+        padding: 0.1rem 0.4rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        color: var(--muted);
+      }
+
+      .badge.deadline {
+        color: var(--danger);
+        border-color: var(--danger);
+      }
+
+      .empty {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .error {
+        color: var(--danger);
+        font-size: 0.85rem;
+        min-height: 1.2em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gate">
+      <h1>Punkt</h1>
+      <form id="gate-form">
+        <input
+          id="gate-input"
+          type="password"
+          placeholder="Åtkomstkod"
+          autocomplete="current-password"
+          required
+        />
+        <button class="primary" type="submit">Lås upp</button>
+        <p id="gate-error" class="error"></p>
+      </form>
+    </div>
+
+    <main id="app" hidden>
+      <header>
+        <h1>Punkt</h1>
+        <button id="add-toggle" class="primary" type="button" aria-label="Lägg till uppgift">+ Ny</button>
+      </header>
+
+      <form id="add-form" hidden>
+        <input id="add-title" type="text" placeholder="Vad ska göras?" required maxlength="200" />
+        <div class="row">
+          <select id="add-when">
+            <option value="">Inbox</option>
+            <option value="today">Idag</option>
+            <option value="date">Datum…</option>
+          </select>
+          <input id="add-when-date" type="date" hidden />
+        </div>
+        <input id="add-deadline" type="date" title="Deadline (valfri)" />
+        <textarea id="add-note" placeholder="Anteckning (valfri)" rows="2"></textarea>
+        <div class="row">
+          <button class="primary" type="submit">Spara</button>
+          <button id="add-cancel" type="button">Avbryt</button>
+        </div>
+        <p id="add-error" class="error"></p>
+      </form>
+
+      <section data-view="inbox">
+        <h2>Inbox</h2>
+        <ul></ul>
+      </section>
+      <section data-view="today">
+        <h2>Today</h2>
+        <ul></ul>
+      </section>
+      <section data-view="upcoming">
+        <h2>Upcoming</h2>
+        <ul></ul>
+      </section>
+      <section data-view="logbook">
+        <h2>Logbook</h2>
+        <ul></ul>
+      </section>
+    </main>
+
+    <script>
+      const TOKEN_KEY = "punkt-token";
+      const API = "/.netlify/functions/punkt-tasks";
+
+      type Task = {
+        id: string;
+        title: string;
+        note: string;
+        when: string | null; // null | "today" | "YYYY-MM-DD"
+        deadline: string | null; // null | "YYYY-MM-DD"
+        done: boolean;
+        completedAt: string | null;
+      };
+
+      let tasks: Task[] = [];
+      let saveInFlight = false;
+      let saveQueued = false;
+
+      const gate = document.getElementById("gate") as HTMLDivElement;
+      const gateForm = document.getElementById("gate-form") as HTMLFormElement;
+      const gateInput = document.getElementById("gate-input") as HTMLInputElement;
+      const gateError = document.getElementById("gate-error") as HTMLParagraphElement;
+      const app = document.getElementById("app") as HTMLElement;
+
+      const addToggle = document.getElementById("add-toggle") as HTMLButtonElement;
+      const addForm = document.getElementById("add-form") as HTMLFormElement;
+      const addCancel = document.getElementById("add-cancel") as HTMLButtonElement;
+      const addTitle = document.getElementById("add-title") as HTMLInputElement;
+      const addWhen = document.getElementById("add-when") as HTMLSelectElement;
+      const addWhenDate = document.getElementById("add-when-date") as HTMLInputElement;
+      const addDeadline = document.getElementById("add-deadline") as HTMLInputElement;
+      const addNote = document.getElementById("add-note") as HTMLTextAreaElement;
+      const addError = document.getElementById("add-error") as HTMLParagraphElement;
+
+      function todayStr(): string {
+        const d = new Date();
+        const pad = (n: number) => String(n).padStart(2, "0");
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+      }
+
+      function makeId(): string {
+        return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      }
+
+      async function apiFetch(method: "GET" | "POST", body?: unknown) {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const res = await fetch(API, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            "x-punkt-token": token || ""
+          },
+          body: body ? JSON.stringify(body) : undefined
+        });
+        if (res.status === 401) {
+          localStorage.removeItem(TOKEN_KEY);
+          showGate("Fel åtkomstkod.");
+          throw new Error("unauthorized");
+        }
+        if (!res.ok) {
+          throw new Error(`API error ${res.status}`);
+        }
+        return res.json();
+      }
+
+      function showGate(message = "") {
+        app.hidden = true;
+        gate.hidden = false;
+        gateError.textContent = message;
+      }
+
+      function showApp() {
+        gate.hidden = true;
+        app.hidden = false;
+      }
+
+      async function loadTasks() {
+        const data = await apiFetch("GET");
+        tasks = data.tasks || [];
+        render();
+      }
+
+      function queueSave() {
+        if (saveInFlight) {
+          saveQueued = true;
+          return;
+        }
+        saveInFlight = true;
+        apiFetch("POST", { tasks })
+          .catch((err) => console.error("Punkt: failed to save tasks", err))
+          .finally(() => {
+            saveInFlight = false;
+            if (saveQueued) {
+              saveQueued = false;
+              queueSave();
+            }
+          });
+      }
+
+      function escapeHtml(s: string): string {
+        return s.replace(/[&<>"']/g, (c) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        })[c] as string);
+      }
+
+      function taskRow(task: Task, options: { showSchedule?: boolean } = {}): string {
+        const badges: string[] = [];
+        if (!task.done && task.deadline) {
+          badges.push(`<span class="badge deadline">Deadline ${task.deadline}</span>`);
+        }
+        const scheduleActions =
+          options.showSchedule && !task.done
+            ? `<button class="icon" data-action="today" data-id="${task.id}">Idag</button>
+               <input type="date" class="icon" data-action="schedule" data-id="${task.id}" />`
+            : "";
+        return `
+          <li class="task ${task.done ? "done" : ""}" data-id="${task.id}">
+            <input type="checkbox" data-action="toggle" data-id="${task.id}" ${task.done ? "checked" : ""} />
+            <div class="task-body">
+              <div class="task-title">${escapeHtml(task.title)}</div>
+              ${task.note ? `<div class="task-note">${escapeHtml(task.note)}</div>` : ""}
+              <div class="task-meta">${badges.join("")}${scheduleActions}</div>
+            </div>
+            <button class="icon" data-action="delete" data-id="${task.id}" aria-label="Ta bort">×</button>
+          </li>`;
+      }
+
+      function render() {
+        const today = todayStr();
+        const inboxEl = document.querySelector('section[data-view="inbox"] ul')!;
+        const todayEl = document.querySelector('section[data-view="today"] ul')!;
+        const upcomingEl = document.querySelector('section[data-view="upcoming"] ul')!;
+        const logbookEl = document.querySelector('section[data-view="logbook"] ul')!;
+
+        const inbox = tasks.filter((t) => !t.done && !t.when);
+        const todayTasks = tasks.filter(
+          (t) => !t.done && t.when && (t.when === "today" || t.when <= today)
+        );
+        const upcoming = tasks
+          .filter((t) => !t.done && t.when && t.when !== "today" && t.when > today)
+          .sort((a, b) => (a.when! < b.when! ? -1 : 1));
+        const logbook = tasks
+          .filter((t) => t.done)
+          .sort((a, b) => (b.completedAt || "").localeCompare(a.completedAt || ""));
+
+        inboxEl.innerHTML =
+          inbox.map((t) => taskRow(t, { showSchedule: true })).join("") ||
+          '<p class="empty">Inboxen är tom.</p>';
+        todayEl.innerHTML =
+          todayTasks.map((t) => taskRow(t)).join("") || '<p class="empty">Inget för idag.</p>';
+
+        if (upcoming.length === 0) {
+          upcomingEl.innerHTML = '<p class="empty">Inget schemalagt.</p>';
+        } else {
+          let lastDate = "";
+          upcomingEl.innerHTML = upcoming
+            .map((t) => {
+              const heading =
+                t.when !== lastDate ? `<div class="date-group">${t.when}</div>` : "";
+              lastDate = t.when!;
+              return heading + taskRow(t);
+            })
+            .join("");
+        }
+
+        if (logbook.length === 0) {
+          logbookEl.innerHTML = '<p class="empty">Inget avklarat än.</p>';
+        } else {
+          let lastDay = "";
+          logbookEl.innerHTML = logbook
+            .map((t) => {
+              const day = (t.completedAt || "").slice(0, 10);
+              const heading = day !== lastDay ? `<div class="date-group">${day}</div>` : "";
+              lastDay = day;
+              return heading + taskRow(t);
+            })
+            .join("");
+        }
+      }
+
+      function findTask(id: string): Task | undefined {
+        return tasks.find((t) => t.id === id);
+      }
+
+      document.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        const action = target.dataset.action;
+        const id = target.dataset.id;
+        if (!action || !id) return;
+        const task = findTask(id);
+        if (!task) return;
+
+        if (action === "delete") {
+          tasks = tasks.filter((t) => t.id !== id);
+          render();
+          queueSave();
+        } else if (action === "today") {
+          task.when = "today";
+          render();
+          queueSave();
+        }
+      });
+
+      document.addEventListener("change", (e) => {
+        const target = e.target as HTMLElement;
+        const action = target.dataset.action;
+        const id = target.dataset.id;
+        if (!id) return;
+        const task = findTask(id);
+        if (!task) return;
+
+        if (action === "toggle") {
+          const checked = (target as HTMLInputElement).checked;
+          task.done = checked;
+          task.completedAt = checked ? new Date().toISOString() : null;
+          render();
+          queueSave();
+        } else if (action === "schedule") {
+          const value = (target as HTMLInputElement).value;
+          if (value) {
+            task.when = value;
+            render();
+            queueSave();
+          }
+        }
+      });
+
+      addToggle.addEventListener("click", () => {
+        addForm.hidden = false;
+        addToggle.hidden = true;
+        addTitle.focus();
+      });
+
+      function closeAddForm() {
+        addForm.hidden = true;
+        addToggle.hidden = false;
+        addForm.reset();
+        addWhenDate.hidden = true;
+        addError.textContent = "";
+      }
+
+      addCancel.addEventListener("click", closeAddForm);
+
+      addWhen.addEventListener("change", () => {
+        addWhenDate.hidden = addWhen.value !== "date";
+      });
+
+      addForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const title = addTitle.value.trim();
+        if (!title) return;
+
+        let when: string | null = null;
+        if (addWhen.value === "today") when = "today";
+        else if (addWhen.value === "date") {
+          if (!addWhenDate.value) {
+            addError.textContent = "Välj ett datum eller byt till Inbox/Idag.";
+            return;
+          }
+          when = addWhenDate.value;
+        }
+
+        tasks.push({
+          id: makeId(),
+          title,
+          note: addNote.value.trim(),
+          when,
+          deadline: addDeadline.value || null,
+          done: false,
+          completedAt: null
+        });
+        render();
+        queueSave();
+        closeAddForm();
+      });
+
+      gateForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        localStorage.setItem(TOKEN_KEY, gateInput.value);
+        gateError.textContent = "";
+        try {
+          await loadTasks();
+          showApp();
+        } catch {
+          // showGate() with the error already ran inside apiFetch on 401;
+          // any other failure gets a generic message here.
+          if (!gate.hidden) gateError.textContent = "Kunde inte ansluta. Försök igen.";
+        }
+      });
+
+      (async function init() {
+        if (!("serviceWorker" in navigator)) return;
+        navigator.serviceWorker.register("/punkt/sw.js").catch((err) => {
+          console.warn("Punkt: service worker registration failed", err);
+        });
+      })();
+
+      (async function boot() {
+        if (localStorage.getItem(TOKEN_KEY)) {
+          try {
+            await loadTasks();
+            showApp();
+            return;
+          } catch {
+            // fall through to gate
+          }
+        }
+        showGate();
+      })();
+    </script>
+  </body>
+</html>

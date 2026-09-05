@@ -8,5 +8,19 @@ import icon from "astro-icon";
 export default defineConfig({
   site: "https://fridgren.se",
   trailingSlash: "always",
-  integrations: [robots(), sitemap(), icon()],
+  integrations: [
+    robots({
+      policy: [
+        {
+          userAgent: ["*"],
+          allow: "/",
+          disallow: ["/punkt"],
+        },
+      ],
+    }),
+    sitemap({
+      filter: (page) => !page.includes("/punkt"),
+    }),
+    icon(),
+  ],
 });
