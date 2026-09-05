@@ -1,6 +1,10 @@
 [build]
   functions = "netlify/functions"
   command = "pnpm build"
+  # Skip rebuilding the main site when a commit only touches Punkt's
+  # task data (Notes/punkt/data) — those writes happen on every
+  # checkbox toggle and shouldn't redeploy fridgren.se.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!Notes/punkt/data'"
 
 [functions]
   node_bundler = "esbuild"

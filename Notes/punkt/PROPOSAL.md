@@ -1,7 +1,11 @@
-# Todo-app inspirerad av Things — förslag v1
+# Punkt — todo-app inspirerad av Things
 
-Status: **Utkast för diskussion** — inget byggt än. Detta är en samlad
-sammanfattning inför beslut om scope, datalagring och namn.
+Status: **Namn och datalagring beslutade.** Inget appkod byggt än.
+
+- Namn: **Punkt**
+- Datalagring: samma repo (`Notes/punkt/data/tasks.md`), skrivet via en
+  Netlify function. Netlify-builden för fridgren.se hoppas över när en
+  commit bara rör den mappen (se `netlify.toml`, `[build].ignore`).
 
 ## 1. Bantad funktionslista (v1)
 
@@ -25,29 +29,26 @@ uppgifter, upprepning, natural-language-datumparsing. Allt går att lägga
 till senare om det visar sig behövas — men klarar man sig utan är appen
 mycket enklare att bygga och underhålla.
 
-## 2. Datalagring — kan allt sparas som markdown i repot?
+## 2. Datalagring — markdown i repot, med ignore-regel
 
-Ja, tekniskt går det bra, men två saker är värda att bestämma medvetet
-innan vi bygger:
+Beslutat: data ligger i det här repot (`Notes/punkt/data/tasks.md`),
+skrivet via en serverless-funktion som committar till GitHub (samma
+mönster som `netlify/functions/contact.js` redan använder mot SendGrid).
 
-**a) Var filen ska ligga.** Om `tasks.md` läggs i det här repot
-(`strange-type/DanielFridgren`) och skrivs via en serverless-funktion som
-committar till GitHub (samma mönster som `netlify/functions/contact.js`
-redan använder mot SendGrid), så innebär varje bock-i-ruta en riktig git-
-commit + push. Det triggar en ny Netlify-build av **fridgren.se** varje
-gång, vilket är onödigt brus i det publika sajt-repot.
+För att slippa att varje bock-i-ruta triggar en ny Netlify-build av
+**fridgren.se** har `netlify.toml` fått en `ignore`-regel:
 
-Rekommendation: antingen
-1. Lägg todo-appens data i en **separat mapp/repo** som deployas som en
-   egen liten Netlify-site (t.ex. `todo.fridgren.se`), eller
-2. behåll allt i det här repot men lägg till en `ignore`-regel i
-   `netlify.toml` så att Netlify hoppar över rebuild när enda ändringen
-   ligger under todo-datamappen (`git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- ':!Notes/todo-app/data'`).
+```toml
+[build]
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!Notes/punkt/data'"
+```
 
-Jag lutar mot (1) — enklare att resonera om, och sajtens deploy-historik
-hålls ren. Men (2) funkar fint om du vill ha allt samlat på ett ställe.
+Kommandot diffar allt *utom* `Notes/punkt/data` mellan senast byggda
+commit och den nya. Är den diffen tom (inga ändringar utanför
+datamappen) hoppar Netlify över builden. Så fort en ändring rör
+sajtkod, layout eller annat utanför datamappen körs builden som vanligt.
 
-**b) En skrivare i taget.** En serverless-funktion bör vara enda
+**En skrivare i taget.** En serverless-funktion bör vara enda
 instansen som skriver till filen (läs → ändra → committa), så att inte
 två enheter råkar skriva samtidigt och skapar en merge-konflikt. Med en
 ensam användare (du) är detta ett litet problem, men värt att bygga in
@@ -95,33 +96,22 @@ Källor:
 ## 4. Teknisk stack (förslag)
 
 Konsekvent med hur du redan jobbar i det här repot:
-- **Astro** för UI (samma som fridgren.se), eller ett litet separat
-  Astro/React-projekt om vi väljer eget repo/subdomän
+- **Astro** för UI (samma som fridgren.se), i det här repot
 - **Netlify Functions** för att läsa/skriva `tasks.md` via GitHub API och
   för web-push
 - **PWA**: manifest.json + service worker, `astro-pwa`-liknande setup
   eller handskriven service worker (litet scope, inte mycket att vinna på
   ett stort PWA-ramverk)
 
-## 5. Namnförslag
+## 5. Namn: Punkt
 
-| Namn | Tanke |
-|---|---|
-| **Punkt** | Svenska för "period/prick" — en uppgift, en punkt att bocka av. Kort, lätt att säga. |
-| **Idag** | Fokus på "vad gör jag idag", matchar Things "Today"-fokus. |
-| **Klaramig** | Lekfullt, "klara mig genom dagen" / "klar-markera". |
-| **Bara** | Svenska "bara det här", signalerar minimalism. |
-| **Doit** | Kort, internationellt, enkelt domännamn. |
-
-Jag lutar mot **Punkt** eller **Idag** — korta, svenska, och matchar den
-avskalade känslan du vill ha. Säg till vilket du gillar (eller ett eget
-förslag) så byter jag namn på mappen och kör vidare.
+Svenska för "period/prick" — en uppgift, en punkt att bocka av. Kort,
+lätt att säga, matchar den avskalade känslan.
 
 ## 6. Nästa steg
 
-1. Du väljer namn (eller ber mig välja).
-2. Vi bestämmer var data ska bo (eget repo/subdomän vs. samma repo +
-   ignore-regel).
-3. Jag sätter upp grundskelett: vyer (Inbox/Today/Upcoming/Logbook),
+1. ~~Du väljer namn.~~ ✅ Punkt
+2. ~~Bestäm var data ska bo.~~ ✅ Samma repo + `netlify.toml`-ignore
+3. Sätt upp grundskelett: vyer (Inbox/Today/Upcoming/Logbook),
    markdown-läsning/skrivning via en Netlify function, PWA-manifest.
 4. Web push som separat steg när grundflödet funkar.
