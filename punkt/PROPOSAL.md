@@ -3,7 +3,7 @@
 Status: **Namn och datalagring beslutade.** Inget appkod byggt än.
 
 - Namn: **Punkt**
-- Datalagring: samma repo (`Notes/punkt/data/tasks.md`), skrivet via en
+- Datalagring: samma repo (`punkt/data/tasks.md`), skrivet via en
   Netlify function. Netlify-builden för fridgren.se hoppas över när en
   commit bara rör den mappen (se `netlify.toml`, `[build].ignore`).
 
@@ -31,7 +31,7 @@ mycket enklare att bygga och underhålla.
 
 ## 2. Datalagring — markdown i repot, med ignore-regel
 
-Beslutat: data ligger i det här repot (`Notes/punkt/data/tasks.md`),
+Beslutat: data ligger i det här repot (`punkt/data/tasks.md`),
 skrivet via en serverless-funktion som committar till GitHub (samma
 mönster som `netlify/functions/contact.js` redan använder mot SendGrid).
 
@@ -40,10 +40,10 @@ För att slippa att varje bock-i-ruta triggar en ny Netlify-build av
 
 ```toml
 [build]
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!Notes/punkt/data'"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!punkt/data'"
 ```
 
-Kommandot diffar allt *utom* `Notes/punkt/data` mellan senast byggda
+Kommandot diffar allt *utom* `punkt/data` mellan senast byggda
 commit och den nya. Är den diffen tom (inga ändringar utanför
 datamappen) hoppar Netlify över builden. Så fort en ändring rör
 sajtkod, layout eller annat utanför datamappen körs builden som vanligt.
@@ -54,15 +54,17 @@ två enheter råkar skriva samtidigt och skapar en merge-konflikt. Med en
 ensam användare (du) är detta ett litet problem, men värt att bygga in
 från start ändå.
 
-Markdown fungerar bra som **källa**, t.ex.:
+Filen har en enda `## Tasks`-sektion — Inbox/Today/Upcoming/Logbook
+räknas fram i appen från `when`/`done`, uppgifterna flyttas alltså inte
+mellan sektioner i filen. Format:
 
 ```markdown
-## Inbox
-- [ ] Handla mjölk
+## Tasks
 
-## Today (2026-09-05)
-- [ ] Skicka faktura #deadline:2026-09-06
-- [x] Träna (klar 08:12)
+- [ ] Handla mjölk (id: 1725500000000-a1b2c)
+- [ ] Skicka faktura (id: 1725500000001-d3e4f, when: 2026-09-10, deadline: 2026-09-06)
+  > Kom ihåg kvitto
+- [x] Träna (id: 1725400000000-x9y8z, done: 2026-09-04T18:32:00.000Z)
 ```
 
 Appen parsar/skriver filen i detta format. Enkelt att läsa direkt i
@@ -108,10 +110,51 @@ Konsekvent med hur du redan jobbar i det här repot:
 Svenska för "period/prick" — en uppgift, en punkt att bocka av. Kort,
 lätt att säga, matchar den avskalade känslan.
 
-## 6. Nästa steg
+## 7. Säkerhet och synlighet
+
+Punkt ligger på samma domän (fridgren.se) men ska varken synas för
+sökmotorer eller vara öppen för andra än dig. Byggt in:
+
+- `robots.txt` (via `astro-robots`) disallowar `/punkt`.
+- Sitemapen exkluderar `/punkt/*` (filter i `@astrojs/sitemap`).
+- Sidan har `<meta name="robots" content="noindex, nofollow">`.
+- `netlify.toml` sätter `X-Robots-Tag: noindex, nofollow`,
+  `X-Frame-Options: DENY` och `Referrer-Policy: no-referrer` på
+  `/punkt/*` och på API-funktionen, samt `Cache-Control: no-store` på
+  API-svaren.
+- Åtkomst till appen och API:t kräver en delad hemlighet
+  (`PUNKT_ACCESS_TOKEN`) som skickas i en header och jämförs
+  konstant-tid (`crypto.timingSafeEqual`) för att undvika
+  timing-attacker.
+- Netlify-funktionen har enkel rate limiting per IP (max 30
+  anrop/minut) för att bromsa brute-force-gissning av hemligheten.
+- GitHub-skrivåtkomsten sker via en egen token (`PUNKT_GITHUB_TOKEN`) —
+  använd en fine-grained personal access token begränsad till just det
+  här repot med enbart "Contents: Read and write".
+
+Det här är rimlig säkerhet för ett personligt enanvändarverktyg, men
+inte samma nivå som en riktig inloggning (t.ex. Netlify Identity/OAuth).
+Om appen ska nås av fler än dig, eller innehålla känsligare data, är
+det värt att byta ut den delade hemligheten mot riktig autentisering.
+
+## 8. Driftsättning — miljövariabler
+
+Lägg till i Netlifys site settings (Environment variables):
+
+| Variabel | Krävs | Beskrivning |
+|---|---|---|
+| `PUNKT_ACCESS_TOKEN` | Ja | Valfri lång slumpad hemlighet du själv väljer — din "lösenkod" för appen. |
+| `PUNKT_GITHUB_TOKEN` | Ja | Fine-grained GitHub PAT med `Contents: Read and write` scopat till `strange-type/DanielFridgren`. |
+| `PUNKT_GITHUB_OWNER` | Nej | Default `strange-type`. |
+| `PUNKT_GITHUB_REPO` | Nej | Default `DanielFridgren`. |
+| `PUNKT_GITHUB_BRANCH` | Nej | Default `main` — vilken branch datafilen läses/skrivs mot. |
+| `PUNKT_DATA_PATH` | Nej | Default `punkt/data/tasks.md`. |
+
+## 9. Nästa steg
 
 1. ~~Du väljer namn.~~ ✅ Punkt
 2. ~~Bestäm var data ska bo.~~ ✅ Samma repo + `netlify.toml`-ignore
-3. Sätt upp grundskelett: vyer (Inbox/Today/Upcoming/Logbook),
-   markdown-läsning/skrivning via en Netlify function, PWA-manifest.
-4. Web push som separat steg när grundflödet funkar.
+3. ~~Grundskelett: vyer, Netlify function, PWA-manifest, säkerhet.~~ ✅
+   Klart för granskning i PR:en.
+4. Sätt miljövariablerna ovan i Netlify, testa i produktion.
+5. Web push som separat steg när grundflödet funkar i praktiken.

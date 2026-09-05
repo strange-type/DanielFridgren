@@ -2,12 +2,27 @@
   functions = "netlify/functions"
   command = "pnpm build"
   # Skip rebuilding the main site when a commit only touches Punkt's
-  # task data (Notes/punkt/data) — those writes happen on every
-  # checkbox toggle and shouldn't redeploy fridgren.se.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!Notes/punkt/data'"
+  # task data (punkt/data) — those writes happen on every checkbox
+  # toggle and shouldn't redeploy fridgren.se.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!punkt/data'"
 
 [functions]
   node_bundler = "esbuild"
+
+# Keep Punkt out of search engines and other sites' frames, in addition
+# to the page's own <meta name="robots"> tag and astro-robots.txt entry.
+[[headers]]
+  for = "/punkt/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/.netlify/functions/punkt-tasks"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
 
 # Redirect all www to non-www
 [[redirects]]
