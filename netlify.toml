@@ -18,6 +18,15 @@
     X-Frame-Options = "DENY"
     Referrer-Policy = "no-referrer"
 
+# Always revalidate the app shell itself, so a redeploy is visible on
+# the next load instead of getting stuck behind a cached HTML response
+# (iOS home-screen apps in particular can otherwise keep showing an old
+# build for a long time).
+[[headers]]
+  for = "/punkt/"
+  [headers.values]
+    Cache-Control = "no-cache"
+
 [[headers]]
   for = "/.netlify/functions/punkt-tasks"
   [headers.values]
