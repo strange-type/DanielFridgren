@@ -47,12 +47,12 @@
           "Segoe UI",
           Roboto,
           sans-serif;
-        padding-bottom: 4rem;
+        padding-bottom: calc(4rem + env(safe-area-inset-bottom));
       }
 
       #gate {
         max-width: 22rem;
-        margin: 4rem auto;
+        margin: calc(4rem + env(safe-area-inset-top)) auto 0;
         padding: 0 1rem;
       }
 
@@ -84,7 +84,7 @@
       .screen {
         max-width: 32rem;
         margin: 0 auto;
-        padding: 1.25rem 1rem 3rem;
+        padding: calc(1.25rem + env(safe-area-inset-top)) 1rem 3rem;
       }
 
       /* --- Menu (root) screen -------------------------------------- */
@@ -207,6 +207,19 @@
         display: none;
       }
 
+      .list-header-right {
+        display: flex;
+        align-items: center;
+      }
+
+      .done-pill {
+        background: var(--accent);
+        color: #0b1220;
+        font-weight: 600;
+        padding: 0.45rem 1.1rem;
+        border-radius: 999px;
+      }
+
       /* Quick-add card: fields have no visible box of their own — just
          a faintly elevated card so they read as "almost invisible". */
       #quick-add {
@@ -324,7 +337,107 @@
         display: flex;
         align-items: flex-start;
         gap: 0.7rem;
-        padding: 0.55rem 0;
+        padding: 0.55rem 0.5rem;
+        margin: 0 -0.5rem;
+        border-radius: 0.6rem;
+        touch-action: pan-y;
+      }
+
+      li.task-row.row-selected {
+        background: rgba(110, 168, 254, 0.18);
+      }
+
+      .select-circle {
+        width: 20px;
+        height: 20px;
+        margin-top: 0.1rem;
+        border: 2px solid var(--muted);
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: grid;
+        place-content: center;
+      }
+
+      .select-circle.selected {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .select-circle.selected::after {
+        content: "";
+        width: 5px;
+        height: 9px;
+        border: solid #0b1220;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg) translate(-1px, -1px);
+      }
+
+      .select-bar,
+      .when-panel {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(92%, 30rem);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        z-index: 20;
+      }
+
+      .select-bar {
+        bottom: calc(1.25rem + env(safe-area-inset-bottom));
+        display: flex;
+        justify-content: space-around;
+        padding: 0.55rem 0.5rem;
+      }
+
+      .select-bar[hidden] {
+        display: none;
+      }
+
+      .select-bar-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.15rem;
+        font-size: 0.7rem;
+        color: var(--accent);
+        padding: 0.2rem 0.75rem;
+      }
+
+      .select-bar-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .select-bar-btn.danger {
+        color: var(--danger);
+      }
+
+      .when-panel {
+        bottom: calc(4.75rem + env(safe-area-inset-bottom));
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+      }
+
+      .when-panel[hidden] {
+        display: none;
+      }
+
+      .when-panel button {
+        color: var(--accent);
+        padding: 0.3rem 0.5rem;
+      }
+
+      .when-panel input[type="date"] {
+        width: auto;
+        background: transparent;
+        border: none;
+        color: var(--text);
+        padding: 0;
       }
 
       .task-check {
@@ -446,7 +559,10 @@
             </button>
             <h1 id="list-title"></h1>
           </div>
-          <button id="add-btn" class="fab" aria-label="Ny uppgift">+</button>
+          <div class="list-header-right">
+            <button id="add-btn" class="fab" aria-label="Ny uppgift">+</button>
+            <button id="done-btn" class="done-pill" hidden>Done</button>
+          </div>
         </div>
 
         <div id="quick-add" hidden>
@@ -471,6 +587,23 @@
         </div>
 
         <ul id="task-list"></ul>
+
+        <div id="when-panel" class="when-panel" hidden>
+          <button type="button" id="wp-today">Idag</button>
+          <input type="date" id="wp-date" />
+          <button type="button" id="wp-inbox">Inbox</button>
+        </div>
+
+        <div id="select-bar" class="select-bar" hidden>
+          <button type="button" id="sb-when" class="select-bar-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
+            <span>When</span>
+          </button>
+          <button type="button" id="sb-delete" class="select-bar-btn danger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"></path></svg>
+            <span>Delete</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -494,6 +627,8 @@
       let currentView: View = "menu";
       let saveInFlight = false;
       let saveQueued = false;
+      let selectMode = false;
+      let selectedIds = new Set<string>();
 
       const gate = document.getElementById("gate") as HTMLDivElement;
       const gateForm = document.getElementById("gate-form") as HTMLFormElement;
@@ -507,7 +642,16 @@
       const listTitle = document.getElementById("list-title") as HTMLHeadingElement;
       const backBtn = document.getElementById("back-btn") as HTMLButtonElement;
       const addBtn = document.getElementById("add-btn") as HTMLButtonElement;
+      const doneBtn = document.getElementById("done-btn") as HTMLButtonElement;
       const taskListEl = document.getElementById("task-list") as HTMLUListElement;
+
+      const selectBar = document.getElementById("select-bar") as HTMLDivElement;
+      const sbWhen = document.getElementById("sb-when") as HTMLButtonElement;
+      const sbDelete = document.getElementById("sb-delete") as HTMLButtonElement;
+      const whenPanel = document.getElementById("when-panel") as HTMLDivElement;
+      const wpToday = document.getElementById("wp-today") as HTMLButtonElement;
+      const wpDate = document.getElementById("wp-date") as HTMLInputElement;
+      const wpInbox = document.getElementById("wp-inbox") as HTMLButtonElement;
 
       const quickAdd = document.getElementById("quick-add") as HTMLDivElement;
       const qaTitle = document.getElementById("qa-title") as HTMLInputElement;
@@ -650,9 +794,13 @@
         const icons: string[] = [];
         if (task.note) icons.push(ICON_NOTE);
         if (!task.done && task.deadline) icons.push(ICON_FLAG);
+        const selected = selectedIds.has(task.id);
+        const indicator = selectMode
+          ? `<span class="select-circle ${selected ? "selected" : ""}"></span>`
+          : `<input type="checkbox" class="task-check" data-action="toggle" data-id="${task.id}" ${task.done ? "checked" : ""} />`;
         return `
-          <li class="task-row ${task.done ? "done" : ""}" data-id="${task.id}">
-            <input type="checkbox" class="task-check" data-action="toggle" data-id="${task.id}" ${task.done ? "checked" : ""} />
+          <li class="task-row ${task.done ? "done" : ""} ${selectMode && selected ? "row-selected" : ""}" data-id="${task.id}">
+            ${indicator}
             <div class="task-body">
               <div class="task-title-line">
                 <span class="task-title">${escapeHtml(task.title)}</span>
@@ -709,6 +857,7 @@
 
       function navigateTo(view: View) {
         currentView = view;
+        exitSelectMode();
         if (view === "menu") {
           closeQuickAdd();
           viewList.hidden = true;
@@ -742,6 +891,124 @@
         renderTaskList();
         renderMenu();
         queueSave();
+      });
+
+      // --- Swipe-to-select (Things-style multi-select) --------------------
+
+      function enterSelectMode(id: string) {
+        if (selectMode) return;
+        selectMode = true;
+        selectedIds = new Set([id]);
+        closeQuickAdd();
+        backBtn.hidden = true;
+        addBtn.hidden = true;
+        doneBtn.hidden = false;
+        selectBar.hidden = false;
+        renderTaskList();
+      }
+
+      function exitSelectMode() {
+        const wasSelecting = selectMode;
+        selectMode = false;
+        selectedIds = new Set();
+        whenPanel.hidden = true;
+        selectBar.hidden = true;
+        doneBtn.hidden = true;
+        backBtn.hidden = false;
+        addBtn.hidden = currentView === "logbook";
+        if (wasSelecting) renderTaskList();
+      }
+
+      doneBtn.addEventListener("click", exitSelectMode);
+
+      let suppressNextClick = false;
+
+      taskListEl.addEventListener("click", (e) => {
+        if (suppressNextClick) {
+          suppressNextClick = false;
+          return;
+        }
+        if (!selectMode) return;
+        const row = (e.target as HTMLElement).closest(".task-row") as HTMLElement | null;
+        if (!row) return;
+        const id = row.dataset.id!;
+        if (selectedIds.has(id)) selectedIds.delete(id);
+        else selectedIds.add(id);
+        renderTaskList();
+      });
+
+      let swipeActive = false;
+      let swipeTriggered = false;
+      let swipeStartX = 0;
+      let swipeStartY = 0;
+      let swipeRowId: string | null = null;
+
+      taskListEl.addEventListener("pointerdown", (e) => {
+        if (selectMode) return;
+        const row = (e.target as HTMLElement).closest(".task-row") as HTMLElement | null;
+        if (!row) return;
+        swipeActive = true;
+        swipeTriggered = false;
+        swipeStartX = (e as PointerEvent).clientX;
+        swipeStartY = (e as PointerEvent).clientY;
+        swipeRowId = row.dataset.id || null;
+      });
+
+      taskListEl.addEventListener("pointermove", (e) => {
+        if (!swipeActive || swipeTriggered || !swipeRowId) return;
+        const dx = (e as PointerEvent).clientX - swipeStartX;
+        const dy = (e as PointerEvent).clientY - swipeStartY;
+        if (Math.abs(dx) > 28 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          swipeTriggered = true;
+          suppressNextClick = true;
+          enterSelectMode(swipeRowId);
+        }
+      });
+
+      function endSwipe() {
+        swipeActive = false;
+        swipeRowId = null;
+        if (swipeTriggered) {
+          // If the browser follows this drag with a synthetic click, it
+          // fires synchronously and consumes the flag itself. If not,
+          // clear it shortly after so the *next* real tap isn't swallowed.
+          setTimeout(() => {
+            suppressNextClick = false;
+          }, 0);
+        }
+      }
+      taskListEl.addEventListener("pointerup", endSwipe);
+      taskListEl.addEventListener("pointercancel", endSwipe);
+
+      function applyWhenToSelected(when: string | null) {
+        for (const id of selectedIds) {
+          const t = findTask(id);
+          if (t) t.when = when;
+        }
+        renderMenu();
+        queueSave();
+        whenPanel.hidden = true;
+        exitSelectMode();
+      }
+
+      sbWhen.addEventListener("click", () => {
+        whenPanel.hidden = !whenPanel.hidden;
+      });
+
+      wpToday.addEventListener("click", () => applyWhenToSelected("today"));
+      wpInbox.addEventListener("click", () => applyWhenToSelected(null));
+      wpDate.addEventListener("change", () => {
+        if (wpDate.value) applyWhenToSelected(wpDate.value);
+      });
+
+      sbDelete.addEventListener("click", () => {
+        if (selectedIds.size === 0) return;
+        const count = selectedIds.size;
+        if (!confirm(count === 1 ? "Ta bort uppgiften?" : `Ta bort ${count} uppgifter?`)) return;
+        tasks = tasks.filter((t) => !selectedIds.has(t.id));
+        renderMenu();
+        queueSave();
+        exitSelectMode();
       });
 
       // --- Quick add -----------------------------------------------------
