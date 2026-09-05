@@ -47,12 +47,12 @@
           "Segoe UI",
           Roboto,
           sans-serif;
-        padding-bottom: 4rem;
+        padding-bottom: calc(4rem + env(safe-area-inset-bottom));
       }
 
       #gate {
         max-width: 22rem;
-        margin: 4rem auto;
+        margin: calc(4rem + env(safe-area-inset-top)) auto 0;
         padding: 0 1rem;
       }
 
@@ -84,7 +84,7 @@
       .screen {
         max-width: 32rem;
         margin: 0 auto;
-        padding: 1.25rem 1rem 3rem;
+        padding: calc(1.25rem + env(safe-area-inset-top)) 1rem 3rem;
       }
 
       /* --- Menu (root) screen -------------------------------------- */
@@ -385,7 +385,7 @@
       }
 
       .select-bar {
-        bottom: 1.25rem;
+        bottom: calc(1.25rem + env(safe-area-inset-bottom));
         display: flex;
         justify-content: space-around;
         padding: 0.55rem 0.5rem;
@@ -415,7 +415,7 @@
       }
 
       .when-panel {
-        bottom: 4.75rem;
+        bottom: calc(4.75rem + env(safe-area-inset-bottom));
         display: flex;
         align-items: center;
         justify-content: space-around;
