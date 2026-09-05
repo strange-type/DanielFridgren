@@ -20,4 +20,3 @@ uppgifter flyttas inte mellan sektioner i den här filen.
 - [ ] Titel (id: <id>, when: <today|YYYY-MM-DD|->, deadline: <YYYY-MM-DD|->)
   > Valfri anteckning på indragen rad direkt under uppgiften.
 - [x] Titel (id: <id>, done: <ISO-datetime>)
-- [ ] Test (id: 1788639043624-8imed, when: 2026-09-05)
