@@ -82,11 +82,20 @@ async function writeTasksFile(content, sha, message) {
 
 /**
  * Parse the `## Tasks` markdown format into a flat task list.
+ *
+ * Only lines after the `## Tasks` heading are considered — the file's
+ * leading HTML comment documents the format using lines that would
+ * otherwise match TASK_LINE/NOTE_LINE themselves, so scanning the
+ * whole file re-parses that example text as if it were real tasks.
  */
 function parseTasks(markdown) {
+    const lines = markdown.split('\n');
+    const startIndex = lines.findIndex((l) => l.trim() === '## Tasks');
+    const body = startIndex === -1 ? [] : lines.slice(startIndex + 1);
+
     const tasks = [];
     let last = null;
-    for (const line of markdown.split('\n')) {
+    for (const line of body) {
         const taskMatch = line.match(TASK_LINE);
         if (taskMatch) {
             const [, mark, title, id, when, deadline, done] = taskMatch;

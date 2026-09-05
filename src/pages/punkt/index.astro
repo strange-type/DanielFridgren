@@ -17,7 +17,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Punkt" />
-    <style>
+    <style is:global>
       :root {
         color-scheme: dark;
         --bg: #111827;
@@ -27,6 +27,10 @@
         --muted: #9aa4b8;
         --accent: #6ea8fe;
         --danger: #f87171;
+        --gold: #f5c518;
+        --blue-badge: #3b7bf0;
+        --red-badge: #ef5b7a;
+        --green-badge: #34c759;
       }
 
       * {
@@ -58,48 +62,15 @@
         gap: 0.75rem;
       }
 
-      main {
-        max-width: 32rem;
-        margin: 0 auto;
-        padding: 1.5rem 1rem 3rem;
-      }
-
-      header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 1rem;
-      }
-
-      h1 {
-        font-size: 1.5rem;
-        margin: 0;
-      }
-
       button {
         font: inherit;
         color: inherit;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 0.5rem;
-        padding: 0.4rem 0.75rem;
+        background: none;
+        border: none;
         cursor: pointer;
       }
 
-      button.primary {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: #0b1220;
-        font-weight: 600;
-      }
-
-      button.icon {
-        padding: 0.3rem 0.5rem;
-        font-size: 0.85rem;
-      }
-
       input,
-      textarea,
       select {
         font: inherit;
         color: var(--text);
@@ -110,67 +81,276 @@
         width: 100%;
       }
 
-      #add-form {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 0.75rem;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.6rem;
+      .screen {
+        max-width: 32rem;
+        margin: 0 auto;
+        padding: 1.25rem 1rem 3rem;
       }
 
-      #add-form .row {
+      /* --- Menu (root) screen -------------------------------------- */
+
+      .menu-header h1 {
+        font-size: 1.7rem;
+        margin: 0 0 1.25rem;
+      }
+
+      #menu-list {
         display: flex;
+        flex-direction: column;
+      }
+
+      .menu-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.7rem 0.25rem;
+        border-radius: 0.6rem;
+        text-align: left;
+        width: 100%;
+      }
+
+      .menu-row:active {
+        background: var(--surface);
+      }
+
+      .menu-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .menu-icon svg {
+        width: 16px;
+        height: 16px;
+        color: white;
+      }
+
+      .menu-icon--inbox {
+        background: var(--blue-badge);
+      }
+      .menu-icon--upcoming {
+        background: var(--red-badge);
+      }
+      .menu-icon--logbook {
+        background: var(--green-badge);
+      }
+      .menu-icon--today {
+        background: none;
+        font-size: 1.5rem;
+        color: var(--gold);
+      }
+
+      .menu-label {
+        flex: 1;
+        font-size: 1.05rem;
+      }
+
+      .menu-count {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      /* --- List (detail) screen -------------------------------------- */
+
+      .list-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+
+      .list-header-left {
+        display: flex;
+        align-items: center;
         gap: 0.5rem;
       }
 
-      #add-form .row > * {
-        flex: 1;
+      #back-btn {
+        color: var(--accent);
+        display: flex;
+        padding: 0.25rem;
       }
 
-      section {
-        margin-bottom: 2rem;
+      #back-btn svg {
+        width: 22px;
+        height: 22px;
       }
 
-      section h2 {
+      #list-title {
+        font-size: 1.4rem;
+        margin: 0;
+      }
+
+      .fab {
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #0b1220;
+        font-size: 1.4rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .fab:active {
+        opacity: 0.8;
+      }
+
+      .fab[hidden] {
+        display: none;
+      }
+
+      /* Quick-add card: fields have no visible box of their own — just
+         a faintly elevated card so they read as "almost invisible". */
+      #quick-add {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.9rem;
+        padding: 0.85rem 1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      #quick-add .qa-title-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .checkbox-decor {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--muted);
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+
+      #quick-add input {
+        background: transparent;
+        border: none;
+        padding: 0;
+        width: 100%;
+      }
+
+      #quick-add input:focus {
+        outline: none;
+      }
+
+      #quick-add input::placeholder {
+        color: var(--muted);
+      }
+
+      #qa-title {
+        font-size: 1.05rem;
+      }
+
+      #qa-note {
+        font-size: 0.9rem;
+        color: var(--muted);
+        padding: 0.5rem 0 0.1rem 1.75rem;
+      }
+
+      .qa-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 0.5rem;
+        padding-left: 1.75rem;
+        gap: 0.5rem;
+      }
+
+      .qa-context {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
         font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
         color: var(--muted);
-        margin: 0 0 0.5rem;
       }
 
-      .date-group {
-        font-size: 0.75rem;
-        color: var(--muted);
-        margin: 0.75rem 0 0.25rem;
+      .qa-context .star {
+        color: var(--gold);
       }
 
-      ul {
+      .qa-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .ghost-icon {
+        color: var(--muted);
+        padding: 0.2rem;
+        border-radius: 0.4rem;
+      }
+
+      .ghost-icon.active {
+        color: var(--accent);
+      }
+
+      .ghost-icon svg {
+        width: 17px;
+        height: 17px;
+        display: block;
+      }
+
+      .qa-date {
+        width: auto;
+        background: transparent;
+        border: none;
+        color: var(--text);
+        font-size: 0.85rem;
+        padding: 0;
+      }
+
+      /* --- Flat task list, matching Things' plain rows --------------- */
+
+      #task-list {
         list-style: none;
         margin: 0;
         padding: 0;
         display: flex;
         flex-direction: column;
-        gap: 0.4rem;
       }
 
-      li.task {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 0.6rem;
-        padding: 0.6rem 0.7rem;
+      li.task-row {
         display: flex;
         align-items: flex-start;
-        gap: 0.6rem;
+        gap: 0.7rem;
+        padding: 0.55rem 0;
       }
 
-      li.task input[type="checkbox"] {
-        width: auto;
-        margin-top: 0.2rem;
-        accent-color: var(--accent);
+      .task-check {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        margin-top: 0.1rem;
+        border: 2px solid var(--muted);
+        border-radius: 6px;
+        display: grid;
+        place-content: center;
+        flex-shrink: 0;
+      }
+
+      .task-check:checked {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .task-check:checked::after {
+        content: "";
+        width: 5px;
+        height: 9px;
+        border: solid #0b1220;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg) translate(-1px, -1px);
       }
 
       .task-body {
@@ -178,51 +358,55 @@
         min-width: 0;
       }
 
+      .task-title-line {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+      }
+
       .task-title {
         word-break: break-word;
       }
 
-      li.task.done .task-title {
+      li.task-row.done .task-title {
         text-decoration: line-through;
         color: var(--muted);
       }
 
+      .task-title-line svg {
+        width: 14px;
+        height: 14px;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+
       .task-note {
-        font-size: 0.8rem;
+        font-size: 0.82rem;
         color: var(--muted);
-        margin-top: 0.15rem;
-        white-space: pre-line;
+        margin-top: 0.1rem;
       }
 
-      .task-meta {
-        display: flex;
-        gap: 0.4rem;
-        margin-top: 0.4rem;
-        flex-wrap: wrap;
-      }
-
-      .badge {
-        font-size: 0.7rem;
-        padding: 0.1rem 0.4rem;
-        border-radius: 999px;
-        border: 1px solid var(--border);
+      .date-group {
+        font-size: 0.75rem;
         color: var(--muted);
-      }
-
-      .badge.deadline {
-        color: var(--danger);
-        border-color: var(--danger);
+        margin: 0.9rem 0 0.1rem;
       }
 
       .empty {
         color: var(--muted);
-        font-size: 0.85rem;
+        font-size: 0.9rem;
+        padding: 0.5rem 0;
       }
 
       .error {
         color: var(--danger);
         font-size: 0.85rem;
         min-height: 1.2em;
+      }
+
+      [hidden] {
+        display: none !important;
       }
     </style>
   </head>
@@ -237,53 +421,58 @@
           autocomplete="current-password"
           required
         />
-        <button class="primary" type="submit">Lås upp</button>
+        <button
+          type="submit"
+          style="background:var(--accent);color:#0b1220;font-weight:600;border-radius:0.5rem;padding:0.5rem 0.9rem;"
+          >Lås upp</button
+        >
         <p id="gate-error" class="error"></p>
       </form>
     </div>
 
-    <main id="app" hidden>
-      <header>
-        <h1>Punkt</h1>
-        <button id="add-toggle" class="primary" type="button" aria-label="Lägg till uppgift">+ Ny</button>
-      </header>
-
-      <form id="add-form" hidden>
-        <input id="add-title" type="text" placeholder="Vad ska göras?" required maxlength="200" />
-        <div class="row">
-          <select id="add-when">
-            <option value="">Inbox</option>
-            <option value="today">Idag</option>
-            <option value="date">Datum…</option>
-          </select>
-          <input id="add-when-date" type="date" hidden />
+    <div id="app" hidden>
+      <div id="view-menu" class="screen">
+        <div class="menu-header">
+          <h1>Punkt</h1>
         </div>
-        <input id="add-deadline" type="date" title="Deadline (valfri)" />
-        <textarea id="add-note" placeholder="Anteckning (valfri)" rows="2"></textarea>
-        <div class="row">
-          <button class="primary" type="submit">Spara</button>
-          <button id="add-cancel" type="button">Avbryt</button>
-        </div>
-        <p id="add-error" class="error"></p>
-      </form>
+        <nav id="menu-list"></nav>
+      </div>
 
-      <section data-view="inbox">
-        <h2>Inbox</h2>
-        <ul></ul>
-      </section>
-      <section data-view="today">
-        <h2>Today</h2>
-        <ul></ul>
-      </section>
-      <section data-view="upcoming">
-        <h2>Upcoming</h2>
-        <ul></ul>
-      </section>
-      <section data-view="logbook">
-        <h2>Logbook</h2>
-        <ul></ul>
-      </section>
-    </main>
+      <div id="view-list" class="screen" hidden>
+        <div class="list-header">
+          <div class="list-header-left">
+            <button id="back-btn" aria-label="Tillbaka">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <h1 id="list-title"></h1>
+          </div>
+          <button id="add-btn" class="fab" aria-label="Ny uppgift">+</button>
+        </div>
+
+        <div id="quick-add" hidden>
+          <div class="qa-title-row">
+            <span class="checkbox-decor"></span>
+            <input id="qa-title" type="text" placeholder="New To-Do" maxlength="200" />
+          </div>
+          <input id="qa-note" type="text" placeholder="Notes" />
+          <div class="qa-footer">
+            <span id="qa-context" class="qa-context"></span>
+            <div class="qa-actions">
+              <button type="button" id="qa-when-toggle" class="ghost-icon" aria-label="Schemalägg" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
+              </button>
+              <input type="date" id="qa-when" class="qa-date" hidden />
+              <button type="button" id="qa-deadline-toggle" class="ghost-icon" aria-label="Deadline">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4h11l-2 4 2 4H5"></path></svg>
+              </button>
+              <input type="date" id="qa-deadline" class="qa-date" hidden />
+            </div>
+          </div>
+        </div>
+
+        <ul id="task-list"></ul>
+      </div>
+    </div>
 
     <script>
       const TOKEN_KEY = "punkt-token";
@@ -299,7 +488,10 @@
         completedAt: string | null;
       };
 
+      type View = "menu" | "inbox" | "today" | "upcoming" | "logbook";
+
       let tasks: Task[] = [];
+      let currentView: View = "menu";
       let saveInFlight = false;
       let saveQueued = false;
 
@@ -309,15 +501,40 @@
       const gateError = document.getElementById("gate-error") as HTMLParagraphElement;
       const app = document.getElementById("app") as HTMLElement;
 
-      const addToggle = document.getElementById("add-toggle") as HTMLButtonElement;
-      const addForm = document.getElementById("add-form") as HTMLFormElement;
-      const addCancel = document.getElementById("add-cancel") as HTMLButtonElement;
-      const addTitle = document.getElementById("add-title") as HTMLInputElement;
-      const addWhen = document.getElementById("add-when") as HTMLSelectElement;
-      const addWhenDate = document.getElementById("add-when-date") as HTMLInputElement;
-      const addDeadline = document.getElementById("add-deadline") as HTMLInputElement;
-      const addNote = document.getElementById("add-note") as HTMLTextAreaElement;
-      const addError = document.getElementById("add-error") as HTMLParagraphElement;
+      const viewMenu = document.getElementById("view-menu") as HTMLDivElement;
+      const viewList = document.getElementById("view-list") as HTMLDivElement;
+      const menuList = document.getElementById("menu-list") as HTMLElement;
+      const listTitle = document.getElementById("list-title") as HTMLHeadingElement;
+      const backBtn = document.getElementById("back-btn") as HTMLButtonElement;
+      const addBtn = document.getElementById("add-btn") as HTMLButtonElement;
+      const taskListEl = document.getElementById("task-list") as HTMLUListElement;
+
+      const quickAdd = document.getElementById("quick-add") as HTMLDivElement;
+      const qaTitle = document.getElementById("qa-title") as HTMLInputElement;
+      const qaNote = document.getElementById("qa-note") as HTMLInputElement;
+      const qaContext = document.getElementById("qa-context") as HTMLSpanElement;
+      const qaWhenToggle = document.getElementById("qa-when-toggle") as HTMLButtonElement;
+      const qaWhen = document.getElementById("qa-when") as HTMLInputElement;
+      const qaDeadlineToggle = document.getElementById("qa-deadline-toggle") as HTMLButtonElement;
+      const qaDeadline = document.getElementById("qa-deadline") as HTMLInputElement;
+
+      const ICON_INBOX =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l2-5h14l2 5"/><path d="M3 9v9a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h5a1 1 0 0 1 1 1 3 3 0 0 0 6 0 1 1 0 0 1 1-1h5"/></svg>';
+      const ICON_UPCOMING =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
+      const ICON_LOGBOOK =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><rect x="3" y="4" width="18" height="17" rx="2"/></svg>';
+      const ICON_NOTE =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg>';
+      const ICON_FLAG =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4h11l-2 4 2 4H5"/></svg>';
+
+      const VIEW_TITLES: Record<Exclude<View, "menu">, string> = {
+        inbox: "Inbox",
+        today: "Today",
+        upcoming: "Upcoming",
+        logbook: "Logbook"
+      };
 
       function todayStr(): string {
         const d = new Date();
@@ -327,6 +544,16 @@
 
       function makeId(): string {
         return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      }
+
+      function escapeHtml(s: string): string {
+        return s.replace(/[&<>"']/g, (c) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        })[c] as string);
       }
 
       async function apiFetch(method: "GET" | "POST", body?: unknown) {
@@ -364,7 +591,7 @@
       async function loadTasks() {
         const data = await apiFetch("GET");
         tasks = data.tasks || [];
-        render();
+        renderMenu();
       }
 
       function queueSave() {
@@ -384,186 +611,240 @@
           });
       }
 
-      function escapeHtml(s: string): string {
-        return s.replace(/[&<>"']/g, (c) => ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;"
-        })[c] as string);
+      function bucket(view: View): Task[] {
+        const today = todayStr();
+        if (view === "inbox") return tasks.filter((t) => !t.done && !t.when);
+        if (view === "today")
+          return tasks.filter((t) => !t.done && t.when && (t.when === "today" || t.when <= today));
+        if (view === "upcoming")
+          return tasks
+            .filter((t) => !t.done && t.when && t.when !== "today" && t.when > today)
+            .sort((a, b) => (a.when! < b.when! ? -1 : 1));
+        if (view === "logbook")
+          return tasks
+            .filter((t) => t.done)
+            .sort((a, b) => (b.completedAt || "").localeCompare(a.completedAt || ""));
+        return [];
       }
 
-      function taskRow(task: Task, options: { showSchedule?: boolean } = {}): string {
-        const badges: string[] = [];
-        if (!task.done && task.deadline) {
-          badges.push(`<span class="badge deadline">Deadline ${task.deadline}</span>`);
-        }
-        const scheduleActions =
-          options.showSchedule && !task.done
-            ? `<button class="icon" data-action="today" data-id="${task.id}">Idag</button>
-               <input type="date" class="icon" data-action="schedule" data-id="${task.id}" />`
-            : "";
+      function renderMenu() {
+        const rows: { view: Exclude<View, "menu">; label: string; iconHtml: string; iconClass: string }[] = [
+          { view: "inbox", label: "Inbox", iconHtml: ICON_INBOX, iconClass: "menu-icon--inbox" },
+          { view: "today", label: "Today", iconHtml: "★", iconClass: "menu-icon--today" },
+          { view: "upcoming", label: "Upcoming", iconHtml: ICON_UPCOMING, iconClass: "menu-icon--upcoming" },
+          { view: "logbook", label: "Logbook", iconHtml: ICON_LOGBOOK, iconClass: "menu-icon--logbook" }
+        ];
+        menuList.innerHTML = rows
+          .map(
+            (r) => `
+          <button class="menu-row" data-nav="${r.view}">
+            <span class="menu-icon ${r.iconClass}">${r.iconHtml}</span>
+            <span class="menu-label">${r.label}</span>
+            <span class="menu-count">${bucket(r.view).length}</span>
+          </button>`
+          )
+          .join("");
+      }
+
+      function taskRowHtml(task: Task): string {
+        const icons: string[] = [];
+        if (task.note) icons.push(ICON_NOTE);
+        if (!task.done && task.deadline) icons.push(ICON_FLAG);
         return `
-          <li class="task ${task.done ? "done" : ""}" data-id="${task.id}">
-            <input type="checkbox" data-action="toggle" data-id="${task.id}" ${task.done ? "checked" : ""} />
+          <li class="task-row ${task.done ? "done" : ""}" data-id="${task.id}">
+            <input type="checkbox" class="task-check" data-action="toggle" data-id="${task.id}" ${task.done ? "checked" : ""} />
             <div class="task-body">
-              <div class="task-title">${escapeHtml(task.title)}</div>
+              <div class="task-title-line">
+                <span class="task-title">${escapeHtml(task.title)}</span>
+                ${icons.join("")}
+              </div>
               ${task.note ? `<div class="task-note">${escapeHtml(task.note)}</div>` : ""}
-              <div class="task-meta">${badges.join("")}${scheduleActions}</div>
             </div>
-            <button class="icon" data-action="delete" data-id="${task.id}" aria-label="Ta bort">×</button>
           </li>`;
       }
 
-      function render() {
-        const today = todayStr();
-        const inboxEl = document.querySelector('section[data-view="inbox"] ul')!;
-        const todayEl = document.querySelector('section[data-view="today"] ul')!;
-        const upcomingEl = document.querySelector('section[data-view="upcoming"] ul')!;
-        const logbookEl = document.querySelector('section[data-view="logbook"] ul')!;
+      function renderTaskList() {
+        const items = bucket(currentView as View);
 
-        const inbox = tasks.filter((t) => !t.done && !t.when);
-        const todayTasks = tasks.filter(
-          (t) => !t.done && t.when && (t.when === "today" || t.when <= today)
-        );
-        const upcoming = tasks
-          .filter((t) => !t.done && t.when && t.when !== "today" && t.when > today)
-          .sort((a, b) => (a.when! < b.when! ? -1 : 1));
-        const logbook = tasks
-          .filter((t) => t.done)
-          .sort((a, b) => (b.completedAt || "").localeCompare(a.completedAt || ""));
-
-        inboxEl.innerHTML =
-          inbox.map((t) => taskRow(t, { showSchedule: true })).join("") ||
-          '<p class="empty">Inboxen är tom.</p>';
-        todayEl.innerHTML =
-          todayTasks.map((t) => taskRow(t)).join("") || '<p class="empty">Inget för idag.</p>';
-
-        if (upcoming.length === 0) {
-          upcomingEl.innerHTML = '<p class="empty">Inget schemalagt.</p>';
-        } else {
+        if (currentView === "upcoming") {
+          if (items.length === 0) {
+            taskListEl.innerHTML = '<p class="empty">Inget schemalagt.</p>';
+            return;
+          }
           let lastDate = "";
-          upcomingEl.innerHTML = upcoming
+          taskListEl.innerHTML = items
             .map((t) => {
-              const heading =
-                t.when !== lastDate ? `<div class="date-group">${t.when}</div>` : "";
+              const heading = t.when !== lastDate ? `<div class="date-group">${t.when}</div>` : "";
               lastDate = t.when!;
-              return heading + taskRow(t);
+              return heading + taskRowHtml(t);
             })
             .join("");
+          return;
         }
 
-        if (logbook.length === 0) {
-          logbookEl.innerHTML = '<p class="empty">Inget avklarat än.</p>';
-        } else {
+        if (currentView === "logbook") {
+          if (items.length === 0) {
+            taskListEl.innerHTML = '<p class="empty">Inget avklarat än.</p>';
+            return;
+          }
           let lastDay = "";
-          logbookEl.innerHTML = logbook
+          taskListEl.innerHTML = items
             .map((t) => {
               const day = (t.completedAt || "").slice(0, 10);
               const heading = day !== lastDay ? `<div class="date-group">${day}</div>` : "";
               lastDay = day;
-              return heading + taskRow(t);
+              return heading + taskRowHtml(t);
             })
             .join("");
+          return;
         }
+
+        const emptyLabel = currentView === "inbox" ? "Inboxen är tom." : "Inget för idag.";
+        taskListEl.innerHTML = items.map((t) => taskRowHtml(t)).join("") || `<p class="empty">${emptyLabel}</p>`;
       }
 
       function findTask(id: string): Task | undefined {
         return tasks.find((t) => t.id === id);
       }
 
-      document.addEventListener("click", (e) => {
-        const target = e.target as HTMLElement;
-        const action = target.dataset.action;
-        const id = target.dataset.id;
-        if (!action || !id) return;
-        const task = findTask(id);
-        if (!task) return;
-
-        if (action === "delete") {
-          tasks = tasks.filter((t) => t.id !== id);
-          render();
-          queueSave();
-        } else if (action === "today") {
-          task.when = "today";
-          render();
-          queueSave();
+      function navigateTo(view: View) {
+        currentView = view;
+        if (view === "menu") {
+          closeQuickAdd();
+          viewList.hidden = true;
+          viewMenu.hidden = false;
+          renderMenu();
+          return;
         }
-      });
-
-      document.addEventListener("change", (e) => {
-        const target = e.target as HTMLElement;
-        const action = target.dataset.action;
-        const id = target.dataset.id;
-        if (!id) return;
-        const task = findTask(id);
-        if (!task) return;
-
-        if (action === "toggle") {
-          const checked = (target as HTMLInputElement).checked;
-          task.done = checked;
-          task.completedAt = checked ? new Date().toISOString() : null;
-          render();
-          queueSave();
-        } else if (action === "schedule") {
-          const value = (target as HTMLInputElement).value;
-          if (value) {
-            task.when = value;
-            render();
-            queueSave();
-          }
-        }
-      });
-
-      addToggle.addEventListener("click", () => {
-        addForm.hidden = false;
-        addToggle.hidden = true;
-        addTitle.focus();
-      });
-
-      function closeAddForm() {
-        addForm.hidden = true;
-        addToggle.hidden = false;
-        addForm.reset();
-        addWhenDate.hidden = true;
-        addError.textContent = "";
+        viewMenu.hidden = true;
+        viewList.hidden = false;
+        listTitle.textContent = VIEW_TITLES[view];
+        addBtn.hidden = view === "logbook";
+        renderTaskList();
       }
 
-      addCancel.addEventListener("click", closeAddForm);
-
-      addWhen.addEventListener("change", () => {
-        addWhenDate.hidden = addWhen.value !== "date";
+      menuList.addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest("[data-nav]") as HTMLElement | null;
+        if (btn) navigateTo(btn.dataset.nav as View);
       });
 
-      addForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const title = addTitle.value.trim();
+      backBtn.addEventListener("click", () => navigateTo("menu"));
+
+      taskListEl.addEventListener("change", (e) => {
+        const target = e.target as HTMLElement;
+        if (target.dataset.action !== "toggle") return;
+        const id = target.dataset.id!;
+        const task = findTask(id);
+        if (!task) return;
+        const checked = (target as HTMLInputElement).checked;
+        task.done = checked;
+        task.completedAt = checked ? new Date().toISOString() : null;
+        renderTaskList();
+        renderMenu();
+        queueSave();
+      });
+
+      // --- Quick add -----------------------------------------------------
+
+      function openQuickAdd() {
+        quickAdd.hidden = false;
+        qaTitle.value = "";
+        qaNote.value = "";
+        qaWhen.value = "";
+        qaDeadline.value = "";
+        qaWhen.hidden = true;
+        qaDeadline.hidden = true;
+        qaWhenToggle.classList.remove("active");
+        qaDeadlineToggle.classList.remove("active");
+
+        if (currentView === "today") {
+          qaContext.innerHTML = '<span class="star">★</span> Today';
+          qaWhenToggle.hidden = true;
+        } else if (currentView === "upcoming") {
+          qaContext.textContent = "Upcoming";
+          qaWhenToggle.hidden = true;
+          qaWhen.hidden = false;
+        } else {
+          qaContext.textContent = "Inbox";
+          qaWhenToggle.hidden = false;
+        }
+
+        qaTitle.focus();
+      }
+
+      function closeQuickAdd() {
+        quickAdd.hidden = true;
+      }
+
+      addBtn.addEventListener("click", () => {
+        if (quickAdd.hidden) openQuickAdd();
+        else closeQuickAdd();
+      });
+
+      qaWhenToggle.addEventListener("click", () => {
+        qaWhen.hidden = !qaWhen.hidden;
+        qaWhenToggle.classList.toggle("active", !qaWhen.hidden);
+        if (!qaWhen.hidden) qaWhen.focus();
+      });
+
+      qaDeadlineToggle.addEventListener("click", () => {
+        qaDeadline.hidden = !qaDeadline.hidden;
+        qaDeadlineToggle.classList.toggle("active", !qaDeadline.hidden);
+        if (!qaDeadline.hidden) qaDeadline.focus();
+      });
+
+      function commitQuickAdd() {
+        const title = qaTitle.value.trim();
         if (!title) return;
 
         let when: string | null = null;
-        if (addWhen.value === "today") when = "today";
-        else if (addWhen.value === "date") {
-          if (!addWhenDate.value) {
-            addError.textContent = "Välj ett datum eller byt till Inbox/Idag.";
+        if (currentView === "today") when = "today";
+        else if (currentView === "upcoming") {
+          if (!qaWhen.value) {
+            qaWhen.hidden = false;
+            qaWhen.focus();
             return;
           }
-          when = addWhenDate.value;
+          when = qaWhen.value;
+        } else if (!qaWhen.hidden && qaWhen.value) {
+          when = qaWhen.value;
         }
 
         tasks.push({
           id: makeId(),
           title,
-          note: addNote.value.trim(),
+          note: qaNote.value.trim(),
           when,
-          deadline: addDeadline.value || null,
+          deadline: qaDeadline.value || null,
           done: false,
           completedAt: null
         });
-        render();
+
+        renderTaskList();
+        renderMenu();
         queueSave();
-        closeAddForm();
+
+        // Things-style rapid entry: clear and keep the card open for
+        // the next to-do instead of closing it.
+        qaTitle.value = "";
+        qaNote.value = "";
+        qaTitle.focus();
+      }
+
+      qaTitle.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          commitQuickAdd();
+        } else if (e.key === "Escape") {
+          closeQuickAdd();
+        }
       });
+
+      qaNote.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeQuickAdd();
+      });
+
+      // --- Gate + boot -----------------------------------------------------
 
       gateForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -572,14 +853,13 @@
         try {
           await loadTasks();
           showApp();
+          navigateTo("menu");
         } catch {
-          // showGate() with the error already ran inside apiFetch on 401;
-          // any other failure gets a generic message here.
           if (!gate.hidden) gateError.textContent = "Kunde inte ansluta. Försök igen.";
         }
       });
 
-      (async function init() {
+      (async function initServiceWorker() {
         if (!("serviceWorker" in navigator)) return;
         navigator.serviceWorker.register("/punkt/sw.js").catch((err) => {
           console.warn("Punkt: service worker registration failed", err);
@@ -591,6 +871,7 @@
           try {
             await loadTasks();
             showApp();
+            navigateTo("menu");
             return;
           } catch {
             // fall through to gate
