@@ -2122,13 +2122,18 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           pendingWhenChoice = "today";
         }
         const pad = (n: number) => String(n).padStart(2, "0");
+        const now = new Date();
+        const defaultTime = new Date(now.getTime() + 60 * 60 * 1000);
+        const genericDefault = `${pad(defaultTime.getHours())}:${pad(defaultTime.getMinutes())}`;
         // This Evening implies a sensible reminder default of 18:00,
         // rather than the generic "an hour from now" — matching what a
-        // reminder for an evening to-do would actually be for.
-        const defaultTime = new Date(Date.now() + 60 * 60 * 1000);
-        const genericDefault = `${pad(defaultTime.getHours())}:${pad(defaultTime.getMinutes())}`;
+        // reminder for an evening to-do would actually be for. Unless
+        // it's already 18:00 or later, in which case 18:00 has already
+        // passed and the generic "an hour from now" rule applies same
+        // as any other to-do.
+        const eveningDefault = now.getHours() >= 18 ? genericDefault : "18:00";
         reminderTimeInput.value =
-          pendingRemind || (pendingWhenChoice === "evening" ? "18:00" : genericDefault);
+          pendingRemind || (pendingWhenChoice === "evening" ? eveningDefault : genericDefault);
         whenSheet.hidden = true;
         reminderSheet.hidden = false;
       });
