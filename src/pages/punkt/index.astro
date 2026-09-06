@@ -110,9 +110,40 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       /* --- Menu (root) screen -------------------------------------- */
 
+      .menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+      }
+
       .menu-header h1 {
         font-size: 1.7rem;
-        margin: 0 0 1.25rem;
+        margin: 0;
+      }
+
+      .save-error {
+        position: fixed;
+        bottom: calc(1.25rem + env(safe-area-inset-bottom));
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(92%, 30rem);
+        background: var(--danger);
+        color: #1a0a0a;
+        border-radius: 0.7rem;
+        padding: 0.6rem 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+        font-size: 0.85rem;
+        z-index: 40;
+      }
+
+      .save-error button {
+        font-weight: 600;
+        text-decoration: underline;
+        flex-shrink: 0;
       }
 
       #menu-list {
@@ -211,13 +242,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         height: 3.4rem;
         border-radius: 50%;
         background: var(--accent);
-        color: #0b1220;
-        font-size: 2rem;
-        font-weight: 600;
+        color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
+      }
+
+      .fab svg {
+        width: 28px;
+        height: 28px;
+        display: block;
       }
 
       .fab:active {
@@ -510,9 +545,46 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .date-group {
-        font-size: 0.75rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text);
+        margin: 1.25rem 0 0.4rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .task-date-badge {
+        color: var(--accent);
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+
+      .date-group.upcoming {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        border-bottom: none;
+      }
+
+      .upcoming-day-num {
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1;
+      }
+
+      .upcoming-day-label {
+        font-size: 0.95rem;
+        font-weight: 600;
         color: var(--muted);
-        margin: 0.9rem 0 0.1rem;
+        white-space: nowrap;
+      }
+
+      .upcoming-day-rule {
+        flex: 1;
+        align-self: center;
+        height: 1px;
+        background: var(--border);
       }
 
       .empty {
@@ -745,9 +817,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
     </div>
 
     <div id="app" hidden>
+      <div id="save-error" class="save-error" hidden>
+        <span id="save-error-text"></span>
+        <button type="button" id="save-error-retry">Försök igen</button>
+      </div>
+
       <div id="view-menu" class="screen">
         <div class="menu-header">
           <h1>Punkt</h1>
+          <button id="menu-add-btn" class="fab" aria-label="Ny uppgift">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+          </button>
         </div>
         <nav id="menu-list"></nav>
       </div>
@@ -761,7 +841,9 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             <h1 id="list-title"></h1>
           </div>
           <div class="list-header-right">
-            <button id="add-btn" class="fab" aria-label="Ny uppgift">+</button>
+            <button id="add-btn" class="fab" aria-label="Ny uppgift">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+            </button>
             <button id="done-btn" class="done-pill" hidden>Done</button>
           </div>
         </div>
@@ -885,10 +967,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const gateInput = document.getElementById("gate-input") as HTMLInputElement;
       const gateError = document.getElementById("gate-error") as HTMLParagraphElement;
       const app = document.getElementById("app") as HTMLElement;
+      const saveError = document.getElementById("save-error") as HTMLDivElement;
+      const saveErrorText = document.getElementById("save-error-text") as HTMLSpanElement;
+      const saveErrorRetry = document.getElementById("save-error-retry") as HTMLButtonElement;
 
       const viewMenu = document.getElementById("view-menu") as HTMLDivElement;
       const viewList = document.getElementById("view-list") as HTMLDivElement;
       const menuList = document.getElementById("menu-list") as HTMLElement;
+      const menuAddBtn = document.getElementById("menu-add-btn") as HTMLButtonElement;
       const listTitle = document.getElementById("list-title") as HTMLHeadingElement;
       const backBtn = document.getElementById("back-btn") as HTMLButtonElement;
       const addBtn = document.getElementById("add-btn") as HTMLButtonElement;
@@ -933,8 +1019,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg>';
       const ICON_FLAG =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4h11l-2 4 2 4H5"/></svg>';
-      const ICON_CLOCK =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>';
+      const ICON_BELL =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
 
       const VIEW_TITLES: Record<Exclude<View, "menu">, string> = {
         inbox: "Inbox",
@@ -979,7 +1065,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           throw new Error("unauthorized");
         }
         if (!res.ok) {
-          throw new Error(`API error ${res.status}`);
+          let detail = "";
+          try {
+            detail = (await res.json()).error || "";
+          } catch {
+            // response wasn't JSON — leave detail blank
+          }
+          throw new Error(`API error ${res.status}${detail ? `: ${detail}` : ""}`);
         }
         return res.json();
       }
@@ -1033,6 +1125,20 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         app.hidden = false;
       }
 
+      function showSaveError(message: string) {
+        saveErrorText.textContent = `Kunde inte spara: ${message}`;
+        saveError.hidden = false;
+      }
+
+      function hideSaveError() {
+        saveError.hidden = true;
+      }
+
+      saveErrorRetry.addEventListener("click", () => {
+        hideSaveError();
+        queueSave();
+      });
+
       async function loadTasks() {
         const data = await apiFetch("GET");
         tasks = data.tasks || [];
@@ -1046,7 +1152,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         }
         saveInFlight = true;
         apiFetch("POST", { tasks })
-          .catch((err) => console.error("Punkt: failed to save tasks", err))
+          .then(() => hideSaveError())
+          .catch((err) => {
+            console.error("Punkt: failed to save tasks", err);
+            showSaveError(err.message);
+          })
           .finally(() => {
             saveInFlight = false;
             if (saveQueued) {
@@ -1091,10 +1201,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           .join("");
       }
 
-      function taskRowHtml(task: Task): string {
+      function taskRowHtml(task: Task, dateBadge?: string): string {
         const icons: string[] = [];
         if (task.note) icons.push(ICON_NOTE);
-        if (!task.done && task.remind) icons.push(ICON_CLOCK);
+        if (!task.done && task.remind) icons.push(ICON_BELL);
         if (!task.done && task.deadline) icons.push(ICON_FLAG);
         const selected = selectedIds.has(task.id);
         const indicator = selectMode
@@ -1105,12 +1215,46 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             ${indicator}
             <div class="task-body">
               <div class="task-title-line">
+                ${dateBadge ? `<span class="task-date-badge">${dateBadge}</span>` : ""}
                 <span class="task-title">${escapeHtml(task.title)}</span>
                 ${icons.join("")}
               </div>
               ${task.note ? `<div class="task-note">${escapeHtml(task.note)}</div>` : ""}
             </div>
           </li>`;
+      }
+
+      /** "5/9" style compact date, matching Things' Logbook rows. */
+      function formatCompactDate(dateStr: string): string {
+        const [, month, day] = dateStr.split("-").map(Number);
+        return `${day}/${month}`;
+      }
+
+      /** Groups Logbook entries the way Things does: Today, Yesterday,
+       *  then by month (with the year appended once it's not this year). */
+      function logbookGroupLabel(dateStr: string, todayStr: string): string {
+        const date = new Date(`${dateStr}T00:00:00`);
+        const today = new Date(`${todayStr}T00:00:00`);
+        const diffDays = Math.round((today.getTime() - date.getTime()) / 86400000);
+        if (diffDays === 0) return "Today";
+        if (diffDays === 1) return "Yesterday";
+        const sameYear = date.getFullYear() === today.getFullYear();
+        const month = date.toLocaleDateString("en-US", { month: "long" });
+        return sameYear ? month : `${month} ${date.getFullYear()}`;
+      }
+
+      /** Label next to the big day number in Upcoming: "Tomorrow" for
+       *  the next day, the weekday name for the rest of this week, else
+       *  the month (year appended once it's not this year). */
+      function upcomingGroupLabel(dateStr: string, todayStr: string): string {
+        const date = new Date(`${dateStr}T00:00:00`);
+        const today = new Date(`${todayStr}T00:00:00`);
+        const diffDays = Math.round((date.getTime() - today.getTime()) / 86400000);
+        if (diffDays === 1) return "Tomorrow";
+        if (diffDays > 1 && diffDays < 7) return date.toLocaleDateString("en-US", { weekday: "long" });
+        const sameYear = date.getFullYear() === today.getFullYear();
+        const month = date.toLocaleDateString("en-US", { month: "short" });
+        return sameYear ? month : `${month} ${date.getFullYear()}`;
       }
 
       function renderTaskList() {
@@ -1121,10 +1265,20 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             taskListEl.innerHTML = '<p class="empty">Inget schemalagt.</p>';
             return;
           }
+          const today = todayStr();
           let lastDate = "";
           taskListEl.innerHTML = items
             .map((t) => {
-              const heading = t.when !== lastDate ? `<div class="date-group">${t.when}</div>` : "";
+              let heading = "";
+              if (t.when !== lastDate) {
+                const date = new Date(`${t.when}T00:00:00`);
+                heading = `
+                  <div class="date-group upcoming">
+                    <span class="upcoming-day-num">${date.getDate()}</span>
+                    <span class="upcoming-day-label">${upcomingGroupLabel(t.when!, today)}</span>
+                    <span class="upcoming-day-rule"></span>
+                  </div>`;
+              }
               lastDate = t.when!;
               return heading + taskRowHtml(t);
             })
@@ -1137,13 +1291,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             taskListEl.innerHTML = '<p class="empty">Inget avklarat än.</p>';
             return;
           }
-          let lastDay = "";
+          const today = todayStr();
+          let lastLabel = "";
           taskListEl.innerHTML = items
             .map((t) => {
               const day = (t.completedAt || "").slice(0, 10);
-              const heading = day !== lastDay ? `<div class="date-group">${day}</div>` : "";
-              lastDay = day;
-              return heading + taskRowHtml(t);
+              const label = logbookGroupLabel(day, today);
+              const heading = label !== lastLabel ? `<div class="date-group">${label}</div>` : "";
+              lastLabel = label;
+              return heading + taskRowHtml(t, formatCompactDate(day));
             })
             .join("");
           return;
@@ -1355,6 +1511,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         else closeQuickAdd();
       });
 
+      // Adding from the root list-picker has no "current view" to add
+      // into, so it defaults to Inbox — same as tapping + there.
+      menuAddBtn.addEventListener("click", () => {
+        navigateTo("inbox");
+        openQuickAdd();
+      });
+
       // --- "When?" sheet ---------------------------------------------
 
       let calendarViewYear = 0;
@@ -1545,7 +1708,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         try {
           await loadTasks();
           showApp();
-          navigateTo("menu");
+          navigateTo("today");
         } catch {
           if (!gate.hidden) gateError.textContent = "Kunde inte ansluta. Försök igen.";
         }
@@ -1563,7 +1726,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           try {
             await loadTasks();
             showApp();
-            navigateTo("menu");
+            navigateTo("today");
             return;
           } catch {
             // fall through to gate
