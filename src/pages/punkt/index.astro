@@ -1208,6 +1208,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           showGate("Fel åtkomstkod.");
           throw new Error("unauthorized");
         }
+        if (res.status === 403) {
+          // Blocked for too many recent failed attempts — the token
+          // itself might still be correct, so it's kept (unlike 401)
+          // in case the block lifts before the user tries again.
+          showGate("För många felaktiga försök. Försök igen om en stund.");
+          throw new Error("blocked");
+        }
         if (!res.ok) {
           let detail = "";
           try {
@@ -2183,7 +2190,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           showApp();
           navigateTo("today");
         } catch {
-          if (!gate.hidden) gateError.textContent = "Kunde inte ansluta. Försök igen.";
+          // apiFetch already set a specific message (wrong code,
+          // blocked) via showGate() when that's why this failed — only
+          // fall back to a generic one if it didn't (network error, etc).
+          if (!gate.hidden && !gateError.textContent) {
+            gateError.textContent = "Kunde inte ansluta. Försök igen.";
+          }
         }
       });
 
@@ -2202,7 +2214,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             navigateTo("today");
             return;
           } catch {
-            // fall through to gate
+            // apiFetch already called showGate() with a specific
+            // message (wrong code, blocked) when that's why this
+            // failed — re-passing the current text is a no-op for it,
+            // but still clears the optimistic "already logged in"
+            // state for any other error that didn't set one.
+            showGate(gateError.textContent || "");
+            return;
           }
         }
         showGate();
