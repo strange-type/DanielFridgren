@@ -10,8 +10,19 @@ const TASKS_PATH = process.env.PUNKT_DATA_PATH || 'punkt/data/tasks.md';
 const SUBSCRIPTIONS_PATH =
     process.env.PUNKT_SUBSCRIPTIONS_PATH || 'punkt/data/subscriptions.json';
 const ERROR_LOG_PATH = process.env.PUNKT_ERROR_LOG_PATH || 'punkt/data/last-reminder-error.json';
+const AUTH_LOG_PATH = process.env.PUNKT_AUTH_LOG_PATH || 'punkt/data/auth-log.json';
 
 const { PUNKT_GITHUB_TOKEN } = process.env;
+
+// An IP is blocked once it has this many failed attempts within the
+// window below — both numbers are deliberately generous for a
+// single-user app, not a public login form.
+const AUTH_BLOCK_WINDOW_MS = 10 * 60 * 1000;
+const AUTH_BLOCK_THRESHOLD = 5;
+// How long failed-attempt entries stick around in the log after they
+// stop counting toward a block, purely so there's a short audit trail
+// visible in the file — has no effect on blocking itself.
+const AUTH_LOG_RETENTION_MS = 24 * 60 * 60 * 1000;
 
 const TASK_LINE =
     /^- \[( |x)\] (.+?) \(id: ([^,)]+)(?:, when: ([^,)]+))?(?:, deadline: ([^,)]+))?(?:, remind: ([^,)]+))?(?:, notified: ([^,)]+))?(?:, done: ([^,)]+))?\)\s*$/;
@@ -225,6 +236,74 @@ async function writeLastReminderError(info) {
     }
 }
 
+async function readAuthLog() {
+    try {
+        const { content, sha } = await readFile(AUTH_LOG_PATH);
+        const attempts = JSON.parse(content || '[]');
+        return { attempts: Array.isArray(attempts) ? attempts : [], sha };
+    } catch (err) {
+        if (err.status === 404) return { attempts: [], sha: null };
+        throw err;
+    }
+}
+
+async function writeAuthLog(attempts, sha, message) {
+    const content = JSON.stringify(attempts, null, 2) + '\n';
+    if (sha) {
+        await writeFile(AUTH_LOG_PATH, content, sha, message);
+    } else {
+        await githubRequest(`contents/${AUTH_LOG_PATH}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                message,
+                content: Buffer.from(content, 'utf-8').toString('base64'),
+                branch: BRANCH
+            })
+        });
+    }
+}
+
+function countRecentFailures(attempts, ip, now) {
+    return attempts.filter((a) => a.ip === ip && now - Date.parse(a.at) < AUTH_BLOCK_WINDOW_MS).length;
+}
+
+/**
+ * Whether `ip` is currently blocked, purely by counting its own recent
+ * entries in the auth log — there's no separate "blocked" flag to
+ * reset, so deleting (or backdating) an IP's entries in
+ * punkt/data/auth-log.json on GitHub un-blocks it immediately.
+ */
+async function isIpBlocked(ip) {
+    try {
+        const { attempts } = await readAuthLog();
+        return countRecentFailures(attempts, ip, Date.now()) >= AUTH_BLOCK_THRESHOLD;
+    } catch (err) {
+        console.error('Punkt: failed to read auth log', err);
+        return false;
+    }
+}
+
+/**
+ * Records a failed login attempt for `ip` and reports whether this
+ * attempt just tipped it over into being blocked. Best-effort, like
+ * writeLastReminderError below — a hiccup writing the log (including a
+ * write conflict from several bad guesses landing at once) should
+ * never itself break the login flow, just skip logging that one.
+ */
+async function logFailedAuthAttempt(ip) {
+    try {
+        const { attempts, sha } = await readAuthLog();
+        const now = Date.now();
+        const pruned = attempts.filter((a) => now - Date.parse(a.at) < AUTH_LOG_RETENTION_MS);
+        pruned.push({ ip, at: new Date(now).toISOString() });
+        await writeAuthLog(pruned, sha, 'Log Punkt failed login attempt');
+        return countRecentFailures(pruned, ip, now) >= AUTH_BLOCK_THRESHOLD;
+    } catch (err) {
+        console.error('Punkt: failed to log auth attempt', err);
+        return false;
+    }
+}
+
 export {
     readTasksFile,
     writeTasksFile,
@@ -233,5 +312,7 @@ export {
     validateTasks,
     readSubscriptions,
     writeSubscriptions,
-    writeLastReminderError
+    writeLastReminderError,
+    isIpBlocked,
+    logFailedAuthAttempt
 };
