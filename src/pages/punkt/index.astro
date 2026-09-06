@@ -325,8 +325,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         transform: scale(1);
         opacity: 1;
         transition:
-          transform 0.22s cubic-bezier(0.2, 0.8, 0.3, 1),
-          opacity 0.22s ease;
+          transform 0.34s cubic-bezier(0.2, 0.8, 0.3, 1),
+          opacity 0.34s ease;
       }
 
       #quick-add-scrim {
@@ -335,7 +335,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         background: rgba(0, 0, 0, 0.35);
         z-index: 15;
         opacity: 1;
-        transition: opacity 0.22s ease;
+        transition: opacity 0.34s ease;
       }
 
       #quick-add .qa-title-row {
@@ -1782,7 +1782,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
        *  slightly scaled-down and transparent to full size, so the
        *  drop shadow above and below it reads as it rising off the
        *  flat list rather than just appearing. The scrim behind it
-       *  fades in over the same 0.22s so the dimming reads as part of
+       *  fades in over the same duration so the dimming reads as part of
        *  the same motion rather than snapping on instantly. */
       function playCardOpenAnimation() {
         quickAdd.style.transition = "none";
