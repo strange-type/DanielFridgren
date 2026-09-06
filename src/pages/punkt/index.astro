@@ -1552,7 +1552,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         hasShownScreenOnce = true;
 
         if (view === "menu") {
-          closeQuickAdd();
+          cancelQuickAdd();
           renderMenu();
           if (animate) {
             slideScreens(viewList, viewMenu, "backward");
@@ -1861,6 +1861,29 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         quickAddScrim.hidden = true;
         whenSheet.hidden = true;
         reminderSheet.hidden = true;
+      }
+
+      /** Discards any in-progress edit (or new-task draft) and hides
+       *  the card immediately, with no animation. Used when navigating
+       *  away to a whole different screen: the list is about to be
+       *  hidden anyway, and a CSS transition never fires its
+       *  transitionend if an ancestor is hidden mid-flight — so the
+       *  animated close in closeQuickAdd() would leave the card stuck
+       *  invisible but still taking up layout space (an empty gap)
+       *  the next time this screen is shown. Also intentionally
+       *  doesn't commit pending edits, unlike closing normally —
+       *  leaving the screen you were editing on should cancel it. */
+      function cancelQuickAdd() {
+        editingTaskId = null;
+        quickAdd.style.transition = "none";
+        quickAddScrim.style.transition = "none";
+        hideQuickAddCard();
+        quickAdd.style.transform = "";
+        quickAdd.style.opacity = "";
+        quickAddScrim.style.opacity = "";
+        void quickAdd.offsetWidth; // force reflow before restoring the transition
+        quickAdd.style.transition = "";
+        quickAddScrim.style.transition = "";
       }
 
       /** Grows qa-note to fit its (possibly wrapped) content instead of
