@@ -69,6 +69,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           Roboto,
           sans-serif;
         padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+        overflow-x: hidden;
+      }
+
+      #app {
+        position: relative;
+        min-height: 100vh;
       }
 
       #gate {
@@ -106,6 +112,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         max-width: 32rem;
         margin: 0 auto;
         padding: calc(1.25rem + env(safe-area-inset-top)) 1rem 3rem;
+      }
+
+      .screen.sliding {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        transition: transform 0.28s ease;
       }
 
       /* --- Menu (root) screen -------------------------------------- */
@@ -377,6 +391,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         margin: 0 -0.5rem;
         border-radius: 0.6rem;
         touch-action: pan-y;
+        transition:
+          opacity 0.3s ease,
+          background 0.2s ease;
+      }
+
+      li.task-row.row-fade-out {
+        opacity: 0;
+      }
+
+      li.task-row.row-pending-removal {
+        background: var(--surface);
       }
 
       li.task-row.row-selected {
@@ -1316,21 +1341,74 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         return tasks.find((t) => t.id === id);
       }
 
+      let hasShownScreenOnce = false;
+
+      /**
+       * Slides `incoming` in over `outgoing`, both full-width — "forward"
+       * (menu -> a list) brings the new screen in from the right while
+       * the old one exits left; "backward" (a list -> menu) is the
+       * mirror image, matching a standard iOS push/pop transition.
+       */
+      function slideScreens(outgoing: HTMLElement, incoming: HTMLElement, direction: "forward" | "backward") {
+        const outTarget = direction === "forward" ? "-100%" : "100%";
+        const inStart = direction === "forward" ? "100%" : "-100%";
+
+        outgoing.classList.add("sliding");
+        incoming.classList.add("sliding");
+        incoming.hidden = false;
+        incoming.style.transition = "none";
+        incoming.style.transform = `translateX(${inStart})`;
+        void incoming.offsetWidth; // force reflow so the transition below actually animates
+
+        outgoing.style.transition = "";
+        incoming.style.transition = "";
+
+        requestAnimationFrame(() => {
+          outgoing.style.transform = `translateX(${outTarget})`;
+          incoming.style.transform = "translateX(0)";
+        });
+
+        const onDone = (e: TransitionEvent) => {
+          if (e.target !== outgoing) return;
+          outgoing.hidden = true;
+          outgoing.classList.remove("sliding");
+          incoming.classList.remove("sliding");
+          outgoing.style.transform = "";
+          incoming.style.transform = "";
+          outgoing.removeEventListener("transitionend", onDone);
+        };
+        outgoing.addEventListener("transitionend", onDone);
+      }
+
       function navigateTo(view: View) {
+        const previousView = currentView;
         currentView = view;
         exitSelectMode();
+        const animate = hasShownScreenOnce && previousView !== view;
+        hasShownScreenOnce = true;
+
         if (view === "menu") {
           closeQuickAdd();
-          viewList.hidden = true;
-          viewMenu.hidden = false;
           renderMenu();
+          if (animate) {
+            slideScreens(viewList, viewMenu, "backward");
+          } else {
+            viewList.hidden = true;
+            viewMenu.hidden = false;
+          }
           return;
         }
-        viewMenu.hidden = true;
-        viewList.hidden = false;
+
         listTitle.textContent = VIEW_TITLES[view];
         addBtn.hidden = view === "logbook";
         renderTaskList();
+
+        if (animate && previousView === "menu") {
+          slideScreens(viewMenu, viewList, "forward");
+        } else {
+          viewMenu.hidden = true;
+          viewList.hidden = false;
+        }
       }
 
       menuList.addEventListener("click", (e) => {
@@ -1339,6 +1417,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       });
 
       backBtn.addEventListener("click", () => navigateTo("menu"));
+
+      // Rows pending removal from the current view (checked off in
+      // Today/Inbox/Upcoming, or unchecked in Logbook) — held here so a
+      // second toggle before the fade fires can cancel it.
+      const pendingRowRemovals = new Map<string, number>();
 
       taskListEl.addEventListener("change", (e) => {
         const target = e.target as HTMLElement;
@@ -1349,9 +1432,40 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         const checked = (target as HTMLInputElement).checked;
         task.done = checked;
         task.completedAt = checked ? new Date().toISOString() : null;
-        renderTaskList();
         renderMenu();
         queueSave();
+
+        const existingTimeout = pendingRowRemovals.get(id);
+        if (existingTimeout) {
+          clearTimeout(existingTimeout);
+          pendingRowRemovals.delete(id);
+        }
+
+        const row = target.closest(".task-row") as HTMLElement | null;
+        if (!row) {
+          renderTaskList();
+          return;
+        }
+
+        // Show the checked/unchecked state immediately...
+        row.classList.toggle("done", checked);
+        row.classList.remove("row-pending-removal", "row-fade-out");
+        row.querySelectorAll<HTMLInputElement>(".task-check").forEach((cb) => (cb.checked = checked));
+
+        const stillBelongsHere = bucket(currentView as View).some((t) => t.id === id);
+        if (!stillBelongsHere) {
+          // ...highlight it as "about to leave this view"...
+          row.classList.add("row-pending-removal");
+          // ...then, a beat later, fade it out and only re-render (which
+          // actually removes it, since it no longer matches this view)
+          // once the fade has finished.
+          const timeoutId = window.setTimeout(() => {
+            pendingRowRemovals.delete(id);
+            row.classList.add("row-fade-out");
+            window.setTimeout(() => renderTaskList(), 320);
+          }, 1200);
+          pendingRowRemovals.set(id, timeoutId);
+        }
       });
 
       // --- Swipe-to-select (Things-style multi-select) --------------------
