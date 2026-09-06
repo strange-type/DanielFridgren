@@ -20,3 +20,4 @@ inte skickas flera gånger samma dag.
 ## Tasks
 
 - [ ] Test (id: 1788685942619-2gstb, when: today)
+- [ ] Test 1 (id: 1788685964362-1416r, when: today, remind: 11:28)
