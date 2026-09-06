@@ -19,6 +19,8 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Läs Kort om PDL - openEHR (id: 1788727727911-mxc1l, when: today)
+  > https://openehr.atlassian.net/wiki/spaces/SWE/pages/2139291653/Juridiska+krav+-+Patientdatalagen
 - [x] Test (id: 1788685942619-2gstb, done: 2026-09-06T10:27:59.430Z)
 - [x] Test 1 (id: 1788685964362-1416r, done: 2026-09-06T20:47:36.335Z)
   > Yrfxh
