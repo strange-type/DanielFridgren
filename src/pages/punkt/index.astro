@@ -755,6 +755,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         color: #6ea8fe;
       }
 
+      /* #when-reminder-label reuses .sheet-check for its "pushed right"
+         positioning, but holds a time string ("11:28") rather than a
+         checkmark — it needs room to actually fit that text instead of
+         the checkmark's fixed 16px box, which let it overflow past the
+         sheet's edge. */
+      #when-reminder-label {
+        width: auto;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
       .sheet-check::after {
         content: "";
         display: none;
@@ -1882,6 +1893,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       });
 
       whenSheet.addEventListener("click", (e) => {
+        if (e.target === whenSheet) {
+          whenSheet.hidden = true;
+          return;
+        }
+
         const choiceBtn = (e.target as HTMLElement).closest("[data-when-choice]") as HTMLElement | null;
         if (choiceBtn) {
           const choice = choiceBtn.dataset.whenChoice;
@@ -1953,6 +1969,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       reminderCancel.addEventListener("click", () => {
         reminderSheet.hidden = true;
         whenSheet.hidden = false;
+      });
+
+      reminderSheet.addEventListener("click", (e) => {
+        if (e.target === reminderSheet) reminderCancel.click();
       });
 
       reminderSet.addEventListener("click", () => {
