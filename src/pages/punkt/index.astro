@@ -302,6 +302,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         border-radius: 0.9rem;
         padding: 0.85rem 1rem;
         margin-bottom: 1.25rem;
+        box-shadow:
+          0 -10px 24px -8px rgba(0, 0, 0, 0.28),
+          0 10px 24px -8px rgba(0, 0, 0, 0.28);
+        transform: scale(1);
+        opacity: 1;
+        transition:
+          transform 0.22s cubic-bezier(0.2, 0.8, 0.3, 1),
+          opacity 0.22s ease;
       }
 
       #quick-add-scrim {
@@ -1709,11 +1717,28 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         }
       }
 
+      /** Plays the card's "lift off the list" entrance: pops in from
+       *  slightly scaled-down and transparent to full size, so the
+       *  drop shadow above and below it reads as it rising off the
+       *  flat list rather than just appearing. */
+      function playCardOpenAnimation() {
+        quickAdd.style.transition = "none";
+        quickAdd.style.transform = "scale(0.96)";
+        quickAdd.style.opacity = "0";
+        void quickAdd.offsetWidth; // force reflow so the transition below actually animates
+        quickAdd.style.transition = "";
+        requestAnimationFrame(() => {
+          quickAdd.style.transform = "scale(1)";
+          quickAdd.style.opacity = "1";
+        });
+      }
+
       function openQuickAdd() {
         editingTaskId = null;
         resetQuickAddPosition();
         quickAdd.hidden = false;
         quickAddScrim.hidden = false;
+        playCardOpenAnimation();
         qaCheckbox.checked = false;
         qaTitle.value = "";
         qaNote.value = "";
@@ -1745,6 +1770,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         placeQuickAddInline(task.id);
         quickAdd.hidden = false;
         quickAddScrim.hidden = false;
+        playCardOpenAnimation();
         qaTitle.focus();
       }
 
