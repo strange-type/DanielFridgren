@@ -254,8 +254,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .fab {
-        width: 3.4rem;
-        height: 3.4rem;
+        width: 3rem;
+        height: 3rem;
         border-radius: 50%;
         background: var(--accent);
         color: #fff;
@@ -266,8 +266,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .fab svg {
-        width: 28px;
-        height: 28px;
+        width: 24px;
+        height: 24px;
         display: block;
       }
 
@@ -1264,7 +1264,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       function taskRowHtml(task: Task, dateBadge?: string): string {
         const icons: string[] = [];
         if (task.note) icons.push(ICON_NOTE);
-        if (!task.done && task.remind) icons.push(ICON_BELL);
+        if (!task.done && task.remind && task.notifiedOn !== todayStr()) icons.push(ICON_BELL);
         if (!task.done && task.deadline) icons.push(ICON_FLAG);
         const selected = selectedIds.has(task.id);
         const indicator = selectMode
