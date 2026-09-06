@@ -55,7 +55,7 @@ export const handler = async () => {
         (t) =>
             !t.done &&
             t.remind &&
-            (t.when === 'today' || t.when === today) &&
+            (t.when === 'today' || t.when === 'evening' || t.when === today) &&
             t.notifiedOn !== today &&
             t.remind <= nowTime
     );

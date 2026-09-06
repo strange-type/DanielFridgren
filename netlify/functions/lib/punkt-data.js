@@ -123,7 +123,7 @@ const FILE_HEADER = `# Punkt — tasks
 Maskingenererad datafil för Punkt-appen. Redigera gärna för hand, men
 behåll formatet så att appen kan tolka filen:
 
-- [ ] Titel (id: <id>, when: <today|YYYY-MM-DD|->, deadline: <YYYY-MM-DD|->, remind: <HH:MM|->)
+- [ ] Titel (id: <id>, when: <today|evening|YYYY-MM-DD|->, deadline: <YYYY-MM-DD|->, remind: <HH:MM|->)
   > Valfri anteckning på indragen rad direkt under uppgiften.
 
 Klarmarkerade uppgifter får ett done-datum istället för when/deadline/remind:

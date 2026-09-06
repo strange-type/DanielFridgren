@@ -91,14 +91,34 @@ export const handler = async (event) => {
             if (validationError) {
                 return respond(400, { error: validationError });
             }
-            const { sha } = await readTasksFile();
-            await writeTasksFile(serializeTasks(body.tasks), sha, 'Update Punkt tasks');
-            return respond(200, { ok: true });
+            const content = serializeTasks(body.tasks);
+
+            // tasks.md has two independent writers — this endpoint and
+            // the scheduled reminders function, which stamps notifiedOn
+            // on its own 10-minute cadence — so a stale sha here isn't
+            // a real error, just two writes landing close together.
+            // Re-reading the latest sha and retrying resolves it
+            // without surfacing a save failure for an ordinary race.
+            const MAX_ATTEMPTS = 3;
+            for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+                const { sha } = await readTasksFile();
+                try {
+                    await writeTasksFile(content, sha, 'Update Punkt tasks');
+                    return respond(200, { ok: true });
+                } catch (error) {
+                    if (error.status !== 409 || attempt === MAX_ATTEMPTS) throw error;
+                }
+            }
         }
 
         return respond(405, { error: 'Method not allowed' });
     } catch (error) {
         console.error('Punkt tasks error:', error);
-        return respond(500, { error: 'Internal error' });
+        // This is a single-developer app (no other users to leak
+        // internals to), so the real error is worth showing directly
+        // rather than a generic message that gives nothing to act on.
+        return respond(error.status === 409 ? 409 : 500, {
+            error: error.status === 409 ? 'Save conflicted with another update — try again.' : error.message || 'Internal error'
+        });
     }
 };
