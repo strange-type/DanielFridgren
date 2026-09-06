@@ -1338,6 +1338,21 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         return [];
       }
 
+      // "This Evening" is a today-task with its reminder pinned to
+      // 18:00 (see the When sheet's evening choice) — shared so
+      // placeQuickAddInline agrees with renderTaskList on where a task
+      // actually ends up, not just bucket()'s raw (unsplit) order.
+      const isEveningTask = (t: Task) => t.when === "today" && t.remind === "18:00";
+
+      /** bucket(), but in the order tasks actually render in — only
+       *  "today" differs from bucket() itself, since it renders regular
+       *  tasks followed by the This Evening group. */
+      function orderedBucket(view: View): Task[] {
+        const items = bucket(view);
+        if (view !== "today") return items;
+        return [...items.filter((t) => !isEveningTask(t)), ...items.filter(isEveningTask)];
+      }
+
       function renderMenu() {
         const rows: { view: Exclude<View, "menu">; label: string; iconHtml: string; iconClass: string }[] = [
           { view: "inbox", label: "Inbox", iconHtml: ICON_INBOX, iconClass: "menu-icon--inbox" },
@@ -1463,12 +1478,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             taskListEl.innerHTML = showEmptyState ? '<p class="empty">Inget för idag.</p>' : "";
             return;
           }
-          // "This Evening" is a today-task with its reminder pinned to
-          // 18:00 (see the When sheet's evening choice) — it gets its
-          // own group below the regular list instead of blending in.
-          const isEvening = (t: Task) => t.when === "today" && t.remind === "18:00";
-          const regular = items.filter((t) => !isEvening(t));
-          const evening = items.filter(isEvening);
+          const regular = items.filter((t) => !isEveningTask(t));
+          const evening = items.filter(isEveningTask);
           let html = regular.map((t) => taskRowHtml(t)).join("");
           if (evening.length > 0) {
             html += `<div class="date-group">🌙 This Evening</div>`;
@@ -1817,7 +1828,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
        *  edited task's row would be, so it opens inline instead of
        *  floating above the list. */
       function placeQuickAddInline(taskId: string) {
-        const items = bucket(currentView as View);
+        // Must agree with the *rendered* order, not bucket()'s raw
+        // order — in "today", This Evening tasks render after the
+        // regular ones, so using bucket() directly could pick a "next"
+        // task that's actually rows away in the DOM (e.g. across the
+        // This Evening header), inserting the card in the wrong spot.
+        const items = orderedBucket(currentView as View);
         const index = items.findIndex((t) => t.id === taskId);
         const nextTask = index === -1 ? undefined : items[index + 1];
         const nextRow = nextTask
@@ -1937,6 +1953,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         const title = qaTitle.value.trim();
         if (title) task.title = title;
         task.note = qaNote.value.trim();
+        // A stale notifiedOn (from an earlier reminder that already
+        // fired today) would otherwise silently block a newly-set one
+        // from ever firing, since the server only sends reminders where
+        // notifiedOn isn't already today.
+        if (task.when !== pendingWhen || task.remind !== pendingRemind) task.notifiedOn = null;
         task.when = pendingWhen;
         task.remind = pendingRemind;
         task.done = qaCheckbox.checked;
@@ -1974,7 +1995,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         const today = todayStr();
         const pad = (n: number) => String(n).padStart(2, "0");
 
-        calMonthName.textContent = first.toLocaleDateString("sv-SE", {
+        // en-US, not sv-SE: this whole sheet deliberately mimics
+        // Things' English UI (see the "When?"/"This Evening"/"Mon Tue
+        // Wed..." text above) — a Swedish month name here read as an
+        // out-of-place mix with everything around it.
+        calMonthName.textContent = first.toLocaleDateString("en-US", {
           month: "long",
           year: "numeric"
         });
@@ -2121,6 +2146,9 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           if (task) {
             if (title) task.title = title;
             task.note = qaNote.value.trim();
+            // See the qaCheckbox handler above — a stale notifiedOn
+            // would otherwise block a newly-set reminder from firing.
+            if (task.when !== pendingWhen || task.remind !== pendingRemind) task.notifiedOn = null;
             task.when = pendingWhen;
             task.remind = pendingRemind;
           }

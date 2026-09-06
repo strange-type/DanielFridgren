@@ -65,11 +65,14 @@ export const handler = async (event) => {
         return respond(429, { error: 'Too many requests. Try again shortly.' });
     }
 
-    if (await isIpBlocked(clientIp)) {
-        return respond(403, { error: 'Too many failed login attempts. Try again later.' });
-    }
-
+    // Checking the auth log costs a GitHub API round-trip, so it only
+    // runs once the (cheap, local) token check actually fails —
+    // otherwise every ordinary request from the one legitimate user
+    // would pay that cost for no reason.
     if (!isAuthorized(event)) {
+        if (await isIpBlocked(clientIp)) {
+            return respond(403, { error: 'Too many failed login attempts. Try again later.' });
+        }
         const nowBlocked = await logFailedAuthAttempt(clientIp);
         return nowBlocked
             ? respond(403, { error: 'Too many failed login attempts. Try again later.' })
