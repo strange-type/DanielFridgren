@@ -9,6 +9,7 @@ const BRANCH = process.env.PUNKT_GITHUB_BRANCH || 'main';
 const TASKS_PATH = process.env.PUNKT_DATA_PATH || 'punkt/data/tasks.md';
 const SUBSCRIPTIONS_PATH =
     process.env.PUNKT_SUBSCRIPTIONS_PATH || 'punkt/data/subscriptions.json';
+const ERROR_LOG_PATH = process.env.PUNKT_ERROR_LOG_PATH || 'punkt/data/last-reminder-error.json';
 
 const { PUNKT_GITHUB_TOKEN } = process.env;
 
@@ -192,6 +193,38 @@ async function writeSubscriptions(subscriptions, sha, message) {
     }
 }
 
+/**
+ * Best-effort diagnostic log for push-send failures, so the actual
+ * push-service error (statusCode + body) can be inspected directly in
+ * the repo instead of only in Netlify's function logs.
+ */
+async function writeLastReminderError(info) {
+    try {
+        let sha = null;
+        try {
+            const existing = await readFile(ERROR_LOG_PATH);
+            sha = existing.sha;
+        } catch (err) {
+            if (err.status !== 404) throw err;
+        }
+        const content = JSON.stringify({ ...info, loggedAt: new Date().toISOString() }, null, 2) + '\n';
+        if (sha) {
+            await writeFile(ERROR_LOG_PATH, content, sha, 'Log Punkt reminder error');
+        } else {
+            await githubRequest(`contents/${ERROR_LOG_PATH}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    message: 'Log Punkt reminder error',
+                    content: Buffer.from(content, 'utf-8').toString('base64'),
+                    branch: BRANCH
+                })
+            });
+        }
+    } catch (err) {
+        console.error('Punkt: failed to write reminder error log', err);
+    }
+}
+
 export {
     readTasksFile,
     writeTasksFile,
@@ -199,5 +232,6 @@ export {
     serializeTasks,
     validateTasks,
     readSubscriptions,
-    writeSubscriptions
+    writeSubscriptions,
+    writeLastReminderError
 };

@@ -5,7 +5,8 @@ import {
     parseTasks,
     serializeTasks,
     readSubscriptions,
-    writeSubscriptions
+    writeSubscriptions,
+    writeLastReminderError
 } from './lib/punkt-data.js';
 
 const { PUNKT_VAPID_PRIVATE_KEY, PUNKT_VAPID_SUBJECT } = process.env;
@@ -70,27 +71,48 @@ export const handler = async () => {
     }
 
     const deadEndpoints = new Set();
+    let lastError = null;
 
     for (const task of due) {
         const payload = JSON.stringify({
             title: task.title,
             body: task.note || 'Påminnelse från Punkt'
         });
+        let deliveredToAtLeastOne = false;
         await Promise.all(
             subscriptions.map(async (subscription) => {
                 try {
                     await webpush.sendNotification(subscription, payload);
+                    deliveredToAtLeastOne = true;
                 } catch (error) {
                     if (error.statusCode === 404 || error.statusCode === 410) {
                         deadEndpoints.add(subscription.endpoint);
                     } else {
-                        console.error('Punkt reminders: push failed for', subscription.endpoint, error);
+                        console.error(
+                            'Punkt reminders: push failed for',
+                            subscription.endpoint,
+                            error.statusCode,
+                            error.body || error.message
+                        );
+                        lastError = {
+                            taskId: task.id,
+                            taskTitle: task.title,
+                            endpoint: subscription.endpoint,
+                            statusCode: error.statusCode ?? null,
+                            body: error.body || error.message || String(error)
+                        };
                     }
                 }
             })
         );
-        task.notifiedOn = today;
+        // Only mark as sent once a push actually went through — marking
+        // it unconditionally here previously hid real delivery failures
+        // (a bad VAPID config, a rejected payload, etc.) since the task
+        // would never be retried on the next run.
+        if (deliveredToAtLeastOne) task.notifiedOn = today;
     }
+
+    if (lastError) await writeLastReminderError(lastError);
 
     await writeTasksFile(serializeTasks(tasks), tasksSha, 'Mark Punkt reminders as sent');
 
