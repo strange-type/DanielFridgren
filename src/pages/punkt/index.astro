@@ -14,6 +14,20 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Punkt</title>
+    <script is:inline>
+      // Runs before the app script and before first paint: a saved
+      // token means we're very likely already logged in, so skip
+      // flashing the access-code gate while loadTasks() confirms it —
+      // show the (empty) app shell instead. showGate() removes this
+      // class again if the token actually turns out to be invalid.
+      try {
+        if (localStorage.getItem("punkt-token")) {
+          document.documentElement.classList.add("punkt-booting");
+        }
+      } catch {
+        // localStorage unavailable (private mode, etc.) — fall through to the gate as normal
+      }
+    </script>
     <meta name="robots" content="noindex, nofollow" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111827" />
@@ -99,10 +113,37 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         padding: 0 1rem;
       }
 
+      /* See the head script: while a saved token is being confirmed,
+         show the (empty) app shell instead of flashing the gate. */
+      html.punkt-booting #gate {
+        display: none !important;
+      }
+
+      html.punkt-booting #app {
+        display: block !important;
+      }
+
       #gate form {
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
+      }
+
+      .gate-submit {
+        background: var(--accent);
+        /* --accent is a light blue in dark mode (dark text reads well)
+           but a more saturated, darker blue in light mode, where the
+           same dark text loses contrast — so it flips to white there. */
+        color: #0b1220;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.9rem;
+      }
+
+      @media (prefers-color-scheme: light) {
+        .gate-submit {
+          color: #fff;
+        }
       }
 
       button {
@@ -907,11 +948,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           autocomplete="current-password"
           required
         />
-        <button
-          type="submit"
-          style="background:var(--accent);color:#0b1220;font-weight:600;border-radius:0.5rem;padding:0.5rem 0.9rem;"
-          >Lås upp</button
-        >
+        <button type="submit" class="gate-submit">Lås upp</button>
         <p id="gate-error" class="error"></p>
       </form>
     </div>
@@ -1222,12 +1259,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       function showGate(message = "") {
+        // The saved token turned out to be invalid (or there never was
+        // one) — lift the head script's optimistic "skip the gate"
+        // override so the hidden attributes below actually take effect.
+        document.documentElement.classList.remove("punkt-booting");
         app.hidden = true;
         gate.hidden = false;
         gateError.textContent = message;
       }
 
       function showApp() {
+        document.documentElement.classList.remove("punkt-booting");
         gate.hidden = true;
         app.hidden = false;
       }
