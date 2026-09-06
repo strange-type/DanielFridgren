@@ -334,6 +334,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         inset: 0;
         background: rgba(0, 0, 0, 0.35);
         z-index: 15;
+        opacity: 1;
+        transition: opacity 0.22s ease;
       }
 
       #quick-add .qa-title-row {
@@ -1759,23 +1761,29 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       /** Plays the card's "lift off the list" entrance: pops in from
        *  slightly scaled-down and transparent to full size, so the
        *  drop shadow above and below it reads as it rising off the
-       *  flat list rather than just appearing. */
+       *  flat list rather than just appearing. The scrim behind it
+       *  fades in over the same 0.22s so the dimming reads as part of
+       *  the same motion rather than snapping on instantly. */
       function playCardOpenAnimation() {
         quickAdd.style.transition = "none";
         quickAdd.style.transform = "scale(0.96)";
         quickAdd.style.opacity = "0";
+        quickAddScrim.style.transition = "none";
+        quickAddScrim.style.opacity = "0";
         void quickAdd.offsetWidth; // force reflow so the transition below actually animates
         quickAdd.style.transition = "";
+        quickAddScrim.style.transition = "";
         requestAnimationFrame(() => {
           quickAdd.style.transform = "scale(1)";
           quickAdd.style.opacity = "1";
+          quickAddScrim.style.opacity = "1";
         });
       }
 
       /** Mirrors playCardOpenAnimation for dismissal: shrinks/fades the
-       *  card out first, then calls onDone (which actually hides it) —
-       *  closing reads as the same physical motion in reverse instead
-       *  of the card just vanishing. */
+       *  card (and fades the scrim) out first, then calls onDone (which
+       *  actually hides both) — closing reads as the same physical
+       *  motion in reverse instead of just vanishing. */
       function playCardCloseAnimation(onDone: () => void) {
         if (quickAdd.hidden) {
           onDone();
@@ -1789,6 +1797,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         quickAdd.addEventListener("transitionend", onTransitionEnd);
         quickAdd.style.transform = "scale(0.96)";
         quickAdd.style.opacity = "0";
+        quickAddScrim.style.opacity = "0";
       }
 
       function hideQuickAddCard() {
