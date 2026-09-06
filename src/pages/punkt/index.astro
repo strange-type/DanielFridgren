@@ -545,9 +545,18 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .date-group {
-        font-size: 0.75rem;
-        color: var(--muted);
-        margin: 0.9rem 0 0.1rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text);
+        margin: 1.25rem 0 0.4rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .task-date-badge {
+        color: var(--accent);
+        font-weight: 600;
+        flex-shrink: 0;
       }
 
       .empty {
@@ -1164,7 +1173,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           .join("");
       }
 
-      function taskRowHtml(task: Task): string {
+      function taskRowHtml(task: Task, dateBadge?: string): string {
         const icons: string[] = [];
         if (task.note) icons.push(ICON_NOTE);
         if (!task.done && task.remind) icons.push(ICON_CLOCK);
@@ -1178,12 +1187,32 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             ${indicator}
             <div class="task-body">
               <div class="task-title-line">
+                ${dateBadge ? `<span class="task-date-badge">${dateBadge}</span>` : ""}
                 <span class="task-title">${escapeHtml(task.title)}</span>
                 ${icons.join("")}
               </div>
               ${task.note ? `<div class="task-note">${escapeHtml(task.note)}</div>` : ""}
             </div>
           </li>`;
+      }
+
+      /** "5/9" style compact date, matching Things' Logbook rows. */
+      function formatCompactDate(dateStr: string): string {
+        const [, month, day] = dateStr.split("-").map(Number);
+        return `${day}/${month}`;
+      }
+
+      /** Groups Logbook entries the way Things does: Today, Yesterday,
+       *  then by month (with the year appended once it's not this year). */
+      function logbookGroupLabel(dateStr: string, todayStr: string): string {
+        const date = new Date(`${dateStr}T00:00:00`);
+        const today = new Date(`${todayStr}T00:00:00`);
+        const diffDays = Math.round((today.getTime() - date.getTime()) / 86400000);
+        if (diffDays === 0) return "Today";
+        if (diffDays === 1) return "Yesterday";
+        const sameYear = date.getFullYear() === today.getFullYear();
+        const month = date.toLocaleDateString("en-US", { month: "long" });
+        return sameYear ? month : `${month} ${date.getFullYear()}`;
       }
 
       function renderTaskList() {
@@ -1210,13 +1239,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             taskListEl.innerHTML = '<p class="empty">Inget avklarat än.</p>';
             return;
           }
-          let lastDay = "";
+          const today = todayStr();
+          let lastLabel = "";
           taskListEl.innerHTML = items
             .map((t) => {
               const day = (t.completedAt || "").slice(0, 10);
-              const heading = day !== lastDay ? `<div class="date-group">${day}</div>` : "";
-              lastDay = day;
-              return heading + taskRowHtml(t);
+              const label = logbookGroupLabel(day, today);
+              const heading = label !== lastLabel ? `<div class="date-group">${label}</div>` : "";
+              lastLabel = label;
+              return heading + taskRowHtml(t, formatCompactDate(day));
             })
             .join("");
           return;
