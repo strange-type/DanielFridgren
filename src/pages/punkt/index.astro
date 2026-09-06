@@ -351,8 +351,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         border-radius: 999px;
       }
 
-      /* Quick-add card: fields have no visible box of their own — just
-         a faintly elevated card so they read as "almost invisible". */
+      /* Quick-add: an inline panel that unfolds in place — either at
+         the top of the list (adding) or inside the tapped row's own
+         slot (editing) — rather than a floating card, so it reads as
+         part of the list expanding instead of something popping up
+         over it. */
       #quick-add {
         position: relative;
         z-index: 16;
@@ -361,23 +364,21 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         border-radius: 0.9rem;
         padding: 0.85rem 1rem;
         margin-bottom: 1.25rem;
-        box-shadow:
-          0 -10px 24px -8px rgba(0, 0, 0, 0.28),
-          0 10px 24px -8px rgba(0, 0, 0, 0.28);
-        transform: scale(1);
+        overflow: hidden;
         opacity: 1;
         transition:
-          transform 0.34s cubic-bezier(0.33, 1, 0.68, 1),
-          opacity 0.34s ease;
+          max-height 0.32s cubic-bezier(0.33, 1, 0.68, 1),
+          opacity 0.32s ease;
       }
 
+      /* Catches taps outside the open panel to close/commit it — kept
+         fully transparent since the panel is inline, not a modal, so
+         the rest of the list doesn't get dimmed while it's open. */
       #quick-add-scrim {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.35);
+        background: transparent;
         z-index: 15;
-        opacity: 1;
-        transition: opacity 0.34s ease;
       }
 
       #quick-add .qa-title-row {
@@ -513,6 +514,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       li.task-row.row-fade-out {
         opacity: 0;
+      }
+
+      /* The row being edited renders as an empty shell (see
+         taskRowHtml) that #quick-add gets moved into — no padding of
+         its own so only the panel's padding shows, and no negative
+         margin so it doesn't fight the panel's own horizontal spread. */
+      li.task-row.editing {
+        padding: 0;
+        margin: 0;
       }
 
       li.task-row.row-pending-removal {
@@ -1379,6 +1389,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       function taskRowHtml(task: Task, dateBadge?: string): string {
+        // Rendered as an empty shell — openTaskEdit() moves #quick-add
+        // into it, so the row expands in place instead of a separate
+        // card appearing elsewhere.
+        if (task.id === editingTaskId) {
+          return `<li class="task-row editing" data-id="${task.id}"></li>`;
+        }
         const icons: string[] = [];
         if (task.note) icons.push(ICON_NOTE);
         if (!task.done && task.remind && task.notifiedOn !== todayStr()) icons.push(ICON_BELL);
@@ -1435,6 +1451,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       function renderTaskList() {
+        // #quick-add can currently be nested inside the row being
+        // edited — the innerHTML replacement below would destroy it
+        // (and everything in it) if it's still in there, so move it
+        // back out to its neutral spot first. openTaskEdit() re-parents
+        // it into the right row afterward.
+        if (taskListEl.contains(quickAdd)) {
+          resetQuickAddPosition();
+        }
+
         const items = bucket(currentView as View);
 
         if (currentView === "upcoming") {
@@ -1807,53 +1832,69 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       /** Moves the (single, shared) quick-add form back to its default
-       *  spot above the list — used both for adding and editing, as a
-       *  popup sitting above the (otherwise untouched) list rather than
-       *  replacing the edited row inline. */
+       *  spot above the list — the neutral "not editing anything" home
+       *  it returns to once hidden, and where a brand new to-do opens. */
       function resetQuickAddPosition() {
         quickAddAnchor.insertAdjacentElement("afterend", quickAdd);
       }
 
-      /** Plays the card's "lift off the list" entrance: pops in from
-       *  slightly scaled-down and transparent to full size, so the
-       *  drop shadow above and below it reads as it rising off the
-       *  flat list rather than just appearing. The scrim behind it
-       *  fades in over the same duration so the dimming reads as part of
-       *  the same motion rather than snapping on instantly. */
-      function playCardOpenAnimation() {
-        quickAdd.style.transition = "none";
-        quickAdd.style.transform = "scale(0.96)";
-        quickAdd.style.opacity = "0";
-        quickAddScrim.style.transition = "none";
-        quickAddScrim.style.opacity = "0";
-        void quickAdd.offsetWidth; // force reflow so the transition below actually animates
-        quickAdd.style.transition = "";
-        quickAddScrim.style.transition = "";
-        requestAnimationFrame(() => {
-          quickAdd.style.transform = "scale(1)";
-          quickAdd.style.opacity = "1";
-          quickAddScrim.style.opacity = "1";
-        });
+      /** Moves quick-add into the row it's editing instead, so that
+       *  row itself expands to reveal it — taskRowHtml() renders the
+       *  row being edited as an empty shell for exactly this to fill. */
+      function placeQuickAddInline(taskId: string) {
+        const row = taskListEl.querySelector(`.task-row[data-id="${taskId}"]`) as HTMLElement | null;
+        if (row) row.appendChild(quickAdd);
       }
 
-      /** Mirrors playCardOpenAnimation for dismissal: shrinks/fades the
-       *  card (and fades the scrim) out first, then calls onDone (which
-       *  actually hides both) — closing reads as the same physical
-       *  motion in reverse instead of just vanishing. */
+      /** Unfolds quick-add from 0 height to fit its content — an
+       *  accordion-style reveal in place, whether it's sitting above
+       *  the list (adding) or inside the row it just replaced
+       *  (editing), rather than a separate card popping up. Once the
+       *  reveal finishes, max-height is freed to "none" so later
+       *  content growth (typing a longer note) isn't clipped by
+       *  whatever height happened to be measured at open time. */
+      function playCardOpenAnimation() {
+        quickAdd.style.transition = "none";
+        quickAdd.style.maxHeight = "0px";
+        quickAdd.style.opacity = "0";
+        void quickAdd.offsetWidth; // force reflow so the transition below actually animates
+        const targetHeight = quickAdd.scrollHeight;
+        quickAdd.style.transition = "";
+        requestAnimationFrame(() => {
+          quickAdd.style.maxHeight = `${targetHeight}px`;
+          quickAdd.style.opacity = "1";
+        });
+        const onOpenEnd = (e: TransitionEvent) => {
+          if (e.target !== quickAdd || e.propertyName !== "max-height") return;
+          quickAdd.removeEventListener("transitionend", onOpenEnd);
+          quickAdd.style.maxHeight = "none";
+        };
+        quickAdd.addEventListener("transitionend", onOpenEnd);
+      }
+
+      /** Mirrors playCardOpenAnimation for dismissal: folds back down
+       *  to 0 height first, then calls onDone (which actually hides
+       *  it) — closing reads as the same motion in reverse instead of
+       *  just vanishing. */
       function playCardCloseAnimation(onDone: () => void) {
         if (quickAdd.hidden) {
           onDone();
           return;
         }
+        // max-height may currently be "none" (freed after opening, so
+        // typing could grow it without being clipped) — freeze it at
+        // its actual current height first, since transitioning *from*
+        // "none" doesn't animate at all.
+        quickAdd.style.maxHeight = `${quickAdd.scrollHeight}px`;
+        void quickAdd.offsetWidth;
         const onTransitionEnd = (e: TransitionEvent) => {
           if (e.target !== quickAdd || e.propertyName !== "opacity") return;
           quickAdd.removeEventListener("transitionend", onTransitionEnd);
           onDone();
         };
         quickAdd.addEventListener("transitionend", onTransitionEnd);
-        quickAdd.style.transform = "scale(0.96)";
+        quickAdd.style.maxHeight = "0px";
         quickAdd.style.opacity = "0";
-        quickAddScrim.style.opacity = "0";
       }
 
       function hideQuickAddCard() {
@@ -1861,6 +1902,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         quickAddScrim.hidden = true;
         whenSheet.hidden = true;
         reminderSheet.hidden = true;
+        // Always return to the neutral spot once hidden — never leave
+        // it parented inside a row that a future renderTaskList() call
+        // might destroy along with it.
+        resetQuickAddPosition();
       }
 
       /** Discards any in-progress edit (or new-task draft) and hides
@@ -1876,23 +1921,25 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       function cancelQuickAdd() {
         editingTaskId = null;
         quickAdd.style.transition = "none";
-        quickAddScrim.style.transition = "none";
         hideQuickAddCard();
-        quickAdd.style.transform = "";
+        quickAdd.style.maxHeight = "";
         quickAdd.style.opacity = "";
-        quickAddScrim.style.opacity = "";
         void quickAdd.offsetWidth; // force reflow before restoring the transition
         quickAdd.style.transition = "";
-        quickAddScrim.style.transition = "";
       }
 
       /** Grows qa-note to fit its (possibly wrapped) content instead of
        *  scrolling — needs re-running after any programmatic .value
        *  change too, since those don't fire the "input" event this is
-       *  also bound to. */
+       *  also bound to. Also keeps quick-add's own max-height in sync
+       *  while it's still a fixed px value (mid open/close transition),
+       *  so newly-typed content can't get clipped by a stale cap. */
       function autoGrowNote() {
         qaNote.style.height = "auto";
         qaNote.style.height = `${qaNote.scrollHeight}px`;
+        if (quickAdd.style.maxHeight && quickAdd.style.maxHeight !== "none") {
+          quickAdd.style.maxHeight = `${quickAdd.scrollHeight}px`;
+        }
       }
       qaNote.addEventListener("input", autoGrowNote);
 
@@ -1935,7 +1982,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
               ? "date"
               : null;
         updateQaFooter();
-        resetQuickAddPosition();
+        // Re-render first so this task's row becomes the empty shell
+        // quick-add gets moved into — its position in the DOM is only
+        // correct once that shell actually exists.
+        renderTaskList();
+        placeQuickAddInline(task.id);
         quickAdd.hidden = false;
         quickAddScrim.hidden = false;
         // Only once visible — scrollHeight measures 0 on a hidden element.
