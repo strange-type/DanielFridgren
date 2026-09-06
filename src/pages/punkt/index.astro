@@ -1330,9 +1330,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // place inline instead.
         const items = bucket(currentView as View).filter((t) => t.id !== editingTaskId);
 
+        // While editing the only task in a view, `items` becomes empty
+        // even though the list isn't really empty — the quick-add card
+        // is about to occupy that slot inline, so the "nothing here"
+        // message must stay out of its way.
+        const showEmptyState = !editingTaskId;
+
         if (currentView === "upcoming") {
           if (items.length === 0) {
-            taskListEl.innerHTML = '<p class="empty">Inget schemalagt.</p>';
+            taskListEl.innerHTML = showEmptyState ? '<p class="empty">Inget schemalagt.</p>' : "";
             return;
           }
           const today = todayStr();
@@ -1358,7 +1364,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
         if (currentView === "logbook") {
           if (items.length === 0) {
-            taskListEl.innerHTML = '<p class="empty">Inget avklarat än.</p>';
+            taskListEl.innerHTML = showEmptyState ? '<p class="empty">Inget avklarat än.</p>' : "";
             return;
           }
           const today = todayStr();
@@ -1376,7 +1382,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         }
 
         const emptyLabel = currentView === "inbox" ? "Inboxen är tom." : "Inget för idag.";
-        taskListEl.innerHTML = items.map((t) => taskRowHtml(t)).join("") || `<p class="empty">${emptyLabel}</p>`;
+        taskListEl.innerHTML =
+          items.map((t) => taskRowHtml(t)).join("") || (showEmptyState ? `<p class="empty">${emptyLabel}</p>` : "");
       }
 
       function findTask(id: string): Task | undefined {
