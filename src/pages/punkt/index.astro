@@ -236,14 +236,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       #back-btn {
-        color: var(--accent);
+        color: var(--muted);
         display: flex;
         padding: 0.25rem;
       }
 
       #back-btn svg {
-        width: 22px;
-        height: 22px;
+        width: 30px;
+        height: 30px;
       }
 
       #list-title {
@@ -327,7 +327,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         font-size: 1.05rem;
       }
 
-      #qa-note {
+      #quick-add #qa-note {
         font-size: 0.9rem;
         color: var(--muted);
         padding: 0.85rem 0 0.1rem 1.75rem;
@@ -860,7 +860,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         <div class="list-header">
           <div class="list-header-left">
             <button id="back-btn" aria-label="Tillbaka">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
             <h1 id="list-title"></h1>
           </div>
