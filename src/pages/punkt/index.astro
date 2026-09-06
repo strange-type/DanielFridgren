@@ -1762,6 +1762,32 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         });
       }
 
+      /** Mirrors playCardOpenAnimation for dismissal: shrinks/fades the
+       *  card out first, then calls onDone (which actually hides it) —
+       *  closing reads as the same physical motion in reverse instead
+       *  of the card just vanishing. */
+      function playCardCloseAnimation(onDone: () => void) {
+        if (quickAdd.hidden) {
+          onDone();
+          return;
+        }
+        const onTransitionEnd = (e: TransitionEvent) => {
+          if (e.target !== quickAdd || e.propertyName !== "opacity") return;
+          quickAdd.removeEventListener("transitionend", onTransitionEnd);
+          onDone();
+        };
+        quickAdd.addEventListener("transitionend", onTransitionEnd);
+        quickAdd.style.transform = "scale(0.96)";
+        quickAdd.style.opacity = "0";
+      }
+
+      function hideQuickAddCard() {
+        quickAdd.hidden = true;
+        quickAddScrim.hidden = true;
+        whenSheet.hidden = true;
+        reminderSheet.hidden = true;
+      }
+
       function openQuickAdd() {
         editingTaskId = null;
         resetQuickAddPosition();
@@ -1808,10 +1834,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           commitQuickAdd();
           return;
         }
-        quickAdd.hidden = true;
-        quickAddScrim.hidden = true;
-        whenSheet.hidden = true;
-        reminderSheet.hidden = true;
+        playCardCloseAnimation(hideQuickAddCard);
       }
 
       quickAddScrim.addEventListener("click", closeQuickAdd);
@@ -1828,13 +1851,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         task.done = qaCheckbox.checked;
         task.completedAt = task.done ? new Date().toISOString() : null;
         editingTaskId = null;
-        quickAdd.hidden = true;
-        quickAddScrim.hidden = true;
-        whenSheet.hidden = true;
-        reminderSheet.hidden = true;
-        renderTaskList();
-        renderMenu();
-        queueSave();
+        playCardCloseAnimation(() => {
+          hideQuickAddCard();
+          renderTaskList();
+          renderMenu();
+          queueSave();
+        });
       });
 
       addBtn.addEventListener("click", () => {
@@ -2011,15 +2033,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             task.remind = pendingRemind;
           }
           editingTaskId = null;
-          quickAdd.hidden = true;
-          quickAddScrim.hidden = true;
-          whenSheet.hidden = true;
-          reminderSheet.hidden = true;
-          if (task) {
-            renderTaskList();
-            renderMenu();
-            queueSave();
-          }
+          playCardCloseAnimation(() => {
+            hideQuickAddCard();
+            if (task) {
+              renderTaskList();
+              renderMenu();
+              queueSave();
+            }
+          });
           return;
         }
 
