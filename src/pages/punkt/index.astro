@@ -256,7 +256,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       #back-btn {
         color: var(--muted);
         display: flex;
-        padding: 0.25rem 0.25rem 0.25rem 0;
+        padding: 0.25rem;
       }
 
       #back-btn svg {
@@ -440,7 +440,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       #task-list {
         list-style: none;
         margin: 0;
-        padding: 0;
+        /* Lines up with the back chevron above it, whose glyph has
+           empty space baked into the left side of its own icon box —
+           measured pixel-for-pixel with Playwright. */
+        padding: 0 0 0 15px;
         display: flex;
         flex-direction: column;
       }
@@ -933,7 +936,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         <div class="list-header">
           <div class="list-header-left">
             <button id="back-btn" aria-label="Tillbaka">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" transform="translate(-9, 0)"></polyline></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
             <h1 id="list-title"></h1>
           </div>
