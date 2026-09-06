@@ -75,9 +75,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           "Segoe UI",
           Roboto,
           sans-serif;
-        padding-bottom: calc(4rem + env(safe-area-inset-bottom));
         overflow-x: hidden;
         overscroll-behavior-y: none;
+      }
+
+      /* Reserves room for the floating select-bar pill only while it's
+         actually shown — applying this unconditionally made the page
+         scrollable by that much even on short lists with nothing to
+         scroll to, which reads as a rubber-band-y web page rather than
+         a native list. */
+      body.select-mode {
+        padding-bottom: calc(4rem + env(safe-area-inset-bottom));
       }
 
       #app {
@@ -248,7 +256,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       #back-btn {
         color: var(--muted);
         display: flex;
-        padding: 0.25rem;
+        padding: 0.25rem 0.25rem 0.25rem 0;
       }
 
       #back-btn svg {
@@ -259,6 +267,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       #list-title {
         font-size: 1.4rem;
         margin: 0;
+        cursor: pointer;
       }
 
       .fab {
@@ -379,6 +388,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         gap: 0.3rem;
         font-size: 0.85rem;
         color: var(--muted);
+        cursor: pointer;
       }
 
       .qa-context .star {
@@ -755,6 +765,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         color: #6ea8fe;
       }
 
+      /* #when-reminder-label reuses .sheet-check for its "pushed right"
+         positioning, but holds a time string ("11:28") rather than a
+         checkmark — it needs room to actually fit that text instead of
+         the checkmark's fixed 16px box, which let it overflow past the
+         sheet's edge. */
+      #when-reminder-label {
+        width: auto;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
       .sheet-check::after {
         content: "";
         display: none;
@@ -910,7 +931,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         <div class="list-header">
           <div class="list-header-left">
             <button id="back-btn" aria-label="Tillbaka">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" transform="translate(-9, 0)"></polyline></svg>
             </button>
             <h1 id="list-title"></h1>
           </div>
@@ -1488,6 +1509,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       backBtn.addEventListener("click", () => navigateTo("menu"));
 
+      // The title itself is a bigger, more obvious tap target for
+      // going back than just the small chevron next to it — only
+      // active when the chevron itself would be (not mid-select-mode,
+      // where it's replaced by the Done button).
+      listTitle.addEventListener("click", () => {
+        if (!backBtn.hidden) navigateTo("menu");
+      });
+
       // Rows pending removal from the current view (checked off in
       // Today/Inbox/Upcoming, or unchecked in Logbook) — held here so a
       // second toggle before the fade fires can cancel it.
@@ -1549,6 +1578,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         addBtn.hidden = true;
         doneBtn.hidden = false;
         selectBar.hidden = false;
+        document.body.classList.add("select-mode");
         renderTaskList();
       }
 
@@ -1561,6 +1591,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         doneBtn.hidden = true;
         backBtn.hidden = false;
         addBtn.hidden = currentView === "logbook";
+        document.body.classList.remove("select-mode");
         if (wasSelecting) renderTaskList();
       }
 
@@ -1741,6 +1772,32 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         });
       }
 
+      /** Mirrors playCardOpenAnimation for dismissal: shrinks/fades the
+       *  card out first, then calls onDone (which actually hides it) —
+       *  closing reads as the same physical motion in reverse instead
+       *  of the card just vanishing. */
+      function playCardCloseAnimation(onDone: () => void) {
+        if (quickAdd.hidden) {
+          onDone();
+          return;
+        }
+        const onTransitionEnd = (e: TransitionEvent) => {
+          if (e.target !== quickAdd || e.propertyName !== "opacity") return;
+          quickAdd.removeEventListener("transitionend", onTransitionEnd);
+          onDone();
+        };
+        quickAdd.addEventListener("transitionend", onTransitionEnd);
+        quickAdd.style.transform = "scale(0.96)";
+        quickAdd.style.opacity = "0";
+      }
+
+      function hideQuickAddCard() {
+        quickAdd.hidden = true;
+        quickAddScrim.hidden = true;
+        whenSheet.hidden = true;
+        reminderSheet.hidden = true;
+      }
+
       function openQuickAdd() {
         editingTaskId = null;
         resetQuickAddPosition();
@@ -1787,10 +1844,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           commitQuickAdd();
           return;
         }
-        quickAdd.hidden = true;
-        quickAddScrim.hidden = true;
-        whenSheet.hidden = true;
-        reminderSheet.hidden = true;
+        playCardCloseAnimation(hideQuickAddCard);
       }
 
       quickAddScrim.addEventListener("click", closeQuickAdd);
@@ -1807,13 +1861,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         task.done = qaCheckbox.checked;
         task.completedAt = task.done ? new Date().toISOString() : null;
         editingTaskId = null;
-        quickAdd.hidden = true;
-        quickAddScrim.hidden = true;
-        whenSheet.hidden = true;
-        reminderSheet.hidden = true;
-        renderTaskList();
-        renderMenu();
-        queueSave();
+        playCardCloseAnimation(() => {
+          hideQuickAddCard();
+          renderTaskList();
+          renderMenu();
+          queueSave();
+        });
       });
 
       addBtn.addEventListener("click", () => {
@@ -1877,11 +1930,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       qaWhenBtn.addEventListener("click", openWhenSheet);
+      qaContext.addEventListener("click", openWhenSheet);
       whenSheetClose.addEventListener("click", () => {
         whenSheet.hidden = true;
       });
 
       whenSheet.addEventListener("click", (e) => {
+        if (e.target === whenSheet) {
+          whenSheet.hidden = true;
+          return;
+        }
+
         const choiceBtn = (e.target as HTMLElement).closest("[data-when-choice]") as HTMLElement | null;
         if (choiceBtn) {
           const choice = choiceBtn.dataset.whenChoice;
@@ -1955,6 +2014,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         whenSheet.hidden = false;
       });
 
+      reminderSheet.addEventListener("click", (e) => {
+        if (e.target === reminderSheet) reminderCancel.click();
+      });
+
       reminderSet.addEventListener("click", () => {
         if (reminderTimeInput.value) {
           pendingRemind = reminderTimeInput.value;
@@ -1981,15 +2044,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             task.remind = pendingRemind;
           }
           editingTaskId = null;
-          quickAdd.hidden = true;
-          quickAddScrim.hidden = true;
-          whenSheet.hidden = true;
-          reminderSheet.hidden = true;
-          if (task) {
-            renderTaskList();
-            renderMenu();
-            queueSave();
-          }
+          playCardCloseAnimation(() => {
+            hideQuickAddCard();
+            if (task) {
+              renderTaskList();
+              renderMenu();
+              queueSave();
+            }
+          });
           return;
         }
 
