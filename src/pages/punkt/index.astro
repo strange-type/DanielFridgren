@@ -11,7 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Punkt</title>
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="theme-color" content="#111827" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111827" />
     <link rel="manifest" href="/punkt/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/punkt/icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -19,7 +20,7 @@
     <meta name="apple-mobile-web-app-title" content="Punkt" />
     <style is:global>
       :root {
-        color-scheme: dark;
+        color-scheme: light dark;
         --bg: #111827;
         --surface: #1b2333;
         --border: #2c3650;
@@ -31,6 +32,22 @@
         --blue-badge: #3b7bf0;
         --red-badge: #ef5b7a;
         --green-badge: #34c759;
+        --hairline: rgba(255, 255, 255, 0.06);
+        --select-tint: rgba(110, 168, 254, 0.18);
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #ffffff;
+          --surface: #f5f5f7;
+          --border: #e3e3e7;
+          --text: #1c1c1e;
+          --muted: #8a8a8e;
+          --accent: #2f6fed;
+          --danger: #dc2626;
+          --hairline: rgba(0, 0, 0, 0.08);
+          --select-tint: rgba(47, 111, 237, 0.12);
+        }
       }
 
       * {
@@ -235,7 +252,7 @@
         align-items: center;
         gap: 0.6rem;
         padding-bottom: 0.6rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid var(--hairline);
       }
 
       .checkbox-decor {
@@ -332,7 +349,7 @@
       }
 
       li.task-row.row-selected {
-        background: rgba(110, 168, 254, 0.18);
+        background: var(--select-tint);
       }
 
       .select-circle {
