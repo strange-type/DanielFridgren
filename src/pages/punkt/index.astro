@@ -110,9 +110,40 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       /* --- Menu (root) screen -------------------------------------- */
 
+      .menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+      }
+
       .menu-header h1 {
         font-size: 1.7rem;
-        margin: 0 0 1.25rem;
+        margin: 0;
+      }
+
+      .save-error {
+        position: fixed;
+        bottom: calc(1.25rem + env(safe-area-inset-bottom));
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(92%, 30rem);
+        background: var(--danger);
+        color: #1a0a0a;
+        border-radius: 0.7rem;
+        padding: 0.6rem 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+        font-size: 0.85rem;
+        z-index: 40;
+      }
+
+      .save-error button {
+        font-weight: 600;
+        text-decoration: underline;
+        flex-shrink: 0;
       }
 
       #menu-list {
@@ -211,13 +242,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         height: 3.4rem;
         border-radius: 50%;
         background: var(--accent);
-        color: #0b1220;
-        font-size: 2rem;
-        font-weight: 600;
+        color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
+      }
+
+      .fab svg {
+        width: 28px;
+        height: 28px;
+        display: block;
       }
 
       .fab:active {
@@ -745,9 +780,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
     </div>
 
     <div id="app" hidden>
+      <div id="save-error" class="save-error" hidden>
+        <span id="save-error-text"></span>
+        <button type="button" id="save-error-retry">Försök igen</button>
+      </div>
+
       <div id="view-menu" class="screen">
         <div class="menu-header">
           <h1>Punkt</h1>
+          <button id="menu-add-btn" class="fab" aria-label="Ny uppgift">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+          </button>
         </div>
         <nav id="menu-list"></nav>
       </div>
@@ -761,7 +804,9 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             <h1 id="list-title"></h1>
           </div>
           <div class="list-header-right">
-            <button id="add-btn" class="fab" aria-label="Ny uppgift">+</button>
+            <button id="add-btn" class="fab" aria-label="Ny uppgift">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+            </button>
             <button id="done-btn" class="done-pill" hidden>Done</button>
           </div>
         </div>
@@ -885,10 +930,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const gateInput = document.getElementById("gate-input") as HTMLInputElement;
       const gateError = document.getElementById("gate-error") as HTMLParagraphElement;
       const app = document.getElementById("app") as HTMLElement;
+      const saveError = document.getElementById("save-error") as HTMLDivElement;
+      const saveErrorText = document.getElementById("save-error-text") as HTMLSpanElement;
+      const saveErrorRetry = document.getElementById("save-error-retry") as HTMLButtonElement;
 
       const viewMenu = document.getElementById("view-menu") as HTMLDivElement;
       const viewList = document.getElementById("view-list") as HTMLDivElement;
       const menuList = document.getElementById("menu-list") as HTMLElement;
+      const menuAddBtn = document.getElementById("menu-add-btn") as HTMLButtonElement;
       const listTitle = document.getElementById("list-title") as HTMLHeadingElement;
       const backBtn = document.getElementById("back-btn") as HTMLButtonElement;
       const addBtn = document.getElementById("add-btn") as HTMLButtonElement;
@@ -979,7 +1028,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           throw new Error("unauthorized");
         }
         if (!res.ok) {
-          throw new Error(`API error ${res.status}`);
+          let detail = "";
+          try {
+            detail = (await res.json()).error || "";
+          } catch {
+            // response wasn't JSON — leave detail blank
+          }
+          throw new Error(`API error ${res.status}${detail ? `: ${detail}` : ""}`);
         }
         return res.json();
       }
@@ -1033,6 +1088,20 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         app.hidden = false;
       }
 
+      function showSaveError(message: string) {
+        saveErrorText.textContent = `Kunde inte spara: ${message}`;
+        saveError.hidden = false;
+      }
+
+      function hideSaveError() {
+        saveError.hidden = true;
+      }
+
+      saveErrorRetry.addEventListener("click", () => {
+        hideSaveError();
+        queueSave();
+      });
+
       async function loadTasks() {
         const data = await apiFetch("GET");
         tasks = data.tasks || [];
@@ -1046,7 +1115,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         }
         saveInFlight = true;
         apiFetch("POST", { tasks })
-          .catch((err) => console.error("Punkt: failed to save tasks", err))
+          .then(() => hideSaveError())
+          .catch((err) => {
+            console.error("Punkt: failed to save tasks", err);
+            showSaveError(err.message);
+          })
           .finally(() => {
             saveInFlight = false;
             if (saveQueued) {
@@ -1355,6 +1428,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         else closeQuickAdd();
       });
 
+      // Adding from the root list-picker has no "current view" to add
+      // into, so it defaults to Inbox — same as tapping + there.
+      menuAddBtn.addEventListener("click", () => {
+        navigateTo("inbox");
+        openQuickAdd();
+      });
+
       // --- "When?" sheet ---------------------------------------------
 
       let calendarViewYear = 0;
@@ -1545,7 +1625,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         try {
           await loadTasks();
           showApp();
-          navigateTo("menu");
+          navigateTo("today");
         } catch {
           if (!gate.hidden) gateError.textContent = "Kunde inte ansluta. Försök igen.";
         }
@@ -1563,7 +1643,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           try {
             await loadTasks();
             showApp();
-            navigateTo("menu");
+            navigateTo("today");
             return;
           } catch {
             // fall through to gate
