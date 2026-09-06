@@ -267,6 +267,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       #list-title {
         font-size: 1.4rem;
         margin: 0;
+        cursor: pointer;
       }
 
       .fab {
@@ -387,6 +388,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         gap: 0.3rem;
         font-size: 0.85rem;
         color: var(--muted);
+        cursor: pointer;
       }
 
       .qa-context .star {
@@ -1507,6 +1509,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       backBtn.addEventListener("click", () => navigateTo("menu"));
 
+      // The title itself is a bigger, more obvious tap target for
+      // going back than just the small chevron next to it — only
+      // active when the chevron itself would be (not mid-select-mode,
+      // where it's replaced by the Done button).
+      listTitle.addEventListener("click", () => {
+        if (!backBtn.hidden) navigateTo("menu");
+      });
+
       // Rows pending removal from the current view (checked off in
       // Today/Inbox/Upcoming, or unchecked in Logbook) — held here so a
       // second toggle before the fade fires can cancel it.
@@ -1920,6 +1930,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       qaWhenBtn.addEventListener("click", openWhenSheet);
+      qaContext.addEventListener("click", openWhenSheet);
       whenSheetClose.addEventListener("click", () => {
         whenSheet.hidden = true;
       });
