@@ -155,7 +155,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       input,
-      select {
+      select,
+      textarea {
         font: inherit;
         color: var(--text);
         background: var(--surface);
@@ -387,18 +388,21 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         border-bottom: 1px solid var(--hairline);
       }
 
-      #quick-add input:not(.task-check) {
+      #quick-add input:not(.task-check),
+      #quick-add textarea {
         background: transparent;
         border: none;
         padding: 0;
         width: 100%;
       }
 
-      #quick-add input:focus {
+      #quick-add input:focus,
+      #quick-add textarea:focus {
         outline: none;
       }
 
-      #quick-add input::placeholder {
+      #quick-add input::placeholder,
+      #quick-add textarea::placeholder {
         color: var(--muted);
       }
 
@@ -414,7 +418,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
            out before snapping to the correct scale. */
         font-size: 1rem;
         color: var(--muted);
-        padding: 0.85rem 0 0.1rem 1.75rem;
+        padding: 0.85rem 1.5rem 0.1rem 1.75rem;
+        font-family: inherit;
+        resize: none;
+        overflow: hidden;
+        display: block;
+        overflow-wrap: anywhere;
       }
 
       .qa-footer {
@@ -672,6 +681,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         font-size: 0.82rem;
         color: var(--muted);
         margin-left: calc(20px + 0.7rem);
+        margin-right: 1rem;
+        overflow-wrap: anywhere;
       }
 
       .date-group {
@@ -992,7 +1003,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             <input type="checkbox" id="qa-checkbox" class="task-check" tabindex="-1" />
             <input id="qa-title" type="text" placeholder="New To-Do" maxlength="200" />
           </div>
-          <input id="qa-note" type="text" placeholder="Notes" />
+          <textarea id="qa-note" placeholder="Notes" rows="1"></textarea>
           <div class="qa-footer">
             <span id="qa-context" class="qa-context" hidden></span>
             <div class="qa-actions">
@@ -1134,7 +1145,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const quickAddScrim = document.getElementById("quick-add-scrim") as HTMLDivElement;
       const qaCheckbox = document.getElementById("qa-checkbox") as HTMLInputElement;
       const qaTitle = document.getElementById("qa-title") as HTMLInputElement;
-      const qaNote = document.getElementById("qa-note") as HTMLInputElement;
+      const qaNote = document.getElementById("qa-note") as HTMLTextAreaElement;
       const qaContext = document.getElementById("qa-context") as HTMLSpanElement;
       const qaWhenBtn = document.getElementById("qa-when-btn") as HTMLButtonElement;
 
@@ -1852,6 +1863,16 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         reminderSheet.hidden = true;
       }
 
+      /** Grows qa-note to fit its (possibly wrapped) content instead of
+       *  scrolling — needs re-running after any programmatic .value
+       *  change too, since those don't fire the "input" event this is
+       *  also bound to. */
+      function autoGrowNote() {
+        qaNote.style.height = "auto";
+        qaNote.style.height = `${qaNote.scrollHeight}px`;
+      }
+      qaNote.addEventListener("input", autoGrowNote);
+
       function openQuickAdd() {
         editingTaskId = null;
         resetQuickAddPosition();
@@ -1861,6 +1882,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         qaCheckbox.checked = false;
         qaTitle.value = "";
         qaNote.value = "";
+        autoGrowNote();
 
         if (currentView === "today") {
           pendingWhen = "today";
@@ -1893,6 +1915,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         resetQuickAddPosition();
         quickAdd.hidden = false;
         quickAddScrim.hidden = false;
+        // Only once visible — scrollHeight measures 0 on a hidden element.
+        autoGrowNote();
         playCardOpenAnimation();
         qaTitle.focus();
       }
@@ -2165,6 +2189,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // choice intentionally carries over to the next to-do.
         qaTitle.value = "";
         qaNote.value = "";
+        autoGrowNote();
         qaTitle.focus();
       }
 
