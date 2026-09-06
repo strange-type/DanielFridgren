@@ -20,7 +20,7 @@ inte skickas flera gånger samma dag.
 ## Tasks
 
 - [x] Test (id: 1788685942619-2gstb, done: 2026-09-06T10:27:59.430Z)
-- [ ] Test 1 (id: 1788685964362-1416r, when: today, remind: 11:28, notified: 2026-09-06)
+- [ ] Test 1 (id: 1788685964362-1416r, when: today, remind: 18:00, notified: 2026-09-06)
   > Yrfxh
 - [ ] Logga (id: 1788688187377-su5u3, when: -)
 - [ ] Test 2 (id: 1788701665273-zmlw8, when: today)
