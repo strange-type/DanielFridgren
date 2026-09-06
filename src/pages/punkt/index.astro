@@ -58,6 +58,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         box-sizing: border-box;
       }
 
+      html {
+        /* Kills the elastic rubber-band bounce at the top/bottom of the
+           page on iOS — native apps don't wobble when there's nothing
+           left to scroll, and neither should this. */
+        overscroll-behavior-y: none;
+      }
+
       body {
         margin: 0;
         background: var(--bg);
@@ -70,6 +77,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           sans-serif;
         padding-bottom: calc(4rem + env(safe-area-inset-bottom));
         overflow-x: hidden;
+        overscroll-behavior-y: none;
       }
 
       #app {
@@ -254,8 +262,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .fab {
-        width: 3.4rem;
-        height: 3.4rem;
+        width: 3rem;
+        height: 3rem;
         border-radius: 50%;
         background: var(--accent);
         color: #fff;
@@ -266,8 +274,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .fab svg {
-        width: 28px;
-        height: 28px;
+        width: 24px;
+        height: 24px;
         display: block;
       }
 
@@ -302,6 +310,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         border-radius: 0.9rem;
         padding: 0.85rem 1rem;
         margin-bottom: 1.25rem;
+        box-shadow:
+          0 -10px 24px -8px rgba(0, 0, 0, 0.28),
+          0 10px 24px -8px rgba(0, 0, 0, 0.28);
+        transform: scale(1);
+        opacity: 1;
+        transition:
+          transform 0.22s cubic-bezier(0.2, 0.8, 0.3, 1),
+          opacity 0.22s ease;
       }
 
       #quick-add-scrim {
@@ -339,7 +355,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       #quick-add #qa-note {
-        font-size: 0.9rem;
+        /* Must stay >= 16px — anything smaller makes iOS Safari
+           auto-zoom the whole page in on focus, and in standalone PWA
+           mode it sometimes fails to zoom back out cleanly afterwards,
+           which shows up as the next screen briefly rendering zoomed
+           out before snapping to the correct scale. */
+        font-size: 1rem;
         color: var(--muted);
         padding: 0.85rem 0 0.1rem 1.75rem;
       }
@@ -1080,7 +1101,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const ICON_FLAG =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4h11l-2 4 2 4H5"/></svg>';
       const ICON_BELL =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a5 5 0 0 0-5 5v3.3c0 1.05-.43 2.06-1.19 2.79L5 16h14l-.81-.91C17.43 14.36 17 13.35 17 12.3V9a5 5 0 0 0-5-5Z"/><path d="M10 18.5a2 2 0 0 0 4 0"/></svg>';
+        '<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a6 6 0 0 0-6 6v3.09c0 .652-.198 1.29-.568 1.827l-1.147 1.673A1.75 1.75 0 0 0 3.68 17.5h12.64a1.75 1.75 0 0 0 1.395-2.9l-1.147-1.673A3.25 3.25 0 0 1 16 11.09V8a6 6 0 0 0-6-6ZM8.05 18a1.95 1.95 0 0 0 3.9 0h-3.9Z" clip-rule="evenodd"/></svg>';
 
       const VIEW_TITLES: Record<Exclude<View, "menu">, string> = {
         inbox: "Inbox",
@@ -1264,7 +1285,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       function taskRowHtml(task: Task, dateBadge?: string): string {
         const icons: string[] = [];
         if (task.note) icons.push(ICON_NOTE);
-        if (!task.done && task.remind) icons.push(ICON_BELL);
+        if (!task.done && task.remind && task.notifiedOn !== todayStr()) icons.push(ICON_BELL);
         if (!task.done && task.deadline) icons.push(ICON_FLAG);
         const selected = selectedIds.has(task.id);
         const indicator = selectMode
@@ -1704,11 +1725,28 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         }
       }
 
+      /** Plays the card's "lift off the list" entrance: pops in from
+       *  slightly scaled-down and transparent to full size, so the
+       *  drop shadow above and below it reads as it rising off the
+       *  flat list rather than just appearing. */
+      function playCardOpenAnimation() {
+        quickAdd.style.transition = "none";
+        quickAdd.style.transform = "scale(0.96)";
+        quickAdd.style.opacity = "0";
+        void quickAdd.offsetWidth; // force reflow so the transition below actually animates
+        quickAdd.style.transition = "";
+        requestAnimationFrame(() => {
+          quickAdd.style.transform = "scale(1)";
+          quickAdd.style.opacity = "1";
+        });
+      }
+
       function openQuickAdd() {
         editingTaskId = null;
         resetQuickAddPosition();
         quickAdd.hidden = false;
         quickAddScrim.hidden = false;
+        playCardOpenAnimation();
         qaCheckbox.checked = false;
         qaTitle.value = "";
         qaNote.value = "";
@@ -1740,6 +1778,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         placeQuickAddInline(task.id);
         quickAdd.hidden = false;
         quickAddScrim.hidden = false;
+        playCardOpenAnimation();
         qaTitle.focus();
       }
 
@@ -1940,15 +1979,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             task.note = qaNote.value.trim();
             task.when = pendingWhen;
             task.remind = pendingRemind;
-            renderTaskList();
-            renderMenu();
-            queueSave();
           }
           editingTaskId = null;
           quickAdd.hidden = true;
           quickAddScrim.hidden = true;
           whenSheet.hidden = true;
           reminderSheet.hidden = true;
+          if (task) {
+            renderTaskList();
+            renderMenu();
+            queueSave();
+          }
           return;
         }
 
