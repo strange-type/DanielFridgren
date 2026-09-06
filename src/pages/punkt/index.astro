@@ -339,7 +339,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       #quick-add #qa-note {
-        font-size: 0.9rem;
+        /* Must stay >= 16px — anything smaller makes iOS Safari
+           auto-zoom the whole page in on focus, and in standalone PWA
+           mode it sometimes fails to zoom back out cleanly afterwards,
+           which shows up as the next screen briefly rendering zoomed
+           out before snapping to the correct scale. */
+        font-size: 1rem;
         color: var(--muted);
         padding: 0.85rem 0 0.1rem 1.75rem;
       }
