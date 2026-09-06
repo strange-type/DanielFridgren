@@ -1,5 +1,13 @@
 import { timingSafeEqual, createHash } from 'node:crypto';
-import { readTasksFile, writeTasksFile, parseTasks, serializeTasks, validateTasks } from './lib/punkt-data.js';
+import {
+    readTasksFile,
+    writeTasksFile,
+    parseTasks,
+    serializeTasks,
+    validateTasks,
+    isIpBlocked,
+    logFailedAuthAttempt
+} from './lib/punkt-data.js';
 
 const { PUNKT_GITHUB_TOKEN, PUNKT_ACCESS_TOKEN } = process.env;
 
@@ -57,8 +65,15 @@ export const handler = async (event) => {
         return respond(429, { error: 'Too many requests. Try again shortly.' });
     }
 
+    if (await isIpBlocked(clientIp)) {
+        return respond(403, { error: 'Too many failed login attempts. Try again later.' });
+    }
+
     if (!isAuthorized(event)) {
-        return respond(401, { error: 'Unauthorized' });
+        const nowBlocked = await logFailedAuthAttempt(clientIp);
+        return nowBlocked
+            ? respond(403, { error: 'Too many failed login attempts. Try again later.' })
+            : respond(401, { error: 'Unauthorized' });
     }
 
     try {
