@@ -223,6 +223,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       /* --- List (detail) screen -------------------------------------- */
 
       .list-header {
+        position: relative;
+        z-index: 17;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -293,11 +295,20 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       /* Quick-add card: fields have no visible box of their own — just
          a faintly elevated card so they read as "almost invisible". */
       #quick-add {
+        position: relative;
+        z-index: 16;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 0.9rem;
         padding: 0.85rem 1rem;
         margin-bottom: 1.25rem;
+      }
+
+      #quick-add-scrim {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 15;
       }
 
       #quick-add .qa-title-row {
@@ -336,16 +347,34 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       .qa-footer {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
         margin-top: 0.5rem;
         padding-left: 1.75rem;
         gap: 0.5rem;
+      }
+
+      .qa-context {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .qa-context .star {
+        color: var(--gold);
+      }
+
+      .qa-context svg {
+        width: 14px;
+        height: 14px;
+        display: block;
       }
 
       .qa-actions {
         display: flex;
         align-items: center;
         gap: 0.4rem;
+        margin-left: auto;
       }
 
       .ghost-icon {
@@ -872,6 +901,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           </div>
         </div>
 
+        <div id="quick-add-scrim" hidden></div>
+        <div id="quick-add-anchor"></div>
         <form id="quick-add" hidden>
           <div class="qa-title-row">
             <input type="checkbox" id="qa-checkbox" class="task-check" tabindex="-1" />
@@ -879,6 +910,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           </div>
           <input id="qa-note" type="text" placeholder="Notes" />
           <div class="qa-footer">
+            <span id="qa-context" class="qa-context" hidden></span>
             <div class="qa-actions">
               <button type="button" id="qa-when-btn" class="ghost-icon" aria-label="Schemalägg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
@@ -1014,9 +1046,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const wpInbox = document.getElementById("wp-inbox") as HTMLButtonElement;
 
       const quickAdd = document.getElementById("quick-add") as HTMLFormElement;
+      const quickAddAnchor = document.getElementById("quick-add-anchor") as HTMLDivElement;
+      const quickAddScrim = document.getElementById("quick-add-scrim") as HTMLDivElement;
       const qaCheckbox = document.getElementById("qa-checkbox") as HTMLInputElement;
       const qaTitle = document.getElementById("qa-title") as HTMLInputElement;
       const qaNote = document.getElementById("qa-note") as HTMLInputElement;
+      const qaContext = document.getElementById("qa-context") as HTMLSpanElement;
       const qaWhenBtn = document.getElementById("qa-when-btn") as HTMLButtonElement;
 
       const whenSheet = document.getElementById("when-sheet") as HTMLDivElement;
@@ -1283,9 +1318,16 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       function renderTaskList() {
-        // Hide the row being edited — its content is already shown in
-        // the quick-add card above, so keeping both visible just adds
-        // redundant height to the page (worse once the keyboard is up).
+        // #quick-add can currently be a child of taskListEl (moved
+        // there to sit inline where an edited row was) — innerHTML
+        // below would destroy it if we didn't move it out first.
+        // openTaskEdit() re-parents it back into place afterward.
+        if (quickAdd.parentElement === taskListEl) {
+          quickAddAnchor.insertAdjacentElement("afterend", quickAdd);
+        }
+
+        // Hide the row being edited — the quick-add card takes its
+        // place inline instead.
         const items = bucket(currentView as View).filter((t) => t.id !== editingTaskId);
 
         if (currentView === "upcoming") {
@@ -1607,13 +1649,59 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       let pendingWhenChoice: "today" | "evening" | "date" | null = null;
       let editingTaskId: string | null = null;
 
-      function updateQaWhenBtnState() {
+      const ICON_BELL_SMALL = ICON_BELL;
+
+      /**
+       * Updates the "active" tint on the when-button, and — only once a
+       * reminder time is actually set — shows a small context label
+       * ("★ Today 🔔13:00") so an edited task's schedule is visible
+       * without needing to reopen the When? sheet.
+       */
+      function updateQaFooter() {
         qaWhenBtn.classList.toggle("active", pendingWhen !== null || pendingRemind !== null);
+
+        if (!pendingRemind) {
+          qaContext.hidden = true;
+          qaContext.innerHTML = "";
+          return;
+        }
+
+        let whenLabel = "";
+        if (pendingWhenChoice === "today") whenLabel = '<span class="star">★</span> Today';
+        else if (pendingWhenChoice === "evening") whenLabel = "🌙 This Evening";
+        else if (pendingWhen) whenLabel = escapeHtml(pendingWhen);
+        qaContext.innerHTML = `${whenLabel} ${ICON_BELL_SMALL}${pendingRemind}`;
+        qaContext.hidden = false;
+      }
+
+      /** Moves the (single, shared) quick-add form back to its default
+       *  spot above the list, out of taskListEl. */
+      function resetQuickAddPosition() {
+        quickAddAnchor.insertAdjacentElement("afterend", quickAdd);
+      }
+
+      /** Re-parents the quick-add form into taskListEl right where the
+       *  edited task's row would be, so it opens inline instead of
+       *  floating above the list. */
+      function placeQuickAddInline(taskId: string) {
+        const items = bucket(currentView as View);
+        const index = items.findIndex((t) => t.id === taskId);
+        const nextTask = index === -1 ? undefined : items[index + 1];
+        const nextRow = nextTask
+          ? (taskListEl.querySelector(`.task-row[data-id="${nextTask.id}"]`) as HTMLElement | null)
+          : null;
+        if (nextRow) {
+          taskListEl.insertBefore(quickAdd, nextRow);
+        } else {
+          taskListEl.appendChild(quickAdd);
+        }
       }
 
       function openQuickAdd() {
         editingTaskId = null;
+        resetQuickAddPosition();
         quickAdd.hidden = false;
+        quickAddScrim.hidden = false;
         qaCheckbox.checked = false;
         qaTitle.value = "";
         qaNote.value = "";
@@ -1626,14 +1714,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           pendingWhenChoice = null;
         }
         pendingRemind = null;
-        updateQaWhenBtnState();
+        updateQaFooter();
 
         qaTitle.focus();
       }
 
       function openTaskEdit(task: Task) {
         editingTaskId = task.id;
-        quickAdd.hidden = false;
         qaCheckbox.checked = task.done;
         qaTitle.value = task.title;
         qaNote.value = task.note;
@@ -1641,9 +1728,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         pendingRemind = task.remind;
         pendingWhenChoice =
           task.when === "today" ? (task.remind === "18:00" ? "evening" : "today") : task.when ? "date" : null;
-        updateQaWhenBtnState();
-        qaTitle.focus();
+        updateQaFooter();
         renderTaskList();
+        placeQuickAddInline(task.id);
+        quickAdd.hidden = false;
+        quickAddScrim.hidden = false;
+        qaTitle.focus();
       }
 
       function closeQuickAdd() {
@@ -1652,9 +1742,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           return;
         }
         quickAdd.hidden = true;
+        quickAddScrim.hidden = true;
         whenSheet.hidden = true;
         reminderSheet.hidden = true;
       }
+
+      quickAddScrim.addEventListener("click", closeQuickAdd);
 
       qaCheckbox.addEventListener("change", () => {
         if (!editingTaskId) return;
@@ -1669,6 +1762,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         task.completedAt = task.done ? new Date().toISOString() : null;
         editingTaskId = null;
         quickAdd.hidden = true;
+        quickAddScrim.hidden = true;
         whenSheet.hidden = true;
         reminderSheet.hidden = true;
         renderTaskList();
@@ -1754,7 +1848,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             pendingWhenChoice = "evening";
             pendingRemind = "18:00";
           }
-          updateQaWhenBtnState();
+          updateQaFooter();
           whenSheet.hidden = true;
           return;
         }
@@ -1764,7 +1858,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           pendingWhen = dayBtn.dataset.date || null;
           pendingWhenChoice = "date";
           pendingRemind = null;
-          updateQaWhenBtnState();
+          updateQaFooter();
           whenSheet.hidden = true;
         }
       });
@@ -1791,7 +1885,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         pendingWhen = null;
         pendingWhenChoice = null;
         pendingRemind = null;
-        updateQaWhenBtnState();
+        updateQaFooter();
         whenSheet.hidden = true;
       });
 
@@ -1818,7 +1912,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       reminderSet.addEventListener("click", () => {
         if (reminderTimeInput.value) {
           pendingRemind = reminderTimeInput.value;
-          updateQaWhenBtnState();
+          updateQaFooter();
           void ensurePushSubscription();
         }
         reminderSheet.hidden = true;
@@ -1845,6 +1939,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           }
           editingTaskId = null;
           quickAdd.hidden = true;
+          quickAddScrim.hidden = true;
           whenSheet.hidden = true;
           reminderSheet.hidden = true;
           return;
