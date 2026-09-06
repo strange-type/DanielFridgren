@@ -75,9 +75,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           "Segoe UI",
           Roboto,
           sans-serif;
-        padding-bottom: calc(4rem + env(safe-area-inset-bottom));
         overflow-x: hidden;
         overscroll-behavior-y: none;
+      }
+
+      /* Reserves room for the floating select-bar pill only while it's
+         actually shown — applying this unconditionally made the page
+         scrollable by that much even on short lists with nothing to
+         scroll to, which reads as a rubber-band-y web page rather than
+         a native list. */
+      body.select-mode {
+        padding-bottom: calc(4rem + env(safe-area-inset-bottom));
       }
 
       #app {
@@ -248,7 +256,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       #back-btn {
         color: var(--muted);
         display: flex;
-        padding: 0.25rem;
+        padding: 0.25rem 0.25rem 0.25rem 0;
       }
 
       #back-btn svg {
@@ -921,7 +929,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         <div class="list-header">
           <div class="list-header-left">
             <button id="back-btn" aria-label="Tillbaka">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" transform="translate(-9, 0)"></polyline></svg>
             </button>
             <h1 id="list-title"></h1>
           </div>
@@ -1560,6 +1568,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         addBtn.hidden = true;
         doneBtn.hidden = false;
         selectBar.hidden = false;
+        document.body.classList.add("select-mode");
         renderTaskList();
       }
 
@@ -1572,6 +1581,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         doneBtn.hidden = true;
         backBtn.hidden = false;
         addBtn.hidden = currentView === "logbook";
+        document.body.classList.remove("select-mode");
         if (wasSelecting) renderTaskList();
       }
 
