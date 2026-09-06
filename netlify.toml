@@ -9,6 +9,11 @@
 [functions]
   node_bundler = "esbuild"
 
+# Checks for due reminders every 10 minutes and sends any web push
+# notifications via netlify/functions/punkt-send-reminders.js.
+[functions."punkt-send-reminders"]
+  schedule = "*/10 * * * *"
+
 # Keep Punkt out of search engines and other sites' frames, in addition
 # to the page's own <meta name="robots"> tag and astro-robots.txt entry.
 [[headers]]
@@ -18,8 +23,23 @@
     X-Frame-Options = "DENY"
     Referrer-Policy = "no-referrer"
 
+# Always revalidate the app shell itself, so a redeploy is visible on
+# the next load instead of getting stuck behind a cached HTML response
+# (iOS home-screen apps in particular can otherwise keep showing an old
+# build for a long time).
+[[headers]]
+  for = "/punkt/"
+  [headers.values]
+    Cache-Control = "no-cache"
+
 [[headers]]
   for = "/.netlify/functions/punkt-tasks"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/.netlify/functions/punkt-subscribe"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "no-store"

@@ -21,7 +21,8 @@
     "astro-robots": "^2.3.1",
     "gsap": "^3.15.0",
     "lottie-web": "^5.13.0",
-    "unist-util-visit": "^5.1.0"
+    "unist-util-visit": "^5.1.0",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.3",
