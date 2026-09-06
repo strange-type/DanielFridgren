@@ -294,15 +294,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         border-bottom: 1px solid var(--hairline);
       }
 
-      .checkbox-decor {
-        width: 20px;
-        height: 20px;
-        border: 2px solid var(--muted);
-        border-radius: 6px;
-        flex-shrink: 0;
-      }
-
-      #quick-add input {
+      #quick-add input:not(.task-check) {
         background: transparent;
         border: none;
         padding: 0;
@@ -379,8 +371,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       li.task-row {
         display: flex;
-        align-items: flex-start;
-        gap: 0.7rem;
+        flex-direction: column;
+        gap: 0.15rem;
         padding: 0.55rem 0.5rem;
         margin: 0 -0.5rem;
         border-radius: 0.6rem;
@@ -394,7 +386,6 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       .select-circle {
         width: 20px;
         height: 20px;
-        margin-top: 0.1rem;
         border: 2px solid var(--muted);
         border-radius: 50%;
         flex-shrink: 0;
@@ -485,10 +476,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .task-check {
+        -webkit-appearance: none;
         appearance: none;
+        box-sizing: border-box;
         width: 20px;
         height: 20px;
-        margin-top: 0.1rem;
+        min-width: 20px;
+        min-height: 20px;
+        margin: 0;
+        padding: 0;
         border: 2px solid var(--muted);
         border-radius: 6px;
         display: grid;
@@ -510,12 +506,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         transform: rotate(45deg) translate(-1px, -1px);
       }
 
-      .task-body {
-        flex: 1;
-        min-width: 0;
+      .task-title-line {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
       }
 
-      .task-title-line {
+      .task-title-content {
+        flex: 1;
+        min-width: 0;
         display: flex;
         align-items: center;
         gap: 0.35rem;
@@ -541,7 +540,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       .task-note {
         font-size: 0.82rem;
         color: var(--muted);
-        margin-top: 0.1rem;
+        margin-left: calc(20px + 0.7rem);
       }
 
       .date-group {
@@ -850,7 +849,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
         <form id="quick-add" hidden>
           <div class="qa-title-row">
-            <span class="checkbox-decor"></span>
+            <input type="checkbox" id="qa-checkbox" class="task-check" tabindex="-1" />
             <input id="qa-title" type="text" placeholder="New To-Do" maxlength="200" />
           </div>
           <input id="qa-note" type="text" placeholder="Notes" />
@@ -990,6 +989,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const wpInbox = document.getElementById("wp-inbox") as HTMLButtonElement;
 
       const quickAdd = document.getElementById("quick-add") as HTMLFormElement;
+      const qaCheckbox = document.getElementById("qa-checkbox") as HTMLInputElement;
       const qaTitle = document.getElementById("qa-title") as HTMLInputElement;
       const qaNote = document.getElementById("qa-note") as HTMLInputElement;
       const qaWhenBtn = document.getElementById("qa-when-btn") as HTMLButtonElement;
@@ -1212,15 +1212,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           : `<input type="checkbox" class="task-check" data-action="toggle" data-id="${task.id}" ${task.done ? "checked" : ""} />`;
         return `
           <li class="task-row ${task.done ? "done" : ""} ${selectMode && selected ? "row-selected" : ""}" data-id="${task.id}">
-            ${indicator}
-            <div class="task-body">
-              <div class="task-title-line">
+            <div class="task-title-line">
+              ${indicator}
+              <span class="task-title-content">
                 ${dateBadge ? `<span class="task-date-badge">${dateBadge}</span>` : ""}
                 <span class="task-title">${escapeHtml(task.title)}</span>
                 ${icons.join("")}
-              </div>
-              ${task.note ? `<div class="task-note">${escapeHtml(task.note)}</div>` : ""}
+              </span>
             </div>
+            ${task.note ? `<div class="task-note">${escapeHtml(task.note)}</div>` : ""}
           </li>`;
       }
 
@@ -1386,13 +1386,22 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           suppressNextClick = false;
           return;
         }
-        if (!selectMode) return;
         const row = (e.target as HTMLElement).closest(".task-row") as HTMLElement | null;
         if (!row) return;
         const id = row.dataset.id!;
-        if (selectedIds.has(id)) selectedIds.delete(id);
-        else selectedIds.add(id);
-        renderTaskList();
+
+        if (selectMode) {
+          if (selectedIds.has(id)) selectedIds.delete(id);
+          else selectedIds.add(id);
+          renderTaskList();
+          return;
+        }
+
+        // The checkbox has its own "change" handler for toggling done —
+        // tapping the rest of the row opens the task for editing.
+        if ((e.target as HTMLElement).closest(".task-check")) return;
+        const task = findTask(id);
+        if (task) openTaskEdit(task);
       });
 
       let swipeActive = false;
@@ -1469,21 +1478,26 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         exitSelectMode();
       });
 
-      // --- Quick add -----------------------------------------------------
+      // --- Quick add / task edit -------------------------------------
 
       // The task being composed doesn't exist yet, so its when/remind
       // choice is held here while the "When?"/"Add Reminder" sheets are
-      // open, then applied to the new task on commit.
+      // open, then applied to the new task on commit. The same card and
+      // pending vars are reused to edit an existing task — editingTaskId
+      // tracks which mode we're in.
       let pendingWhen: string | null = null;
       let pendingRemind: string | null = null;
       let pendingWhenChoice: "today" | "evening" | "date" | null = null;
+      let editingTaskId: string | null = null;
 
       function updateQaWhenBtnState() {
         qaWhenBtn.classList.toggle("active", pendingWhen !== null || pendingRemind !== null);
       }
 
       function openQuickAdd() {
+        editingTaskId = null;
         quickAdd.hidden = false;
+        qaCheckbox.checked = false;
         qaTitle.value = "";
         qaNote.value = "";
 
@@ -1500,11 +1514,49 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         qaTitle.focus();
       }
 
+      function openTaskEdit(task: Task) {
+        editingTaskId = task.id;
+        quickAdd.hidden = false;
+        qaCheckbox.checked = task.done;
+        qaTitle.value = task.title;
+        qaNote.value = task.note;
+        pendingWhen = task.when;
+        pendingRemind = task.remind;
+        pendingWhenChoice =
+          task.when === "today" ? (task.remind === "18:00" ? "evening" : "today") : task.when ? "date" : null;
+        updateQaWhenBtnState();
+        qaTitle.focus();
+      }
+
       function closeQuickAdd() {
+        if (editingTaskId) {
+          commitQuickAdd();
+          return;
+        }
         quickAdd.hidden = true;
         whenSheet.hidden = true;
         reminderSheet.hidden = true;
       }
+
+      qaCheckbox.addEventListener("change", () => {
+        if (!editingTaskId) return;
+        const task = findTask(editingTaskId);
+        if (!task) return;
+        const title = qaTitle.value.trim();
+        if (title) task.title = title;
+        task.note = qaNote.value.trim();
+        task.when = pendingWhen;
+        task.remind = pendingRemind;
+        task.done = qaCheckbox.checked;
+        task.completedAt = task.done ? new Date().toISOString() : null;
+        editingTaskId = null;
+        quickAdd.hidden = true;
+        whenSheet.hidden = true;
+        reminderSheet.hidden = true;
+        renderTaskList();
+        renderMenu();
+        queueSave();
+      });
 
       addBtn.addEventListener("click", () => {
         if (quickAdd.hidden) openQuickAdd();
@@ -1652,10 +1704,34 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           void ensurePushSubscription();
         }
         reminderSheet.hidden = true;
+        // Setting a reminder is a natural "I'm done configuring this"
+        // moment — commit right away instead of waiting for a separate
+        // Enter, so the task visibly lands in the list as confirmation
+        // the reminder was actually set.
+        commitQuickAdd();
       });
 
       function commitQuickAdd() {
         const title = qaTitle.value.trim();
+
+        if (editingTaskId) {
+          const task = findTask(editingTaskId);
+          if (task) {
+            if (title) task.title = title;
+            task.note = qaNote.value.trim();
+            task.when = pendingWhen;
+            task.remind = pendingRemind;
+            renderTaskList();
+            renderMenu();
+            queueSave();
+          }
+          editingTaskId = null;
+          quickAdd.hidden = true;
+          whenSheet.hidden = true;
+          reminderSheet.hidden = true;
+          return;
+        }
+
         if (!title) return;
 
         if (currentView === "upcoming" && (!pendingWhen || pendingWhen === "today")) {
