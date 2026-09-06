@@ -1326,10 +1326,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         const today = todayStr();
         if (view === "inbox") return tasks.filter((t) => !t.done && !t.when);
         if (view === "today")
-          return tasks.filter((t) => !t.done && t.when && (t.when === "today" || t.when <= today));
+          return tasks.filter(
+            (t) => !t.done && t.when && (t.when === "today" || t.when === "evening" || t.when <= today)
+          );
         if (view === "upcoming")
           return tasks
-            .filter((t) => !t.done && t.when && t.when !== "today" && t.when > today)
+            .filter((t) => !t.done && t.when && t.when !== "today" && t.when !== "evening" && t.when > today)
             .sort((a, b) => (a.when! < b.when! ? -1 : 1));
         if (view === "logbook")
           return tasks
@@ -1338,11 +1340,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         return [];
       }
 
-      // "This Evening" is a today-task with its reminder pinned to
-      // 18:00 (see the When sheet's evening choice) — shared so
+      // "This Evening" is its own `when` value, independent of whether
+      // a reminder is actually set — picking it is just a scheduling
+      // choice, not an implicit "and also remind me at 18:00". The
+      // `remind === "18:00"` half is a back-compat shim for tasks
+      // created before this was its own when value (it used to be
+      // when: "today" + an auto-added 18:00 reminder). Shared so
       // placeQuickAddInline agrees with renderTaskList on where a task
       // actually ends up, not just bucket()'s raw (unsplit) order.
-      const isEveningTask = (t: Task) => t.when === "today" && t.remind === "18:00";
+      const isEveningTask = (t: Task) => t.when === "evening" || (t.when === "today" && t.remind === "18:00");
 
       /** bucket(), but in the order tasks actually render in — only
        *  "today" differs from bucket() itself, since it renders regular
@@ -1925,8 +1931,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         qaNote.value = task.note;
         pendingWhen = task.when;
         pendingRemind = task.remind;
-        pendingWhenChoice =
-          task.when === "today" ? (task.remind === "18:00" ? "evening" : "today") : task.when ? "date" : null;
+        pendingWhenChoice = isEveningTask(task)
+          ? "evening"
+          : task.when === "today"
+            ? "today"
+            : task.when
+              ? "date"
+              : null;
         updateQaFooter();
         renderTaskList();
         placeQuickAddInline(task.id);
@@ -2055,9 +2066,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             pendingWhenChoice = "today";
             pendingRemind = null;
           } else if (choice === "evening") {
-            pendingWhen = "today";
+            // Just a scheduling choice, like "Today" — doesn't imply a
+            // reminder on its own. If one's wanted, Add Reminder below
+            // defaults its time to 18:00 for this choice specifically.
+            pendingWhen = "evening";
             pendingWhenChoice = "evening";
-            pendingRemind = "18:00";
+            pendingRemind = null;
           }
           updateQaFooter();
           whenSheet.hidden = true;
@@ -2107,10 +2121,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           pendingWhen = "today";
           pendingWhenChoice = "today";
         }
-        const defaultTime = new Date(Date.now() + 60 * 60 * 1000);
         const pad = (n: number) => String(n).padStart(2, "0");
+        // This Evening implies a sensible reminder default of 18:00,
+        // rather than the generic "an hour from now" — matching what a
+        // reminder for an evening to-do would actually be for.
+        const defaultTime = new Date(Date.now() + 60 * 60 * 1000);
+        const genericDefault = `${pad(defaultTime.getHours())}:${pad(defaultTime.getMinutes())}`;
         reminderTimeInput.value =
-          pendingRemind || `${pad(defaultTime.getHours())}:${pad(defaultTime.getMinutes())}`;
+          pendingRemind || (pendingWhenChoice === "evening" ? "18:00" : genericDefault);
         whenSheet.hidden = true;
         reminderSheet.hidden = false;
       });
