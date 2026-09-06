@@ -20,6 +20,9 @@ export default defineConfig({
     }),
     sitemap({
       filter: (page) => !page.includes("/punkt"),
+      customPages: [
+        "https://fridgren.se/documents/examensarbete-daniel-johansson.pdf",
+      ],
     }),
     icon(),
   ],
