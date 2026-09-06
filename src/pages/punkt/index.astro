@@ -366,7 +366,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         transform: scale(1);
         opacity: 1;
         transition:
-          transform 0.34s cubic-bezier(0.2, 0.8, 0.3, 1),
+          transform 0.34s cubic-bezier(0.33, 1, 0.68, 1),
           opacity 0.34s ease;
       }
 
@@ -1345,19 +1345,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       // choice, not an implicit "and also remind me at 18:00". The
       // `remind === "18:00"` half is a back-compat shim for tasks
       // created before this was its own when value (it used to be
-      // when: "today" + an auto-added 18:00 reminder). Shared so
-      // placeQuickAddInline agrees with renderTaskList on where a task
-      // actually ends up, not just bucket()'s raw (unsplit) order.
+      // when: "today" + an auto-added 18:00 reminder).
       const isEveningTask = (t: Task) => t.when === "evening" || (t.when === "today" && t.remind === "18:00");
-
-      /** bucket(), but in the order tasks actually render in — only
-       *  "today" differs from bucket() itself, since it renders regular
-       *  tasks followed by the This Evening group. */
-      function orderedBucket(view: View): Task[] {
-        const items = bucket(view);
-        if (view !== "today") return items;
-        return [...items.filter((t) => !isEveningTask(t)), ...items.filter(isEveningTask)];
-      }
 
       function renderMenu() {
         const rows: { view: Exclude<View, "menu">; label: string; iconHtml: string; iconClass: string }[] = [
@@ -1435,27 +1424,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       function renderTaskList() {
-        // #quick-add can currently be a child of taskListEl (moved
-        // there to sit inline where an edited row was) — innerHTML
-        // below would destroy it if we didn't move it out first.
-        // openTaskEdit() re-parents it back into place afterward.
-        if (quickAdd.parentElement === taskListEl) {
-          quickAddAnchor.insertAdjacentElement("afterend", quickAdd);
-        }
-
-        // Hide the row being edited — the quick-add card takes its
-        // place inline instead.
-        const items = bucket(currentView as View).filter((t) => t.id !== editingTaskId);
-
-        // While editing the only task in a view, `items` becomes empty
-        // even though the list isn't really empty — the quick-add card
-        // is about to occupy that slot inline, so the "nothing here"
-        // message must stay out of its way.
-        const showEmptyState = !editingTaskId;
+        const items = bucket(currentView as View);
 
         if (currentView === "upcoming") {
           if (items.length === 0) {
-            taskListEl.innerHTML = showEmptyState ? '<p class="empty">Inget schemalagt.</p>' : "";
+            taskListEl.innerHTML = '<p class="empty">Inget schemalagt.</p>';
             return;
           }
           const today = todayStr();
@@ -1481,7 +1454,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
         if (currentView === "today") {
           if (items.length === 0) {
-            taskListEl.innerHTML = showEmptyState ? '<p class="empty">Inget för idag.</p>' : "";
+            taskListEl.innerHTML = '<p class="empty">Inget för idag.</p>';
             return;
           }
           const regular = items.filter((t) => !isEveningTask(t));
@@ -1497,7 +1470,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
         if (currentView === "logbook") {
           if (items.length === 0) {
-            taskListEl.innerHTML = showEmptyState ? '<p class="empty">Inget avklarat än.</p>' : "";
+            taskListEl.innerHTML = '<p class="empty">Inget avklarat än.</p>';
             return;
           }
           const today = todayStr();
@@ -1514,9 +1487,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           return;
         }
 
-        taskListEl.innerHTML =
-          items.map((t) => taskRowHtml(t)).join("") ||
-          (showEmptyState ? '<p class="empty">Inboxen är tom.</p>' : "");
+        taskListEl.innerHTML = items.map((t) => taskRowHtml(t)).join("") || '<p class="empty">Inboxen är tom.</p>';
       }
 
       function findTask(id: string): Task | undefined {
@@ -1825,31 +1796,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       /** Moves the (single, shared) quick-add form back to its default
-       *  spot above the list, out of taskListEl. */
+       *  spot above the list — used both for adding and editing, as a
+       *  popup sitting above the (otherwise untouched) list rather than
+       *  replacing the edited row inline. */
       function resetQuickAddPosition() {
         quickAddAnchor.insertAdjacentElement("afterend", quickAdd);
-      }
-
-      /** Re-parents the quick-add form into taskListEl right where the
-       *  edited task's row would be, so it opens inline instead of
-       *  floating above the list. */
-      function placeQuickAddInline(taskId: string) {
-        // Must agree with the *rendered* order, not bucket()'s raw
-        // order — in "today", This Evening tasks render after the
-        // regular ones, so using bucket() directly could pick a "next"
-        // task that's actually rows away in the DOM (e.g. across the
-        // This Evening header), inserting the card in the wrong spot.
-        const items = orderedBucket(currentView as View);
-        const index = items.findIndex((t) => t.id === taskId);
-        const nextTask = index === -1 ? undefined : items[index + 1];
-        const nextRow = nextTask
-          ? (taskListEl.querySelector(`.task-row[data-id="${nextTask.id}"]`) as HTMLElement | null)
-          : null;
-        if (nextRow) {
-          taskListEl.insertBefore(quickAdd, nextRow);
-        } else {
-          taskListEl.appendChild(quickAdd);
-        }
       }
 
       /** Plays the card's "lift off the list" entrance: pops in from
@@ -1939,8 +1890,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
               ? "date"
               : null;
         updateQaFooter();
-        renderTaskList();
-        placeQuickAddInline(task.id);
+        resetQuickAddPosition();
         quickAdd.hidden = false;
         quickAddScrim.hidden = false;
         playCardOpenAnimation();
