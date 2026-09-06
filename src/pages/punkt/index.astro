@@ -2,6 +2,10 @@
 // Punkt is a standalone mini-app, deliberately not using the site's
 // shared Layout.astro: it needs its own manifest/start_url/scope so
 // "Add to Home Screen" installs *this* app, not fridgren.se.
+
+// Public (non-secret) VAPID key, embedded at build time so the client
+// can call pushManager.subscribe() without a round-trip to a function.
+const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 ---
 
 <!doctype html>
@@ -523,12 +527,204 @@
         min-height: 1.2em;
       }
 
+      /* --- "When?" / "Add Reminder" sheets --------------------------
+         Deliberately fixed-dark, not theme-aware: these mimic Things'
+         own bottom sheets, which look the same in both app themes. */
+
+      .sheet-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: flex-end;
+        z-index: 30;
+      }
+
+      .sheet-card {
+        width: 100%;
+        max-width: 32rem;
+        margin: 0 auto;
+        background: #1b2333;
+        color: #f3f4f6;
+        border-radius: 1.1rem 1.1rem 0 0;
+        padding: 1rem 1.1rem calc(1.5rem + env(safe-area-inset-bottom));
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+
+      .sheet-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+      }
+
+      .sheet-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .sheet-close {
+        color: #9aa4b8;
+        background: #2c3650;
+        border-radius: 50%;
+        width: 1.8rem;
+        height: 1.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .sheet-close svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .sheet-row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.65rem 0.2rem;
+        text-align: left;
+        font-size: 1rem;
+        color: #f3f4f6;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .sheet-row-icon {
+        width: 1.4rem;
+        text-align: center;
+        font-size: 1.1rem;
+      }
+
+      .sheet-row-icon.star {
+        color: #f5c518;
+      }
+
+      .sheet-check {
+        margin-left: auto;
+        width: 16px;
+        height: 16px;
+        color: #6ea8fe;
+      }
+
+      .sheet-check::after {
+        content: "";
+        display: none;
+        width: 5px;
+        height: 9px;
+        border: solid #6ea8fe;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg) translate(-1px, -3px);
+      }
+
+      .sheet-check.checked::after {
+        display: block;
+      }
+
+      .cal-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        font-size: 0.7rem;
+        color: #9aa4b8;
+        text-align: center;
+        margin-top: 0.75rem;
+      }
+
+      .cal-month-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: #9aa4b8;
+        margin-top: 0.5rem;
+      }
+
+      .cal-month-label button {
+        color: #6ea8fe;
+        padding: 0.2rem 0.5rem;
+      }
+
+      .cal-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.2rem;
+        margin-top: 0.4rem;
+      }
+
+      .cal-day {
+        aspect-ratio: 1;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        color: #f3f4f6;
+        position: relative;
+      }
+
+      .cal-day.selected {
+        background: #6ea8fe;
+        color: #0b1220;
+        font-weight: 600;
+      }
+
+      .cal-today-mark {
+        position: absolute;
+        bottom: 2px;
+        font-size: 0.5rem;
+        color: #f5c518;
+      }
+
+      .sheet-clear {
+        width: 100%;
+        text-align: center;
+        background: #3a2230;
+        color: #f87171;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: 0.7rem;
+        margin-top: 1rem;
+      }
+
+      .reminder-time-input {
+        background: #2c3650;
+        border: none;
+        border-radius: 0.6rem;
+        color: #f3f4f6;
+        font-size: 1.3rem;
+        padding: 0.75rem;
+        text-align: center;
+        margin: 0.5rem 0 1rem;
+      }
+
+      .sheet-actions {
+        display: flex;
+        gap: 0.6rem;
+      }
+
+      .sheet-actions button {
+        flex: 1;
+        padding: 0.6rem;
+        border-radius: 0.6rem;
+        text-align: center;
+        background: #2c3650;
+        color: #f3f4f6;
+      }
+
+      .sheet-actions button.primary {
+        background: #6ea8fe;
+        color: #0b1220;
+        font-weight: 600;
+      }
+
       [hidden] {
         display: none !important;
       }
     </style>
   </head>
-  <body>
+  <body data-vapid-key={vapidPublicKey}>
     <div id="gate">
       <h1>Punkt</h1>
       <form id="gate-form">
@@ -578,10 +774,9 @@
           <input id="qa-note" type="text" placeholder="Notes" />
           <div class="qa-footer">
             <div class="qa-actions">
-              <button type="button" id="qa-when-toggle" class="ghost-icon" aria-label="Schemalägg" hidden>
+              <button type="button" id="qa-when-btn" class="ghost-icon" aria-label="Schemalägg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
               </button>
-              <input type="date" id="qa-when" class="qa-date" hidden />
             </div>
           </div>
           <!-- A form with more than one text field only submits on
@@ -590,6 +785,52 @@
                text field. -->
           <button type="submit" hidden>Lägg till</button>
         </form>
+
+        <div id="when-sheet" class="sheet-overlay" hidden>
+          <div class="sheet-card">
+            <div class="sheet-header">
+              <span class="sheet-title">When?</span>
+              <button type="button" id="when-sheet-close" class="sheet-close" aria-label="Stäng">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+              </button>
+            </div>
+            <button type="button" class="sheet-row" data-when-choice="today">
+              <span class="sheet-row-icon star">★</span> Today
+              <span class="sheet-check" data-check="today"></span>
+            </button>
+            <button type="button" class="sheet-row" data-when-choice="evening">
+              <span class="sheet-row-icon">🌙</span> This Evening
+              <span class="sheet-check" data-check="evening"></span>
+            </button>
+            <div class="cal-month-label">
+              <button type="button" id="cal-prev" aria-label="Föregående månad">‹</button>
+              <span id="cal-month-name"></span>
+              <button type="button" id="cal-next" aria-label="Nästa månad">›</button>
+            </div>
+            <div class="cal-weekdays">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div id="cal-grid" class="cal-grid"></div>
+            <button type="button" id="when-add-reminder" class="sheet-row" style="margin-top: 0.75rem; border-bottom: none;">
+              <span class="sheet-row-icon">+</span> Add Reminder
+              <span id="when-reminder-label" class="sheet-check" style="color:#9aa4b8;"></span>
+            </button>
+            <button type="button" id="when-clear" class="sheet-clear">Clear</button>
+          </div>
+        </div>
+
+        <div id="reminder-sheet" class="sheet-overlay" hidden>
+          <div class="sheet-card">
+            <div class="sheet-header">
+              <span class="sheet-title">Add Reminder</span>
+            </div>
+            <input type="time" id="reminder-time-input" class="reminder-time-input" />
+            <div class="sheet-actions">
+              <button type="button" id="reminder-cancel">Cancel</button>
+              <button type="button" id="reminder-set" class="primary">Set</button>
+            </div>
+          </div>
+        </div>
 
         <ul id="task-list"></ul>
 
@@ -615,6 +856,8 @@
     <script>
       const TOKEN_KEY = "punkt-token";
       const API = "/.netlify/functions/punkt-tasks";
+      const SUBSCRIBE_API = "/.netlify/functions/punkt-subscribe";
+      const VAPID_PUBLIC_KEY = document.body.dataset.vapidKey || "";
 
       type Task = {
         id: string;
@@ -622,6 +865,8 @@
         note: string;
         when: string | null; // null | "today" | "YYYY-MM-DD"
         deadline: string | null; // null | "YYYY-MM-DD"
+        remind: string | null; // null | "HH:MM"
+        notifiedOn: string | null; // null | "YYYY-MM-DD" — set by the server once a reminder has fired
         done: boolean;
         completedAt: string | null;
       };
@@ -661,8 +906,22 @@
       const quickAdd = document.getElementById("quick-add") as HTMLFormElement;
       const qaTitle = document.getElementById("qa-title") as HTMLInputElement;
       const qaNote = document.getElementById("qa-note") as HTMLInputElement;
-      const qaWhenToggle = document.getElementById("qa-when-toggle") as HTMLButtonElement;
-      const qaWhen = document.getElementById("qa-when") as HTMLInputElement;
+      const qaWhenBtn = document.getElementById("qa-when-btn") as HTMLButtonElement;
+
+      const whenSheet = document.getElementById("when-sheet") as HTMLDivElement;
+      const whenSheetClose = document.getElementById("when-sheet-close") as HTMLButtonElement;
+      const calPrev = document.getElementById("cal-prev") as HTMLButtonElement;
+      const calNext = document.getElementById("cal-next") as HTMLButtonElement;
+      const calMonthName = document.getElementById("cal-month-name") as HTMLSpanElement;
+      const calGrid = document.getElementById("cal-grid") as HTMLDivElement;
+      const whenAddReminder = document.getElementById("when-add-reminder") as HTMLButtonElement;
+      const whenReminderLabel = document.getElementById("when-reminder-label") as HTMLSpanElement;
+      const whenClear = document.getElementById("when-clear") as HTMLButtonElement;
+
+      const reminderSheet = document.getElementById("reminder-sheet") as HTMLDivElement;
+      const reminderTimeInput = document.getElementById("reminder-time-input") as HTMLInputElement;
+      const reminderCancel = document.getElementById("reminder-cancel") as HTMLButtonElement;
+      const reminderSet = document.getElementById("reminder-set") as HTMLButtonElement;
 
       const ICON_INBOX =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l2-5h14l2 5"/><path d="M3 9v9a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h5a1 1 0 0 1 1 1 3 3 0 0 0 6 0 1 1 0 0 1 1-1h5"/></svg>';
@@ -674,6 +933,8 @@
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg>';
       const ICON_FLAG =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4h11l-2 4 2 4H5"/></svg>';
+      const ICON_CLOCK =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>';
 
       const VIEW_TITLES: Record<Exclude<View, "menu">, string> = {
         inbox: "Inbox",
@@ -702,9 +963,9 @@
         })[c] as string);
       }
 
-      async function apiFetch(method: "GET" | "POST", body?: unknown) {
+      async function apiFetch(method: "GET" | "POST", body?: unknown, url: string = API) {
         const token = localStorage.getItem(TOKEN_KEY);
-        const res = await fetch(API, {
+        const res = await fetch(url, {
           method,
           headers: {
             "Content-Type": "application/json",
@@ -721,6 +982,44 @@
           throw new Error(`API error ${res.status}`);
         }
         return res.json();
+      }
+
+      /**
+       * Converts the base64url VAPID public key into the Uint8Array
+       * shape PushManager.subscribe() expects.
+       */
+      function urlBase64ToUint8Array(base64: string): Uint8Array {
+        const padding = "=".repeat((4 - (base64.length % 4)) % 4);
+        const base64Safe = (base64 + padding).replace(/-/g, "+").replace(/_/g, "/");
+        const raw = atob(base64Safe);
+        return Uint8Array.from([...raw].map((c) => c.charCodeAt(0)));
+      }
+
+      /**
+       * Asks for notification permission (if needed) and registers a
+       * push subscription with the server. Called the first time the
+       * user sets a reminder — a natural moment to ask, since that's
+       * exactly when a notification becomes relevant.
+       */
+      async function ensurePushSubscription() {
+        if (!VAPID_PUBLIC_KEY || !("serviceWorker" in navigator) || !("PushManager" in window)) {
+          return;
+        }
+        try {
+          const registration = await navigator.serviceWorker.ready;
+          let subscription = await registration.pushManager.getSubscription();
+          if (!subscription) {
+            const permission = await Notification.requestPermission();
+            if (permission !== "granted") return;
+            subscription = await registration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+            });
+          }
+          await apiFetch("POST", { subscription: subscription.toJSON() }, SUBSCRIBE_API);
+        } catch (err) {
+          console.warn("Punkt: push subscription failed", err);
+        }
       }
 
       function showGate(message = "") {
@@ -795,6 +1094,7 @@
       function taskRowHtml(task: Task): string {
         const icons: string[] = [];
         if (task.note) icons.push(ICON_NOTE);
+        if (!task.done && task.remind) icons.push(ICON_CLOCK);
         if (!task.done && task.deadline) icons.push(ICON_FLAG);
         const selected = selectedIds.has(task.id);
         const indicator = selectMode
@@ -1015,28 +1315,39 @@
 
       // --- Quick add -----------------------------------------------------
 
+      // The task being composed doesn't exist yet, so its when/remind
+      // choice is held here while the "When?"/"Add Reminder" sheets are
+      // open, then applied to the new task on commit.
+      let pendingWhen: string | null = null;
+      let pendingRemind: string | null = null;
+      let pendingWhenChoice: "today" | "evening" | "date" | null = null;
+
+      function updateQaWhenBtnState() {
+        qaWhenBtn.classList.toggle("active", pendingWhen !== null || pendingRemind !== null);
+      }
+
       function openQuickAdd() {
         quickAdd.hidden = false;
         qaTitle.value = "";
         qaNote.value = "";
-        qaWhen.value = "";
-        qaWhen.hidden = true;
-        qaWhenToggle.classList.remove("active");
 
         if (currentView === "today") {
-          qaWhenToggle.hidden = true;
-        } else if (currentView === "upcoming") {
-          qaWhenToggle.hidden = true;
-          qaWhen.hidden = false;
+          pendingWhen = "today";
+          pendingWhenChoice = "today";
         } else {
-          qaWhenToggle.hidden = false;
+          pendingWhen = null;
+          pendingWhenChoice = null;
         }
+        pendingRemind = null;
+        updateQaWhenBtnState();
 
         qaTitle.focus();
       }
 
       function closeQuickAdd() {
         quickAdd.hidden = true;
+        whenSheet.hidden = true;
+        reminderSheet.hidden = true;
       }
 
       addBtn.addEventListener("click", () => {
@@ -1044,35 +1355,159 @@
         else closeQuickAdd();
       });
 
-      qaWhenToggle.addEventListener("click", () => {
-        qaWhen.hidden = !qaWhen.hidden;
-        qaWhenToggle.classList.toggle("active", !qaWhen.hidden);
-        if (!qaWhen.hidden) qaWhen.focus();
+      // --- "When?" sheet ---------------------------------------------
+
+      let calendarViewYear = 0;
+      let calendarViewMonth = 0; // 0-indexed
+
+      function renderCalendar() {
+        const first = new Date(calendarViewYear, calendarViewMonth, 1);
+        const startWeekday = (first.getDay() + 6) % 7; // 0 = Monday
+        const daysInMonth = new Date(calendarViewYear, calendarViewMonth + 1, 0).getDate();
+        const today = todayStr();
+        const pad = (n: number) => String(n).padStart(2, "0");
+
+        calMonthName.textContent = first.toLocaleDateString("sv-SE", {
+          month: "long",
+          year: "numeric"
+        });
+
+        const cells: string[] = [];
+        for (let i = 0; i < startWeekday; i++) cells.push("<span></span>");
+        for (let d = 1; d <= daysInMonth; d++) {
+          const dateStr = `${calendarViewYear}-${pad(calendarViewMonth + 1)}-${pad(d)}`;
+          const isToday = dateStr === today;
+          const isSelected = pendingWhenChoice === "date" && pendingWhen === dateStr;
+          cells.push(
+            `<button type="button" class="cal-day ${isSelected ? "selected" : ""}" data-date="${dateStr}">${d}${
+              isToday ? '<span class="cal-today-mark">★</span>' : ""
+            }</button>`
+          );
+        }
+        calGrid.innerHTML = cells.join("");
+      }
+
+      function updateWhenSheetChecks() {
+        whenSheet.querySelectorAll<HTMLElement>("[data-check]").forEach((el) => {
+          el.classList.toggle("checked", el.dataset.check === pendingWhenChoice);
+        });
+        whenReminderLabel.textContent = pendingRemind || "";
+      }
+
+      function openWhenSheet() {
+        const now = new Date();
+        calendarViewYear = now.getFullYear();
+        calendarViewMonth = now.getMonth();
+        renderCalendar();
+        updateWhenSheetChecks();
+        whenSheet.hidden = false;
+      }
+
+      qaWhenBtn.addEventListener("click", openWhenSheet);
+      whenSheetClose.addEventListener("click", () => {
+        whenSheet.hidden = true;
+      });
+
+      whenSheet.addEventListener("click", (e) => {
+        const choiceBtn = (e.target as HTMLElement).closest("[data-when-choice]") as HTMLElement | null;
+        if (choiceBtn) {
+          const choice = choiceBtn.dataset.whenChoice;
+          if (choice === "today") {
+            pendingWhen = "today";
+            pendingWhenChoice = "today";
+            pendingRemind = null;
+          } else if (choice === "evening") {
+            pendingWhen = "today";
+            pendingWhenChoice = "evening";
+            pendingRemind = "18:00";
+          }
+          updateQaWhenBtnState();
+          whenSheet.hidden = true;
+          return;
+        }
+
+        const dayBtn = (e.target as HTMLElement).closest(".cal-day") as HTMLElement | null;
+        if (dayBtn) {
+          pendingWhen = dayBtn.dataset.date || null;
+          pendingWhenChoice = "date";
+          pendingRemind = null;
+          updateQaWhenBtnState();
+          whenSheet.hidden = true;
+        }
+      });
+
+      calPrev.addEventListener("click", () => {
+        calendarViewMonth -= 1;
+        if (calendarViewMonth < 0) {
+          calendarViewMonth = 11;
+          calendarViewYear -= 1;
+        }
+        renderCalendar();
+      });
+
+      calNext.addEventListener("click", () => {
+        calendarViewMonth += 1;
+        if (calendarViewMonth > 11) {
+          calendarViewMonth = 0;
+          calendarViewYear += 1;
+        }
+        renderCalendar();
+      });
+
+      whenClear.addEventListener("click", () => {
+        pendingWhen = null;
+        pendingWhenChoice = null;
+        pendingRemind = null;
+        updateQaWhenBtnState();
+        whenSheet.hidden = true;
+      });
+
+      // --- "Add Reminder" sheet ---------------------------------------
+
+      whenAddReminder.addEventListener("click", () => {
+        if (!pendingWhen) {
+          pendingWhen = "today";
+          pendingWhenChoice = "today";
+        }
+        const defaultTime = new Date(Date.now() + 60 * 60 * 1000);
+        const pad = (n: number) => String(n).padStart(2, "0");
+        reminderTimeInput.value =
+          pendingRemind || `${pad(defaultTime.getHours())}:${pad(defaultTime.getMinutes())}`;
+        whenSheet.hidden = true;
+        reminderSheet.hidden = false;
+      });
+
+      reminderCancel.addEventListener("click", () => {
+        reminderSheet.hidden = true;
+        whenSheet.hidden = false;
+      });
+
+      reminderSet.addEventListener("click", () => {
+        if (reminderTimeInput.value) {
+          pendingRemind = reminderTimeInput.value;
+          updateQaWhenBtnState();
+          void ensurePushSubscription();
+        }
+        reminderSheet.hidden = true;
       });
 
       function commitQuickAdd() {
         const title = qaTitle.value.trim();
         if (!title) return;
 
-        let when: string | null = null;
-        if (currentView === "today") when = "today";
-        else if (currentView === "upcoming") {
-          if (!qaWhen.value) {
-            qaWhen.hidden = false;
-            qaWhen.focus();
-            return;
-          }
-          when = qaWhen.value;
-        } else if (!qaWhen.hidden && qaWhen.value) {
-          when = qaWhen.value;
+        if (currentView === "upcoming" && (!pendingWhen || pendingWhen === "today")) {
+          openWhenSheet();
+          return;
         }
 
         tasks.push({
           id: makeId(),
           title,
           note: qaNote.value.trim(),
-          when,
+          when: pendingWhen,
           deadline: null,
+          remind: pendingRemind,
+          notifiedOn: null,
           done: false,
           completedAt: null
         });
@@ -1082,7 +1517,8 @@
         queueSave();
 
         // Things-style rapid entry: clear and keep the card open for
-        // the next to-do instead of closing it.
+        // the next to-do instead of closing it. The when/reminder
+        // choice intentionally carries over to the next to-do.
         qaTitle.value = "";
         qaNote.value = "";
         qaTitle.focus();

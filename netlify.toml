@@ -9,6 +9,11 @@
 [functions]
   node_bundler = "esbuild"
 
+# Checks for due reminders every 10 minutes and sends any web push
+# notifications via netlify/functions/punkt-send-reminders.js.
+[functions."punkt-send-reminders"]
+  schedule = "*/10 * * * *"
+
 # Keep Punkt out of search engines and other sites' frames, in addition
 # to the page's own <meta name="robots"> tag and astro-robots.txt entry.
 [[headers]]
@@ -29,6 +34,12 @@
 
 [[headers]]
   for = "/.netlify/functions/punkt-tasks"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/.netlify/functions/punkt-subscribe"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "no-store"
