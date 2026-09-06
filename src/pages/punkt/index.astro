@@ -58,6 +58,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         box-sizing: border-box;
       }
 
+      html {
+        /* Kills the elastic rubber-band bounce at the top/bottom of the
+           page on iOS — native apps don't wobble when there's nothing
+           left to scroll, and neither should this. */
+        overscroll-behavior-y: none;
+      }
+
       body {
         margin: 0;
         background: var(--bg);
@@ -70,6 +77,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           sans-serif;
         padding-bottom: calc(4rem + env(safe-area-inset-bottom));
         overflow-x: hidden;
+        overscroll-behavior-y: none;
       }
 
       #app {
