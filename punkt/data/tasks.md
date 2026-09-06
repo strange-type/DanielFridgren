@@ -22,4 +22,4 @@ inte skickas flera gånger samma dag.
 - [ ] Test (id: 1788685942619-2gstb, when: -)
 - [ ] Test 1 (id: 1788685964362-1416r, when: today, remind: 11:28)
   > Yrfxh
-- [ ] Logga (id: 1788688187377-su5u3, when: today)
+- [x] Logga (id: 1788688187377-su5u3, done: 2026-09-06T09:49:52.998Z)
