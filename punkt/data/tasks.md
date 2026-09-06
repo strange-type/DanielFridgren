@@ -24,4 +24,4 @@ inte skickas flera gånger samma dag.
   > Yrfxh
 - [x] Logga (id: 1788688187377-su5u3, done: 2026-09-06T09:50:02.133Z)
 - [ ] Test 2 (id: 1788701665273-zmlw8, when: today)
-- [ ] Test 3 (id: 1788701668153-vyk5u, when: today)
+- [x] Test 3 (id: 1788701668153-vyk5u, done: 2026-09-06T13:53:36.308Z)
