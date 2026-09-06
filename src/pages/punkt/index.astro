@@ -1940,15 +1940,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             task.note = qaNote.value.trim();
             task.when = pendingWhen;
             task.remind = pendingRemind;
-            renderTaskList();
-            renderMenu();
-            queueSave();
           }
           editingTaskId = null;
           quickAdd.hidden = true;
           quickAddScrim.hidden = true;
           whenSheet.hidden = true;
           reminderSheet.hidden = true;
+          if (task) {
+            renderTaskList();
+            renderMenu();
+            queueSave();
+          }
           return;
         }
 
