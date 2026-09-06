@@ -69,6 +69,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           Roboto,
           sans-serif;
         padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+        overflow-x: hidden;
+      }
+
+      #app {
+        position: relative;
+        min-height: 100vh;
       }
 
       #gate {
@@ -106,6 +112,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         max-width: 32rem;
         margin: 0 auto;
         padding: calc(1.25rem + env(safe-area-inset-top)) 1rem 3rem;
+      }
+
+      .screen.sliding {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        transition: transform 0.28s ease;
       }
 
       /* --- Menu (root) screen -------------------------------------- */
@@ -209,6 +223,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       /* --- List (detail) screen -------------------------------------- */
 
       .list-header {
+        position: relative;
+        z-index: 17;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -222,14 +238,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       #back-btn {
-        color: var(--accent);
+        color: var(--muted);
         display: flex;
         padding: 0.25rem;
       }
 
       #back-btn svg {
-        width: 22px;
-        height: 22px;
+        width: 30px;
+        height: 30px;
       }
 
       #list-title {
@@ -279,11 +295,20 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       /* Quick-add card: fields have no visible box of their own — just
          a faintly elevated card so they read as "almost invisible". */
       #quick-add {
+        position: relative;
+        z-index: 16;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 0.9rem;
         padding: 0.85rem 1rem;
         margin-bottom: 1.25rem;
+      }
+
+      #quick-add-scrim {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 15;
       }
 
       #quick-add .qa-title-row {
@@ -313,25 +338,43 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         font-size: 1.05rem;
       }
 
-      #qa-note {
+      #quick-add #qa-note {
         font-size: 0.9rem;
         color: var(--muted);
-        padding: 0.5rem 0 0.1rem 1.75rem;
+        padding: 0.85rem 0 0.1rem 1.75rem;
       }
 
       .qa-footer {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
         margin-top: 0.5rem;
         padding-left: 1.75rem;
         gap: 0.5rem;
+      }
+
+      .qa-context {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .qa-context .star {
+        color: var(--gold);
+      }
+
+      .qa-context svg {
+        width: 14px;
+        height: 14px;
+        display: block;
       }
 
       .qa-actions {
         display: flex;
         align-items: center;
         gap: 0.4rem;
+        margin-left: auto;
       }
 
       .ghost-icon {
@@ -377,6 +420,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         margin: 0 -0.5rem;
         border-radius: 0.6rem;
         touch-action: pan-y;
+        transition:
+          opacity 0.3s ease,
+          background 0.2s ease;
+      }
+
+      li.task-row.row-fade-out {
+        opacity: 0;
+      }
+
+      li.task-row.row-pending-removal {
+        background: var(--surface);
       }
 
       li.task-row.row-selected {
@@ -531,8 +585,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .task-title-line svg {
-        width: 14px;
-        height: 14px;
+        width: 16px;
+        height: 16px;
         color: var(--muted);
         flex-shrink: 0;
       }
@@ -835,7 +889,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         <div class="list-header">
           <div class="list-header-left">
             <button id="back-btn" aria-label="Tillbaka">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
             <h1 id="list-title"></h1>
           </div>
@@ -847,6 +901,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           </div>
         </div>
 
+        <div id="quick-add-scrim" hidden></div>
+        <div id="quick-add-anchor"></div>
         <form id="quick-add" hidden>
           <div class="qa-title-row">
             <input type="checkbox" id="qa-checkbox" class="task-check" tabindex="-1" />
@@ -854,6 +910,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           </div>
           <input id="qa-note" type="text" placeholder="Notes" />
           <div class="qa-footer">
+            <span id="qa-context" class="qa-context" hidden></span>
             <div class="qa-actions">
               <button type="button" id="qa-when-btn" class="ghost-icon" aria-label="Schemalägg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
@@ -989,9 +1046,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const wpInbox = document.getElementById("wp-inbox") as HTMLButtonElement;
 
       const quickAdd = document.getElementById("quick-add") as HTMLFormElement;
+      const quickAddAnchor = document.getElementById("quick-add-anchor") as HTMLDivElement;
+      const quickAddScrim = document.getElementById("quick-add-scrim") as HTMLDivElement;
       const qaCheckbox = document.getElementById("qa-checkbox") as HTMLInputElement;
       const qaTitle = document.getElementById("qa-title") as HTMLInputElement;
       const qaNote = document.getElementById("qa-note") as HTMLInputElement;
+      const qaContext = document.getElementById("qa-context") as HTMLSpanElement;
       const qaWhenBtn = document.getElementById("qa-when-btn") as HTMLButtonElement;
 
       const whenSheet = document.getElementById("when-sheet") as HTMLDivElement;
@@ -1016,11 +1076,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const ICON_LOGBOOK =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><rect x="3" y="4" width="18" height="17" rx="2"/></svg>';
       const ICON_NOTE =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg>';
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7.2L18 7.3V20.5H7Z"/><path d="M14.2 3.5V7.3H18"/></svg>';
       const ICON_FLAG =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4h11l-2 4 2 4H5"/></svg>';
       const ICON_BELL =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a5 5 0 0 0-5 5v3.3c0 1.05-.43 2.06-1.19 2.79L5 16h14l-.81-.91C17.43 14.36 17 13.35 17 12.3V9a5 5 0 0 0-5-5Z"/><path d="M10 18.5a2 2 0 0 0 4 0"/></svg>';
 
       const VIEW_TITLES: Record<Exclude<View, "menu">, string> = {
         inbox: "Inbox",
@@ -1258,11 +1318,27 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       function renderTaskList() {
-        const items = bucket(currentView as View);
+        // #quick-add can currently be a child of taskListEl (moved
+        // there to sit inline where an edited row was) — innerHTML
+        // below would destroy it if we didn't move it out first.
+        // openTaskEdit() re-parents it back into place afterward.
+        if (quickAdd.parentElement === taskListEl) {
+          quickAddAnchor.insertAdjacentElement("afterend", quickAdd);
+        }
+
+        // Hide the row being edited — the quick-add card takes its
+        // place inline instead.
+        const items = bucket(currentView as View).filter((t) => t.id !== editingTaskId);
+
+        // While editing the only task in a view, `items` becomes empty
+        // even though the list isn't really empty — the quick-add card
+        // is about to occupy that slot inline, so the "nothing here"
+        // message must stay out of its way.
+        const showEmptyState = !editingTaskId;
 
         if (currentView === "upcoming") {
           if (items.length === 0) {
-            taskListEl.innerHTML = '<p class="empty">Inget schemalagt.</p>';
+            taskListEl.innerHTML = showEmptyState ? '<p class="empty">Inget schemalagt.</p>' : "";
             return;
           }
           const today = todayStr();
@@ -1288,7 +1364,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
         if (currentView === "logbook") {
           if (items.length === 0) {
-            taskListEl.innerHTML = '<p class="empty">Inget avklarat än.</p>';
+            taskListEl.innerHTML = showEmptyState ? '<p class="empty">Inget avklarat än.</p>' : "";
             return;
           }
           const today = todayStr();
@@ -1306,28 +1382,82 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         }
 
         const emptyLabel = currentView === "inbox" ? "Inboxen är tom." : "Inget för idag.";
-        taskListEl.innerHTML = items.map((t) => taskRowHtml(t)).join("") || `<p class="empty">${emptyLabel}</p>`;
+        taskListEl.innerHTML =
+          items.map((t) => taskRowHtml(t)).join("") || (showEmptyState ? `<p class="empty">${emptyLabel}</p>` : "");
       }
 
       function findTask(id: string): Task | undefined {
         return tasks.find((t) => t.id === id);
       }
 
+      let hasShownScreenOnce = false;
+
+      /**
+       * Slides `incoming` in over `outgoing`, both full-width — "forward"
+       * (menu -> a list) brings the new screen in from the right while
+       * the old one exits left; "backward" (a list -> menu) is the
+       * mirror image, matching a standard iOS push/pop transition.
+       */
+      function slideScreens(outgoing: HTMLElement, incoming: HTMLElement, direction: "forward" | "backward") {
+        const outTarget = direction === "forward" ? "-100%" : "100%";
+        const inStart = direction === "forward" ? "100%" : "-100%";
+
+        outgoing.classList.add("sliding");
+        incoming.classList.add("sliding");
+        incoming.hidden = false;
+        incoming.style.transition = "none";
+        incoming.style.transform = `translateX(${inStart})`;
+        void incoming.offsetWidth; // force reflow so the transition below actually animates
+
+        outgoing.style.transition = "";
+        incoming.style.transition = "";
+
+        requestAnimationFrame(() => {
+          outgoing.style.transform = `translateX(${outTarget})`;
+          incoming.style.transform = "translateX(0)";
+        });
+
+        const onDone = (e: TransitionEvent) => {
+          if (e.target !== outgoing) return;
+          outgoing.hidden = true;
+          outgoing.classList.remove("sliding");
+          incoming.classList.remove("sliding");
+          outgoing.style.transform = "";
+          incoming.style.transform = "";
+          outgoing.removeEventListener("transitionend", onDone);
+        };
+        outgoing.addEventListener("transitionend", onDone);
+      }
+
       function navigateTo(view: View) {
+        const previousView = currentView;
         currentView = view;
         exitSelectMode();
+        const animate = hasShownScreenOnce && previousView !== view;
+        hasShownScreenOnce = true;
+
         if (view === "menu") {
           closeQuickAdd();
-          viewList.hidden = true;
-          viewMenu.hidden = false;
           renderMenu();
+          if (animate) {
+            slideScreens(viewList, viewMenu, "backward");
+          } else {
+            viewList.hidden = true;
+            viewMenu.hidden = false;
+          }
           return;
         }
-        viewMenu.hidden = true;
-        viewList.hidden = false;
+
         listTitle.textContent = VIEW_TITLES[view];
         addBtn.hidden = view === "logbook";
         renderTaskList();
+
+        if (animate && previousView === "menu") {
+          slideScreens(viewMenu, viewList, "forward");
+        } else {
+          viewMenu.hidden = true;
+          viewList.hidden = false;
+        }
       }
 
       menuList.addEventListener("click", (e) => {
@@ -1336,6 +1466,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       });
 
       backBtn.addEventListener("click", () => navigateTo("menu"));
+
+      // Rows pending removal from the current view (checked off in
+      // Today/Inbox/Upcoming, or unchecked in Logbook) — held here so a
+      // second toggle before the fade fires can cancel it.
+      const pendingRowRemovals = new Map<string, number>();
 
       taskListEl.addEventListener("change", (e) => {
         const target = e.target as HTMLElement;
@@ -1346,9 +1481,40 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         const checked = (target as HTMLInputElement).checked;
         task.done = checked;
         task.completedAt = checked ? new Date().toISOString() : null;
-        renderTaskList();
         renderMenu();
         queueSave();
+
+        const existingTimeout = pendingRowRemovals.get(id);
+        if (existingTimeout) {
+          clearTimeout(existingTimeout);
+          pendingRowRemovals.delete(id);
+        }
+
+        const row = target.closest(".task-row") as HTMLElement | null;
+        if (!row) {
+          renderTaskList();
+          return;
+        }
+
+        // Show the checked/unchecked state immediately...
+        row.classList.toggle("done", checked);
+        row.classList.remove("row-pending-removal", "row-fade-out");
+        row.querySelectorAll<HTMLInputElement>(".task-check").forEach((cb) => (cb.checked = checked));
+
+        const stillBelongsHere = bucket(currentView as View).some((t) => t.id === id);
+        if (!stillBelongsHere) {
+          // ...highlight it as "about to leave this view"...
+          row.classList.add("row-pending-removal");
+          // ...then, a beat later, fade it out and only re-render (which
+          // actually removes it, since it no longer matches this view)
+          // once the fade has finished.
+          const timeoutId = window.setTimeout(() => {
+            pendingRowRemovals.delete(id);
+            row.classList.add("row-fade-out");
+            window.setTimeout(() => renderTaskList(), 320);
+          }, 1200);
+          pendingRowRemovals.set(id, timeoutId);
+        }
       });
 
       // --- Swipe-to-select (Things-style multi-select) --------------------
@@ -1490,13 +1656,59 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       let pendingWhenChoice: "today" | "evening" | "date" | null = null;
       let editingTaskId: string | null = null;
 
-      function updateQaWhenBtnState() {
+      const ICON_BELL_SMALL = ICON_BELL;
+
+      /**
+       * Updates the "active" tint on the when-button, and — only once a
+       * reminder time is actually set — shows a small context label
+       * ("★ Today 🔔13:00") so an edited task's schedule is visible
+       * without needing to reopen the When? sheet.
+       */
+      function updateQaFooter() {
         qaWhenBtn.classList.toggle("active", pendingWhen !== null || pendingRemind !== null);
+
+        if (!pendingRemind) {
+          qaContext.hidden = true;
+          qaContext.innerHTML = "";
+          return;
+        }
+
+        let whenLabel = "";
+        if (pendingWhenChoice === "today") whenLabel = '<span class="star">★</span> Today';
+        else if (pendingWhenChoice === "evening") whenLabel = "🌙 This Evening";
+        else if (pendingWhen) whenLabel = escapeHtml(pendingWhen);
+        qaContext.innerHTML = `${whenLabel} ${ICON_BELL_SMALL}${pendingRemind}`;
+        qaContext.hidden = false;
+      }
+
+      /** Moves the (single, shared) quick-add form back to its default
+       *  spot above the list, out of taskListEl. */
+      function resetQuickAddPosition() {
+        quickAddAnchor.insertAdjacentElement("afterend", quickAdd);
+      }
+
+      /** Re-parents the quick-add form into taskListEl right where the
+       *  edited task's row would be, so it opens inline instead of
+       *  floating above the list. */
+      function placeQuickAddInline(taskId: string) {
+        const items = bucket(currentView as View);
+        const index = items.findIndex((t) => t.id === taskId);
+        const nextTask = index === -1 ? undefined : items[index + 1];
+        const nextRow = nextTask
+          ? (taskListEl.querySelector(`.task-row[data-id="${nextTask.id}"]`) as HTMLElement | null)
+          : null;
+        if (nextRow) {
+          taskListEl.insertBefore(quickAdd, nextRow);
+        } else {
+          taskListEl.appendChild(quickAdd);
+        }
       }
 
       function openQuickAdd() {
         editingTaskId = null;
+        resetQuickAddPosition();
         quickAdd.hidden = false;
+        quickAddScrim.hidden = false;
         qaCheckbox.checked = false;
         qaTitle.value = "";
         qaNote.value = "";
@@ -1509,14 +1721,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           pendingWhenChoice = null;
         }
         pendingRemind = null;
-        updateQaWhenBtnState();
+        updateQaFooter();
 
         qaTitle.focus();
       }
 
       function openTaskEdit(task: Task) {
         editingTaskId = task.id;
-        quickAdd.hidden = false;
         qaCheckbox.checked = task.done;
         qaTitle.value = task.title;
         qaNote.value = task.note;
@@ -1524,7 +1735,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         pendingRemind = task.remind;
         pendingWhenChoice =
           task.when === "today" ? (task.remind === "18:00" ? "evening" : "today") : task.when ? "date" : null;
-        updateQaWhenBtnState();
+        updateQaFooter();
+        renderTaskList();
+        placeQuickAddInline(task.id);
+        quickAdd.hidden = false;
+        quickAddScrim.hidden = false;
         qaTitle.focus();
       }
 
@@ -1534,9 +1749,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           return;
         }
         quickAdd.hidden = true;
+        quickAddScrim.hidden = true;
         whenSheet.hidden = true;
         reminderSheet.hidden = true;
       }
+
+      quickAddScrim.addEventListener("click", closeQuickAdd);
 
       qaCheckbox.addEventListener("change", () => {
         if (!editingTaskId) return;
@@ -1551,6 +1769,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         task.completedAt = task.done ? new Date().toISOString() : null;
         editingTaskId = null;
         quickAdd.hidden = true;
+        quickAddScrim.hidden = true;
         whenSheet.hidden = true;
         reminderSheet.hidden = true;
         renderTaskList();
@@ -1636,7 +1855,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             pendingWhenChoice = "evening";
             pendingRemind = "18:00";
           }
-          updateQaWhenBtnState();
+          updateQaFooter();
           whenSheet.hidden = true;
           return;
         }
@@ -1646,7 +1865,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           pendingWhen = dayBtn.dataset.date || null;
           pendingWhenChoice = "date";
           pendingRemind = null;
-          updateQaWhenBtnState();
+          updateQaFooter();
           whenSheet.hidden = true;
         }
       });
@@ -1673,7 +1892,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         pendingWhen = null;
         pendingWhenChoice = null;
         pendingRemind = null;
-        updateQaWhenBtnState();
+        updateQaFooter();
         whenSheet.hidden = true;
       });
 
@@ -1700,7 +1919,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       reminderSet.addEventListener("click", () => {
         if (reminderTimeInput.value) {
           pendingRemind = reminderTimeInput.value;
-          updateQaWhenBtnState();
+          updateQaFooter();
           void ensurePushSubscription();
         }
         reminderSheet.hidden = true;
@@ -1727,6 +1946,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           }
           editingTaskId = null;
           quickAdd.hidden = true;
+          quickAddScrim.hidden = true;
           whenSheet.hidden = true;
           reminderSheet.hidden = true;
           return;
