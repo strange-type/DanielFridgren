@@ -51,10 +51,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         --muted: #9a9a9a;
         --accent: #6ea8fe;
         --danger: #f87171;
-        --gold: #f5c518;
-        --blue-badge: #3b7bf0;
-        --red-badge: #ef5b7a;
-        --green-badge: #34c759;
+        --gold: #f6d24a;
+        --blue-badge: #4fa8ef;
+        --red-badge: #dc3c5e;
+        --green-badge: #66b866;
         --hairline: rgba(255, 255, 255, 0.06);
         --select-tint: rgba(110, 168, 254, 0.18);
         /* .fab (the add-task button): a circle that reads as barely
@@ -388,7 +388,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
       .menu-icon--today {
         background: none;
-        font-size: 1.5rem;
+      }
+
+      /* The star has no colored square behind it, so it renders larger
+         than the other rows' 16px glyphs to read at the same visual
+         weight — same specificity as ".menu-icon svg" above, so it
+         must come after that rule to win the color override. */
+      .menu-icon--today svg {
+        width: 26px;
+        height: 26px;
         color: var(--gold);
       }
 
@@ -1606,12 +1614,29 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const reminderCancel = document.getElementById("reminder-cancel") as HTMLButtonElement;
       const reminderSet = document.getElementById("reminder-set") as HTMLButtonElement;
 
+      // Tray/funnel silhouette (a wide top bar merging into a narrow
+      // stem) built as one path with rounded outer corners but sharp
+      // step corners at the waist, rather than a stroked outline —
+      // matches the filled-glyph-on-a-color-square style of the other
+      // menu icons below.
       const ICON_INBOX =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l2-5h14l2 5"/><path d="M3 9v9a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h5a1 1 0 0 1 1 1 3 3 0 0 0 6 0 1 1 0 0 1 1-1h5"/></svg>';
+        '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 6 H17 Q19 6 19 8 V12 H15 V17 Q15 19 13 19 H11 Q9 19 9 17 V12 H5 V8 Q5 6 7 6 Z"/></svg>';
+      // Two "ring" holes punched near the top, a white card, and a 3x3
+      // grid of date marks tinted with the badge's own red so they read
+      // as part of the same icon rather than a generic calendar.
       const ICON_UPCOMING =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
+        '<svg viewBox="0 0 24 24" fill="none"><circle cx="8.5" cy="6.2" r="1.3" fill="currentColor"/><circle cx="15.5" cy="6.2" r="1.3" fill="currentColor"/><rect x="4.5" y="6.8" width="15" height="13.2" rx="2.5" fill="currentColor"/><g fill="var(--red-badge)" opacity="0.55"><rect x="7" y="9.8" width="3" height="1.7" rx="0.85"/><rect x="10.5" y="9.8" width="3" height="1.7" rx="0.85"/><rect x="14" y="9.8" width="3" height="1.7" rx="0.85"/><rect x="7" y="12.8" width="3" height="1.7" rx="0.85"/><rect x="10.5" y="12.8" width="3" height="1.7" rx="0.85"/><rect x="14" y="12.8" width="3" height="1.7" rx="0.85"/><rect x="7" y="15.8" width="3" height="1.7" rx="0.85"/><rect x="10.5" y="15.8" width="3" height="1.7" rx="0.85"/><rect x="14" y="15.8" width="3" height="1.7" rx="0.85"/></g></svg>';
+      // A white book cover (front face) over a darkened sliver of the
+      // badge color (spine), with a checkmark in the badge's own green
+      // rather than white so it reads against the white cover.
       const ICON_LOGBOOK =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><rect x="3" y="4" width="18" height="17" rx="2"/></svg>';
+        '<svg viewBox="0 0 24 24" fill="none"><path d="M16.5 4.5h-1v15h1a2 2 0 0 0 2-2v-11a2 2 0 0 0-2-2Z" fill="rgba(0,0,0,0.15)"/><path d="M7 4.5h8.5v15H7a1.5 1.5 0 0 1-1.5-1.5v-12A1.5 1.5 0 0 1 7 4.5Z" fill="currentColor"/><path d="M8.7 13.4l2.1 2.1 4.1-4.4" stroke="var(--green-badge)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      // Heroicons' solid star (plumper, more rounded points than a
+      // plain 5-point polygon) — this app already depends on
+      // @iconify-json/heroicons elsewhere, so it matches the rest of
+      // the icon set's shape language.
+      const ICON_STAR =
+        '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.006Z"/></svg>';
       const ICON_NOTE =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7.2L18 7.3V20.5H7Z"/><path d="M14.2 3.5V7.3H18"/></svg>';
       const ICON_FLAG =
@@ -1630,7 +1655,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       // desktop list-header icon, so both always show the same glyph.
       const VIEW_ICONS: Record<Exclude<View, "menu">, { iconHtml: string; iconClass: string }> = {
         inbox: { iconHtml: ICON_INBOX, iconClass: "menu-icon--inbox" },
-        today: { iconHtml: "★", iconClass: "menu-icon--today" },
+        today: { iconHtml: ICON_STAR, iconClass: "menu-icon--today" },
         upcoming: { iconHtml: ICON_UPCOMING, iconClass: "menu-icon--upcoming" },
         logbook: { iconHtml: ICON_LOGBOOK, iconClass: "menu-icon--logbook" }
       };
