@@ -2677,6 +2677,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           commitQuickAdd();
           return;
         }
+        addTaskFromQuickAdd();
         playCardCloseAnimation(hideQuickAddCard);
       }
 
@@ -2901,10 +2902,35 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         commitQuickAdd();
       });
 
-      function commitQuickAdd() {
+      /** Pushes a new task built from the quick-add form's current
+       *  fields onto the list and queues a save — shared by
+       *  commitQuickAdd() (Enter/submit, which then clears the form
+       *  for rapid entry) and closeQuickAdd() (dismissing the card,
+       *  which should save whatever was typed rather than discard it).
+       *  Returns false if there's no title to save. */
+      function addTaskFromQuickAdd(): boolean {
         const title = qaTitle.value.trim();
+        if (!title) return false;
+        tasks.unshift({
+          id: makeId(),
+          title,
+          note: qaNote.value.trim(),
+          when: pendingWhen,
+          deadline: null,
+          remind: pendingRemind,
+          notifiedOn: null,
+          done: false,
+          completedAt: null
+        });
+        renderTaskList();
+        renderMenu();
+        queueSave();
+        return true;
+      }
 
+      function commitQuickAdd() {
         if (editingTaskId) {
+          const title = qaTitle.value.trim();
           const task = findTask(editingTaskId);
           if (task) {
             if (title) task.title = title;
@@ -2931,23 +2957,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           return;
         }
 
-        if (!title) return;
-
-        tasks.unshift({
-          id: makeId(),
-          title,
-          note: qaNote.value.trim(),
-          when: pendingWhen,
-          deadline: null,
-          remind: pendingRemind,
-          notifiedOn: null,
-          done: false,
-          completedAt: null
-        });
-
-        renderTaskList();
-        renderMenu();
-        queueSave();
+        if (!addTaskFromQuickAdd()) return;
 
         // Things-style rapid entry: clear and keep the card open for
         // the next to-do instead of closing it. The when/reminder
