@@ -5,8 +5,8 @@
     "start_url": "/punkt/",
     "scope": "/punkt/",
     "display": "standalone",
-    "background_color": "#111827",
-    "theme_color": "#111827",
+    "background_color": "#151515",
+    "theme_color": "#151515",
     "icons": [
         {
             "src": "/punkt/icons/icon-192.png",
