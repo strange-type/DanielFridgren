@@ -57,7 +57,7 @@ async function readFile(path) {
 }
 
 async function writeFile(path, content, sha, message) {
-    await githubRequest(`contents/${path}`, {
+    const result = await githubRequest(`contents/${path}`, {
         method: 'PUT',
         body: JSON.stringify({
             message,
@@ -66,6 +66,7 @@ async function writeFile(path, content, sha, message) {
             branch: BRANCH
         })
     });
+    return result.content.sha;
 }
 
 async function readTasksFile() {
@@ -74,6 +75,31 @@ async function readTasksFile() {
 
 async function writeTasksFile(content, sha, message) {
     return writeFile(TASKS_PATH, content, sha, message);
+}
+
+/**
+ * Combines the freshly-read server task list with the client's own,
+ * for when a save hits a genuine conflict — another tab or device
+ * saved a change since this client last loaded, so the two need
+ * reconciling instead of one blindly overwriting the other's tasks
+ * (previously always the case: the client posts its whole in-memory
+ * list as one unit, so a save from a stale tab could silently erase
+ * anything added or changed elsewhere in the meantime, most visibly a
+ * just-added task simply vanishing).
+ *
+ * Keyed by id: a task only the server has (added or edited elsewhere
+ * since this client loaded) is kept, a task only the client has (added
+ * or edited here) is kept, and a task both have keeps the client's
+ * copy — this client's in-memory state is what just triggered the
+ * save, so it reflects the most recent edit made *on this device*.
+ * This can resurrect a task deleted on the other device if this client
+ * still had it locally; for a single-user app, that's a safer default
+ * than the alternative (silently losing an add or edit instead).
+ */
+function mergeTasks(serverTasks, clientTasks) {
+    const clientIds = new Set(clientTasks.map((t) => t.id));
+    const serverOnly = serverTasks.filter((t) => !clientIds.has(t.id));
+    return [...clientTasks, ...serverOnly];
 }
 
 /**
@@ -352,6 +378,7 @@ export {
     parseTasks,
     serializeTasks,
     validateTasks,
+    mergeTasks,
     readSubscriptions,
     writeSubscriptions,
     writeLastReminderError,
