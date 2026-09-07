@@ -19,8 +19,6 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
-- [ ] T (id: 1788800660496-1zi3j, when: -)
-- [ ] T (id: 1788800658904-ocvyj, when: -)
 - [ ] Kolla exempel på framtidsvision (id: 1788799255243-w7y1u, when: -)
   > https://medium.com/@Jamesroha/speculative-design-a-comprehensive-field-guide-for-2026-c09b5ca9216b
   > 
