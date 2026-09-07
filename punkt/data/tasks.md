@@ -20,12 +20,12 @@ inte skickas flera gånger samma dag.
 ## Tasks
 
 - [ ] Kolla igen vad jag skrev kring regionens utmaningar (id: 1788772585422-ggxdg, when: today)
-- [x] Förbered presentationen imorgon (id: 1788771927161-774pw, done: 2026-09-07T12:04:06.054Z)
+- [ ] Förbered presentationen imorgon (id: 1788771927161-774pw, when: today)
 - [ ] Läs Kort om PDL - openEHR (id: 1788727727911-mxc1l, when: today)
   > https://openehr.atlassian.net/wiki/spaces/SWE/pages/2139291653/Juridiska+krav+-+Patientdatalagen
 - [x] Test (id: 1788685942619-2gstb, done: 2026-09-06T10:27:59.430Z)
 - [x] Test 1 (id: 1788685964362-1416r, done: 2026-09-06T20:47:36.335Z)
   > Yrfxh
-- [x] Logga (id: 1788688187377-su5u3, done: 2026-09-06T15:24:43.567Z)
+- [ ] Logga (id: 1788688187377-su5u3, when: -)
 - [ ] Test 2 (id: 1788701665273-zmlw8, when: -)
 - [x] Test 3 (id: 1788701668153-vyk5u, done: 2026-09-06T13:53:36.308Z)
