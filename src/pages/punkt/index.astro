@@ -424,7 +424,22 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       #quick-add .qa-body {
         padding: 0.85rem 1rem;
         overflow: hidden;
-        transition: max-height 0.32s cubic-bezier(0.33, 1, 0.68, 1);
+        /* opacity's transition is delayed to only run during the
+           second half of the close — closing sets it to 0 (see
+           playCardCloseAnimation), so the form's own content (title
+           input, note, footer) has already faded to invisible by the
+           time the shrink finishes and renderTaskList() swaps this
+           for the plain row's own (already fully visible) markup.
+           Without this, that swap — a real, instant DOM replacement,
+           not something a height transition can smooth over — reads
+           as a pop of its own even with the height/shadow/radius all
+           already animating smoothly. Opening doesn't fade content in
+           the same way: the title text already matches (just an
+           input now, not styled text), so leaving it visible reads as
+           the row expanding to reveal more, not a swap. */
+        transition:
+          max-height 0.32s cubic-bezier(0.33, 1, 0.68, 1),
+          opacity 0.16s ease 0.16s;
       }
 
       /* Catches taps outside the open panel to close/commit it — kept
@@ -1062,13 +1077,22 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
            long as its own height, so once the list scrolled past that
            the sidebar ran out and scrolled away with it instead of
            just always being there. */
+        /* No overflow: hidden on #app — #view-menu and #view-list each
+           already cap themselves at height: 100%/100vh with their own
+           overflow-y: auto, so #app never actually needs this as a
+           backstop against growing past one viewport (body stays
+           unscrollable either way). It was clipping more than
+           intended, though: an ancestor's overflow: hidden clips any
+           descendant's box-shadow that bleeds past ITS box too, not
+           just its own — including #quick-add's, all the way down
+           inside #view-list, cutting it off flush at the left/right
+           edges instead of it softly extending past them. */
         #app {
           display: flex;
           align-items: stretch;
           max-width: 74rem;
           height: 100vh;
           margin: 0 auto;
-          overflow: hidden;
         }
 
         #view-menu {
@@ -2222,6 +2246,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // in below, alongside the height/margin grow.
         quickAdd.style.boxShadow = "none";
         quickAdd.style.borderRadius = "0";
+        // In case this is reopening right after a close that got
+        // interrupted mid-fade — fully visible immediately, with no
+        // delay, rather than picking up the close's fade-in-late timing.
+        qaBody.style.opacity = "1";
         void quickAdd.offsetWidth; // force reflow so the transitions below actually animate
         const targetHeight = qaBody.scrollHeight;
         quickAdd.style.transition = "";
@@ -2272,6 +2300,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // frame right at that swap.
         quickAdd.style.boxShadow = "none";
         quickAdd.style.borderRadius = "0";
+        // Same reasoning, for the form's own content (title input,
+        // note, footer) — see .qa-body's own transition-delay, which
+        // keeps this fully visible for the first half of the close and
+        // only starts fading for the second, so it's already invisible
+        // by the time that swap happens instead of instantly vanishing
+        // at that exact moment.
+        qaBody.style.opacity = "0";
       }
 
       function hideQuickAddCard() {
@@ -2301,6 +2336,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         qaBody.style.transition = "none";
         hideQuickAddCard();
         qaBody.style.maxHeight = "";
+        qaBody.style.opacity = "";
         quickAdd.style.marginTop = "";
         quickAdd.style.marginBottom = "";
         quickAdd.style.boxShadow = "";
