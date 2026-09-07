@@ -986,6 +986,72 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       [hidden] {
         display: none !important;
       }
+
+      /* --- Desktop / wide-viewport layout ---------------------------
+         A persistent Things-style sidebar sits beside the current
+         list instead of the two swapping full-screen like on mobile.
+         Reuses the exact same #view-menu/#view-list markup and
+         renderMenu()/navigateTo() JS — only the presentation changes;
+         navigateTo() still toggles their [hidden] attribute the same
+         way it does on mobile (for the "menu" screen-swap case), it
+         just no longer has any visible effect here. Keep the
+         min-width in sync with the isDesktopLayout() check in the
+         script below. */
+      @media (min-width: 860px) {
+        #app {
+          display: flex;
+          align-items: flex-start;
+          max-width: 74rem;
+          min-height: 100vh;
+          margin: 0 auto;
+        }
+
+        #view-menu {
+          flex: 0 0 15rem;
+          width: 15rem;
+          max-width: none;
+          height: 100vh;
+          position: sticky;
+          top: 0;
+          margin: 0;
+          padding: calc(1.25rem + env(safe-area-inset-top)) 1rem 2rem 1.5rem;
+          background: var(--surface);
+          border-right: 1px solid var(--hairline);
+          overflow-y: auto;
+        }
+
+        /* Always shown as the sidebar, whatever navigateTo() currently
+           has its [hidden] attribute set to. */
+        #view-menu[hidden] {
+          display: flex !important;
+          flex-direction: column;
+        }
+
+        #view-list {
+          flex: 1 1 auto;
+          max-width: 40rem;
+          margin: 0 auto;
+          padding: calc(2rem + env(safe-area-inset-top)) 2rem 3rem;
+        }
+
+        #view-list[hidden] {
+          display: block !important;
+        }
+
+        /* No "back" concept once the sidebar is always visible. */
+        #back-btn {
+          display: none !important;
+        }
+
+        .menu-row.active {
+          background: var(--accent);
+        }
+
+        .menu-row.active .menu-label,
+        .menu-row.active .menu-count {
+          color: #fff;
+        }
+      }
     </style>
   </head>
   <body data-vapid-key={vapidPublicKey}>
@@ -1427,7 +1493,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         menuList.innerHTML = rows
           .map(
             (r) => `
-          <button class="menu-row" data-nav="${r.view}">
+          <button class="menu-row ${r.view === currentView ? "active" : ""}" data-nav="${r.view}">
             <span class="menu-icon ${r.iconClass}">${r.iconHtml}</span>
             <span class="menu-label">${r.label}</span>
             <span class="menu-count">${bucket(r.view).length}</span>
@@ -1617,6 +1683,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         outgoing.addEventListener("transitionend", onDone);
       }
 
+      // Keep in sync with the "@media (min-width: 860px)" breakpoint in
+      // <style> — above it, #view-menu is a persistent sidebar (see
+      // that block), so there's no "menu" screen to navigate back to.
+      const desktopMediaQuery = window.matchMedia("(min-width: 860px)");
+      const isDesktopLayout = () => desktopMediaQuery.matches;
+
       function navigateTo(view: View) {
         const previousView = currentView;
         currentView = view;
@@ -1639,6 +1711,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         listTitle.textContent = VIEW_TITLES[view];
         addBtn.hidden = view === "logbook";
         renderTaskList();
+        // Only visibly matters on the desktop sidebar layout, where
+        // #menu-list stays on screen while a list is open and needs
+        // its active-row highlight to track view switches — on mobile
+        // the sidebar markup is just off-screen until the next visit.
+        renderMenu();
 
         if (animate && previousView === "menu") {
           slideScreens(viewMenu, viewList, "forward");
@@ -1658,9 +1735,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       // The title itself is a bigger, more obvious tap target for
       // going back than just the small chevron next to it — only
       // active when the chevron itself would be (not mid-select-mode,
-      // where it's replaced by the Done button).
+      // where it's replaced by the Done button, and not on desktop,
+      // where the sidebar replaces the back button entirely and
+      // #back-btn is only CSS-hidden, not actually .hidden).
       listTitle.addEventListener("click", () => {
-        if (!backBtn.hidden) navigateTo("menu");
+        if (!backBtn.hidden && !isDesktopLayout()) navigateTo("menu");
       });
 
       // Rows pending removal from the current view (checked off in
@@ -1902,22 +1981,26 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if (row) row.appendChild(quickAdd);
       }
 
-      /** Makes #quick-add span the full viewport width edge-to-edge,
-       *  regardless of how deeply it's currently nested. A CSS-only
-       *  100vw + margin-left:50% + translateX(-50%) trick doesn't
-       *  cancel out correctly once an ancestor has asymmetric padding
-       *  (the row it sits in when editing has 15px on the left, 0 on
-       *  the right, to line up with the back-chevron) — so this
-       *  measures the real current offset instead and sets an exact
-       *  pixel width/margin-left from that, which works the same
-       *  whether it's nested in a row (editing) or sitting directly in
-       *  .screen (adding). */
+      /** Makes #quick-add span #view-list edge-to-edge (not the whole
+       *  browser window — on the desktop sidebar layout that would run
+       *  it under the sidebar), regardless of how deeply it's
+       *  currently nested. A CSS-only 100% + margin-left:50% +
+       *  translateX(-50%) trick doesn't cancel out correctly once an
+       *  ancestor has asymmetric padding (the row it sits in when
+       *  editing has 15px on the left, 0 on the right, to line up with
+       *  the back-chevron) — so this measures the real current offset
+       *  instead and sets an exact pixel width/margin-left from that,
+       *  which works the same whether it's nested in a row (editing)
+       *  or sitting directly in .screen (adding). On mobile #view-list
+       *  already fills the viewport, so this is equivalent to the old
+       *  window.innerWidth-based bleed there. */
       function alignQuickAddFullBleed() {
         quickAdd.style.width = "";
         quickAdd.style.marginLeft = "";
+        const container = viewList.getBoundingClientRect();
         const left = quickAdd.getBoundingClientRect().left;
-        quickAdd.style.width = `${window.innerWidth}px`;
-        quickAdd.style.marginLeft = `${-left}px`;
+        quickAdd.style.width = `${container.width}px`;
+        quickAdd.style.marginLeft = `${container.left - left}px`;
       }
 
       /** Renders task's row markup off-screen — inside the real list,
