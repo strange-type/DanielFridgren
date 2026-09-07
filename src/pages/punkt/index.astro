@@ -227,6 +227,106 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         flex-shrink: 0;
       }
 
+      /* Only shown at all once there's something to report (see
+         loadSecuritySummary) — a failed login attempt or an active
+         IP block logged server-side. */
+      .security-badge {
+        position: fixed;
+        right: calc(1.25rem + env(safe-area-inset-right));
+        bottom: calc(1.25rem + env(safe-area-inset-bottom));
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 50%;
+        background: var(--danger);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.4);
+        z-index: 40;
+      }
+
+      .security-badge svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .security-badge-count {
+        position: absolute;
+        top: -0.2rem;
+        right: -0.2rem;
+        min-width: 1.15rem;
+        height: 1.15rem;
+        padding: 0 0.3rem;
+        border-radius: 999px;
+        background: #fff;
+        color: var(--danger);
+        font-size: 0.65rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .security-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.65rem 0.2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .security-row:last-child {
+        border-bottom: none;
+      }
+
+      .security-row-main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .security-row-ip {
+        font-weight: 600;
+        font-family: ui-monospace, monospace;
+        font-size: 0.95rem;
+      }
+
+      .security-row-meta {
+        color: #9aa4b8;
+        font-size: 0.78rem;
+        margin-top: 0.1rem;
+      }
+
+      .security-row-status {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        padding: 0.2rem 0.5rem;
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+
+      .security-row-status.blocked {
+        background: rgba(248, 113, 113, 0.18);
+        color: #f87171;
+      }
+
+      .security-row-status.ok {
+        background: rgba(154, 164, 184, 0.18);
+        color: #9aa4b8;
+      }
+
+      .security-unblock {
+        flex-shrink: 0;
+        background: var(--danger);
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.4rem 0.7rem;
+        border-radius: 0.5rem;
+      }
+
       #menu-list {
         display: flex;
         flex-direction: column;
@@ -1255,6 +1355,23 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         <button type="button" id="save-error-retry">Försök igen</button>
       </div>
 
+      <button type="button" id="security-badge" class="security-badge" hidden aria-label="Inloggningsförsök">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5l-8-3Z"></path><path d="M12 8v5M12 16h.01"></path></svg>
+        <span id="security-badge-count" class="security-badge-count"></span>
+      </button>
+
+      <div id="security-sheet" class="sheet-overlay" hidden>
+        <div class="sheet-card">
+          <div class="sheet-header">
+            <span class="sheet-title">Inloggningsförsök</span>
+            <button type="button" id="security-sheet-close" class="sheet-close" aria-label="Stäng">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+          </div>
+          <div id="security-list"></div>
+        </div>
+      </div>
+
       <div id="view-menu" class="screen">
         <div class="menu-header">
           <h1>Punkt</h1>
@@ -1381,6 +1498,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const TOKEN_KEY = "punkt-token";
       const API = "/.netlify/functions/punkt-tasks";
       const SUBSCRIBE_API = "/.netlify/functions/punkt-subscribe";
+      const AUTH_LOG_API = "/.netlify/functions/punkt-auth-log";
       const VAPID_PUBLIC_KEY = document.body.dataset.vapidKey || "";
 
       type Task = {
@@ -1412,6 +1530,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const saveError = document.getElementById("save-error") as HTMLDivElement;
       const saveErrorText = document.getElementById("save-error-text") as HTMLSpanElement;
       const saveErrorRetry = document.getElementById("save-error-retry") as HTMLButtonElement;
+      const securityBadge = document.getElementById("security-badge") as HTMLButtonElement;
+      const securityBadgeCount = document.getElementById("security-badge-count") as HTMLSpanElement;
+      const securitySheet = document.getElementById("security-sheet") as HTMLDivElement;
+      const securitySheetClose = document.getElementById("security-sheet-close") as HTMLButtonElement;
+      const securityList = document.getElementById("security-list") as HTMLDivElement;
 
       const viewMenu = document.getElementById("view-menu") as HTMLDivElement;
       const viewList = document.getElementById("view-list") as HTMLDivElement;
@@ -1632,6 +1755,91 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         tasks = data.tasks || [];
         renderMenu();
       }
+
+      type AuthLogEntry = {
+        ip: string;
+        totalAttempts: number;
+        recentAttempts: number;
+        blocked: boolean;
+        lastAttempt: string;
+      };
+
+      let securityEntries: AuthLogEntry[] = [];
+
+      /** Best-effort, unlike loadTasks() — a failed fetch here (or the
+       *  endpoint just not existing yet on an older deploy) shouldn't
+       *  block the app from loading, just leave the badge hidden.
+       *  Called once after login, and again whenever the detail sheet
+       *  is opened or an IP is unblocked, so it stays current. */
+      async function loadSecuritySummary() {
+        try {
+          const data = await apiFetch("GET", undefined, AUTH_LOG_API);
+          securityEntries = data.entries || [];
+        } catch (err) {
+          console.error("Punkt: failed to load auth log", err);
+          return;
+        }
+        securityBadge.hidden = securityEntries.length === 0;
+        securityBadgeCount.textContent = String(securityEntries.length);
+        if (!securitySheet.hidden) renderSecurityList();
+      }
+
+      function formatAttemptTime(iso: string): string {
+        return new Date(iso).toLocaleString("sv-SE", { dateStyle: "short", timeStyle: "short" });
+      }
+
+      function renderSecurityList() {
+        if (securityEntries.length === 0) {
+          securityList.innerHTML = '<p class="empty">Inga inloggningsförsök loggade.</p>';
+          return;
+        }
+        securityList.innerHTML = securityEntries
+          .map(
+            (e) => `
+          <div class="security-row">
+            <div class="security-row-main">
+              <div class="security-row-ip">${escapeHtml(e.ip)}</div>
+              <div class="security-row-meta">${e.recentAttempts} senaste 10 min · ${e.totalAttempts} totalt · senast ${formatAttemptTime(e.lastAttempt)}</div>
+            </div>
+            ${
+              e.blocked
+                ? `<button type="button" class="security-unblock" data-unblock-ip="${escapeHtml(e.ip)}">Avblockera</button>`
+                : `<span class="security-row-status ok">OK</span>`
+            }
+          </div>`
+          )
+          .join("");
+      }
+
+      securityBadge.addEventListener("click", () => {
+        renderSecurityList();
+        securitySheet.hidden = false;
+        loadSecuritySummary();
+      });
+
+      securitySheetClose.addEventListener("click", () => {
+        securitySheet.hidden = true;
+      });
+
+      securitySheet.addEventListener("click", (e) => {
+        if (e.target === securitySheet) securitySheet.hidden = true;
+      });
+
+      securityList.addEventListener("click", async (e) => {
+        const btn = (e.target as HTMLElement).closest("[data-unblock-ip]") as HTMLButtonElement | null;
+        if (!btn) return;
+        const ip = btn.dataset.unblockIp!;
+        btn.disabled = true;
+        btn.textContent = "...";
+        try {
+          await apiFetch("POST", { action: "unblock", ip }, AUTH_LOG_API);
+          await loadSecuritySummary();
+        } catch (err) {
+          console.error("Punkt: failed to unblock IP", err);
+          btn.disabled = false;
+          btn.textContent = "Avblockera";
+        }
+      });
 
       function queueSave() {
         if (saveInFlight) {
@@ -2733,6 +2941,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           await loadTasks();
           showApp();
           navigateTo("today");
+          void loadSecuritySummary();
         } catch {
           // apiFetch already set a specific message (wrong code,
           // blocked) via showGate() when that's why this failed — only
@@ -2756,6 +2965,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             await loadTasks();
             showApp();
             navigateTo("today");
+            void loadSecuritySummary();
             return;
           } catch {
             // apiFetch already called showGate() with a specific
