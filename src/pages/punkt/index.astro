@@ -359,13 +359,22 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       #quick-add {
         position: relative;
         z-index: 16;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 0.9rem;
+        /* Full-bleed edge-to-edge, so the shadow lines run the full
+           width of the screen rather than around a boxed card — width
+           and margin-left are computed and set in JS (alignFullBleed)
+           rather than here, since a CSS-only 100vw/-50% trick doesn't
+           cancel out correctly once #quick-add is nested inside a row
+           with asymmetric padding (editing) vs. sitting directly in
+           .screen (adding); JS measures the real offset either way. */
+        background: var(--bg);
         padding: 0.85rem 1rem;
-        margin-bottom: 1.25rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
         overflow: hidden;
         opacity: 1;
+        box-shadow:
+          0 -6px 14px -6px rgba(0, 0, 0, 0.15),
+          0 6px 14px -6px rgba(0, 0, 0, 0.15);
         transition:
           max-height 0.32s cubic-bezier(0.33, 1, 0.68, 1),
           opacity 0.32s ease;
@@ -1846,6 +1855,24 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if (row) row.appendChild(quickAdd);
       }
 
+      /** Makes #quick-add span the full viewport width edge-to-edge,
+       *  regardless of how deeply it's currently nested. A CSS-only
+       *  100vw + margin-left:50% + translateX(-50%) trick doesn't
+       *  cancel out correctly once an ancestor has asymmetric padding
+       *  (the row it sits in when editing has 15px on the left, 0 on
+       *  the right, to line up with the back-chevron) — so this
+       *  measures the real current offset instead and sets an exact
+       *  pixel width/margin-left from that, which works the same
+       *  whether it's nested in a row (editing) or sitting directly in
+       *  .screen (adding). */
+      function alignQuickAddFullBleed() {
+        quickAdd.style.width = "";
+        quickAdd.style.marginLeft = "";
+        const left = quickAdd.getBoundingClientRect().left;
+        quickAdd.style.width = `${window.innerWidth}px`;
+        quickAdd.style.marginLeft = `${-left}px`;
+      }
+
       /** Unfolds quick-add from 0 height to fit its content — an
        *  accordion-style reveal in place, whether it's sitting above
        *  the list (adding) or inside the row it just replaced
@@ -1854,6 +1881,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
        *  content growth (typing a longer note) isn't clipped by
        *  whatever height happened to be measured at open time. */
       function playCardOpenAnimation() {
+        alignQuickAddFullBleed();
         quickAdd.style.transition = "none";
         quickAdd.style.maxHeight = "0px";
         quickAdd.style.opacity = "0";
