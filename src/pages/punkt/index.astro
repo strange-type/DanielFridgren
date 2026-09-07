@@ -1014,7 +1014,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           position: sticky;
           top: 0;
           margin: 0;
-          padding: calc(1.25rem + env(safe-area-inset-top)) 1rem 2rem 1.5rem;
+          padding: calc(1.25rem + env(safe-area-inset-top)) 0.5rem 2rem 1.5rem;
           background: var(--surface);
           border-right: 1px solid var(--hairline);
           overflow-y: auto;
@@ -1025,6 +1025,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         #view-menu[hidden] {
           display: flex !important;
           flex-direction: column;
+        }
+
+        /* One "+" is enough once both the sidebar and the list header
+           are visible at the same time — the list header's #add-btn
+           covers it. */
+        #menu-add-btn {
+          display: none;
         }
 
         #view-list {
@@ -1043,13 +1050,20 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           display: none !important;
         }
 
+        /* A neutral gray instead of the accent blue — closer to how
+           Things itself highlights the open list — and left as the
+           row's own text color rather than forced white, since it's
+           no longer a solid saturated fill. */
         .menu-row.active {
-          background: var(--accent);
+          background: var(--border);
         }
 
-        .menu-row.active .menu-label,
-        .menu-row.active .menu-count {
-          color: #fff;
+        /* #quick-add is deliberately edge-to-edge borderless on
+           mobile, but here it already sits inside the bounded content
+           column with room on both sides, so rounded corners read as
+           part of the page rather than a stray sharp-edged bar. */
+        #quick-add {
+          border-radius: 0.85rem;
         }
       }
     </style>
