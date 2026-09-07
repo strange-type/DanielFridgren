@@ -2191,14 +2191,26 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
        *  which works the same whether it's nested in a row (editing)
        *  or sitting directly in .screen (adding). On mobile #view-list
        *  already fills the viewport, so this is equivalent to the old
-       *  window.innerWidth-based bleed there. */
+       *  window.innerWidth-based bleed there.
+       *
+       *  On desktop, inset by SHADOW_BLEED on each side rather than
+       *  filling #view-list exactly: #view-list needs its own
+       *  overflow-y: auto for independent scrolling (see #app's CSS),
+       *  and per the CSS overflow spec a "y: auto, x: visible" split
+       *  on one element isn't possible — the x axis gets forced to
+       *  auto too, which clips anything that renders outside
+       *  #view-list's own box, including #quick-add's box-shadow, the
+       *  same way overflow: hidden would. Sizing the card a little
+       *  narrower than #view-list leaves the shadow room to bleed
+       *  *within* that already-clipped box instead. */
       function alignQuickAddFullBleed() {
         quickAdd.style.width = "";
         quickAdd.style.marginLeft = "";
         const container = viewList.getBoundingClientRect();
         const left = quickAdd.getBoundingClientRect().left;
-        quickAdd.style.width = `${container.width}px`;
-        quickAdd.style.marginLeft = `${container.left - left}px`;
+        const SHADOW_BLEED = isDesktopLayout() ? 16 : 0;
+        quickAdd.style.width = `${container.width - SHADOW_BLEED * 2}px`;
+        quickAdd.style.marginLeft = `${container.left - left + SHADOW_BLEED}px`;
       }
 
       /** Renders task's row markup off-screen — inside the real list,
