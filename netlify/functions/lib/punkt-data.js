@@ -304,6 +304,48 @@ async function logFailedAuthAttempt(ip) {
     }
 }
 
+/**
+ * One row per IP with any logged attempt still within retention,
+ * newest first — for the in-app "someone tried to log in" indicator.
+ * `blocked` mirrors isIpBlocked()'s own math (recent-within-window
+ * count vs the threshold) so the UI and the actual gate never
+ * disagree about which IPs are currently blocked.
+ */
+async function getAuthLogSummary() {
+    const { attempts } = await readAuthLog();
+    const now = Date.now();
+    const byIp = new Map();
+    for (const a of attempts) {
+        const list = byIp.get(a.ip) || [];
+        list.push(a.at);
+        byIp.set(a.ip, list);
+    }
+    return Array.from(byIp.entries())
+        .map(([ip, times]) => {
+            const lastAttempt = times.reduce((latest, t) => (t > latest ? t : latest));
+            return {
+                ip,
+                totalAttempts: times.length,
+                recentAttempts: countRecentFailures(attempts, ip, now),
+                blocked: countRecentFailures(attempts, ip, now) >= AUTH_BLOCK_THRESHOLD,
+                lastAttempt
+            };
+        })
+        .sort((a, b) => (a.lastAttempt < b.lastAttempt ? 1 : -1));
+}
+
+/**
+ * Clears every logged attempt for `ip`, the same effect as manually
+ * deleting its entries from auth-log.json on GitHub (see isIpBlocked's
+ * own comment) — un-blocks it immediately since there's no separate
+ * "blocked" flag to reset.
+ */
+async function unblockIp(ip) {
+    const { attempts, sha } = await readAuthLog();
+    const remaining = attempts.filter((a) => a.ip !== ip);
+    await writeAuthLog(remaining, sha, `Unblock Punkt IP ${ip}`);
+}
+
 export {
     readTasksFile,
     writeTasksFile,
@@ -314,5 +356,7 @@ export {
     writeSubscriptions,
     writeLastReminderError,
     isIpBlocked,
-    logFailedAuthAttempt
+    logFailedAuthAttempt,
+    getAuthLogSummary,
+    unblockIp
 };
