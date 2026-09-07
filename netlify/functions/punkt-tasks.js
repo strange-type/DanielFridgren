@@ -5,6 +5,7 @@ import {
     parseTasks,
     serializeTasks,
     validateTasks,
+    mergeTasks,
     isIpBlocked,
     logFailedAuthAttempt
 } from './lib/punkt-data.js';
@@ -81,8 +82,8 @@ export const handler = async (event) => {
 
     try {
         if (event.httpMethod === 'GET') {
-            const { content } = await readTasksFile();
-            return respond(200, { tasks: parseTasks(content) });
+            const { content, sha } = await readTasksFile();
+            return respond(200, { tasks: parseTasks(content), sha });
         }
 
         if (event.httpMethod === 'POST') {
@@ -91,21 +92,41 @@ export const handler = async (event) => {
             if (validationError) {
                 return respond(400, { error: validationError });
             }
-            const content = serializeTasks(body.tasks);
 
-            // tasks.md has two independent writers — this endpoint and
-            // the scheduled reminders function, which stamps notifiedOn
-            // on its own 10-minute cadence — so a stale sha here isn't
-            // a real error, just two writes landing close together.
-            // Re-reading the latest sha and retrying resolves it
-            // without surfacing a save failure for an ordinary race.
-            const MAX_ATTEMPTS = 3;
+            // tasks.md has other writers too — the scheduled reminders
+            // function (stamps notifiedOn), and possibly another open
+            // tab or device saving around the same time. body.sha is
+            // whatever this client last loaded/saved with; if that no
+            // longer matches what's actually on GitHub, something else
+            // wrote in between, and the two lists need reconciling
+            // (mergeTasks) rather than this client's own copy blindly
+            // overwriting it — previously this always re-read a fresh
+            // sha right before writing regardless, so it never actually
+            // hit a real conflict, it just silently discarded whatever
+            // the other write had added or changed (most visibly: a
+            // just-added task on another device simply vanishing).
+            let tasksToWrite = body.tasks;
+            let merged = false;
+            const MAX_ATTEMPTS = 2;
             for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-                const { sha } = await readTasksFile();
+                const { content: serverContent, sha: serverSha } = await readTasksFile();
+                if (body.sha && body.sha !== serverSha) {
+                    tasksToWrite = mergeTasks(parseTasks(serverContent), tasksToWrite);
+                    merged = true;
+                }
+                const content = serializeTasks(tasksToWrite);
                 try {
-                    await writeTasksFile(content, sha, 'Update Punkt tasks');
-                    return respond(200, { ok: true });
+                    const newSha = await writeTasksFile(content, serverSha, 'Update Punkt tasks');
+                    // merged tells the client whether the list it gets
+                    // back differs from what it posted (another writer's
+                    // tasks folded in) — only worth a client-side
+                    // re-render when that's actually true, not on every
+                    // ordinary conflict-free save.
+                    return respond(200, { ok: true, tasks: tasksToWrite, sha: newSha, merged });
                 } catch (error) {
+                    // Someone else wrote again between the read just
+                    // above and this write — loop once more to re-merge
+                    // against the very latest content.
                     if (error.status !== 409 || attempt === MAX_ATTEMPTS) throw error;
                 }
             }
