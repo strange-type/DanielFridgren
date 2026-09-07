@@ -386,26 +386,45 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
            smaller than the padding sum still renders at that padding
            height (content can't go negative), so a padded box never
            actually reaches 0. The padding lives on .qa-body instead,
-           so max-height: 0 here means a truly empty, invisible box —
+           so max-height: 0 there means a truly empty, invisible box —
            no residual sliver popping in/out before/after the smooth
            grow/shrink. margin-top/bottom are 0 at rest for the same
            reason (margin isn't clipped by max-height) and are animated
-           in tandem with it in JS. */
+           in tandem with it in JS.
+
+           overflow: hidden and the animated max-height both live on
+           .qa-body, not here — an element clips its OWN box-shadow
+           too if it has overflow: hidden, so putting them on the same
+           element as the shadow below cut the shadow off flush at the
+           left/right edges instead of it softly extending past them
+           (invisible on mobile, where the card is edge-to-edge anyway,
+           but visible once it's a floating rounded card with room on
+           both sides, on the desktop layout). */
         padding: 0;
         margin-top: 0;
         margin-bottom: 0;
-        overflow: hidden;
         box-shadow:
           0 -6px 14px -6px rgba(0, 0, 0, 0.15),
           0 6px 14px -6px rgba(0, 0, 0, 0.15);
+        /* box-shadow and border-radius (the latter only actually set
+           on the desktop layout — see its own @media block) are also
+           animated, in tandem with the height/margin grow-and-shrink —
+           without this, a rounded, shadowed card would instantly pop
+           into (or out of) that look the moment it opens (or right as
+           it swaps back to a plain row on close), which reads as a
+           jump of its own even though the height/position move
+           smoothly under it. */
         transition:
-          max-height 0.32s cubic-bezier(0.33, 1, 0.68, 1),
           margin-top 0.32s cubic-bezier(0.33, 1, 0.68, 1),
-          margin-bottom 0.32s cubic-bezier(0.33, 1, 0.68, 1);
+          margin-bottom 0.32s cubic-bezier(0.33, 1, 0.68, 1),
+          box-shadow 0.32s ease,
+          border-radius 0.32s ease;
       }
 
       #quick-add .qa-body {
         padding: 0.85rem 1rem;
+        overflow: hidden;
+        transition: max-height 0.32s cubic-bezier(0.33, 1, 0.68, 1);
       }
 
       /* Catches taps outside the open panel to close/commit it — kept
@@ -1390,6 +1409,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const wpInbox = document.getElementById("wp-inbox") as HTMLButtonElement;
 
       const quickAdd = document.getElementById("quick-add") as HTMLFormElement;
+      // Holds the animated max-height/overflow-clip (see its own CSS
+      // comment) — #quick-add itself only handles position/margin/
+      // box-shadow now, so its shadow doesn't get clipped along with it.
+      const qaBody = quickAdd.querySelector(".qa-body") as HTMLDivElement;
       const quickAddAnchor = document.getElementById("quick-add-anchor") as HTMLDivElement;
       const quickAddScrim = document.getElementById("quick-add-scrim") as HTMLDivElement;
       const qaCheckbox = document.getElementById("qa-checkbox") as HTMLInputElement;
@@ -2191,23 +2214,31 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       function playCardOpenAnimation(startHeight = 0) {
         alignQuickAddFullBleed();
         quickAdd.style.transition = "none";
-        quickAdd.style.maxHeight = `${startHeight}px`;
+        qaBody.style.transition = "none";
+        qaBody.style.maxHeight = `${startHeight}px`;
         quickAdd.style.marginTop = "0px";
         quickAdd.style.marginBottom = "0px";
-        void quickAdd.offsetWidth; // force reflow so the transition below actually animates
-        const targetHeight = quickAdd.scrollHeight;
+        // Flat, like the plain row it's opening from/into — faded back
+        // in below, alongside the height/margin grow.
+        quickAdd.style.boxShadow = "none";
+        quickAdd.style.borderRadius = "0";
+        void quickAdd.offsetWidth; // force reflow so the transitions below actually animate
+        const targetHeight = qaBody.scrollHeight;
         quickAdd.style.transition = "";
+        qaBody.style.transition = "";
         requestAnimationFrame(() => {
-          quickAdd.style.maxHeight = `${targetHeight}px`;
+          qaBody.style.maxHeight = `${targetHeight}px`;
           quickAdd.style.marginTop = "1.5rem";
           quickAdd.style.marginBottom = "1.5rem";
+          quickAdd.style.boxShadow = "";
+          quickAdd.style.borderRadius = "";
         });
         const onOpenEnd = (e: TransitionEvent) => {
-          if (e.target !== quickAdd || e.propertyName !== "max-height") return;
-          quickAdd.removeEventListener("transitionend", onOpenEnd);
-          quickAdd.style.maxHeight = "none";
+          if (e.target !== qaBody || e.propertyName !== "max-height") return;
+          qaBody.removeEventListener("transitionend", onOpenEnd);
+          qaBody.style.maxHeight = "none";
         };
-        quickAdd.addEventListener("transitionend", onOpenEnd);
+        qaBody.addEventListener("transitionend", onOpenEnd);
       }
 
       /** Mirrors playCardOpenAnimation for dismissal: folds down to
@@ -2224,17 +2255,23 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // typing could grow it without being clipped) — freeze it at
         // its actual current height first, since transitioning *from*
         // "none" doesn't animate at all.
-        quickAdd.style.maxHeight = `${quickAdd.scrollHeight}px`;
+        qaBody.style.maxHeight = `${qaBody.scrollHeight}px`;
         void quickAdd.offsetWidth;
         const onTransitionEnd = (e: TransitionEvent) => {
-          if (e.target !== quickAdd || e.propertyName !== "max-height") return;
-          quickAdd.removeEventListener("transitionend", onTransitionEnd);
+          if (e.target !== qaBody || e.propertyName !== "max-height") return;
+          qaBody.removeEventListener("transitionend", onTransitionEnd);
           onDone();
         };
-        quickAdd.addEventListener("transitionend", onTransitionEnd);
-        quickAdd.style.maxHeight = `${endHeight}px`;
+        qaBody.addEventListener("transitionend", onTransitionEnd);
+        qaBody.style.maxHeight = `${endHeight}px`;
         quickAdd.style.marginTop = "0px";
         quickAdd.style.marginBottom = "0px";
+        // Faded out in sync with the collapse so it's already gone by
+        // the time renderTaskList() swaps this for the plain row —
+        // otherwise the shadow/rounding would just vanish in one
+        // frame right at that swap.
+        quickAdd.style.boxShadow = "none";
+        quickAdd.style.borderRadius = "0";
       }
 
       function hideQuickAddCard() {
@@ -2261,12 +2298,16 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       function cancelQuickAdd() {
         editingTaskId = null;
         quickAdd.style.transition = "none";
+        qaBody.style.transition = "none";
         hideQuickAddCard();
-        quickAdd.style.maxHeight = "";
+        qaBody.style.maxHeight = "";
         quickAdd.style.marginTop = "";
         quickAdd.style.marginBottom = "";
-        void quickAdd.offsetWidth; // force reflow before restoring the transition
+        quickAdd.style.boxShadow = "";
+        quickAdd.style.borderRadius = "";
+        void quickAdd.offsetWidth; // force reflow before restoring the transitions
         quickAdd.style.transition = "";
+        qaBody.style.transition = "";
       }
 
       /** Grows qa-note to fit its (possibly wrapped) content instead of
@@ -2278,8 +2319,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       function autoGrowNote() {
         qaNote.style.height = "auto";
         qaNote.style.height = `${qaNote.scrollHeight}px`;
-        if (quickAdd.style.maxHeight && quickAdd.style.maxHeight !== "none") {
-          quickAdd.style.maxHeight = `${quickAdd.scrollHeight}px`;
+        if (qaBody.style.maxHeight && qaBody.style.maxHeight !== "none") {
+          qaBody.style.maxHeight = `${qaBody.scrollHeight}px`;
         }
       }
       qaNote.addEventListener("input", autoGrowNote);
