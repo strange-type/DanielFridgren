@@ -367,17 +367,30 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
            with asymmetric padding (editing) vs. sitting directly in
            .screen (adding); JS measures the real offset either way. */
         background: var(--bg);
-        padding: 0.85rem 1rem;
-        margin-top: 1.5rem;
-        margin-bottom: 1.5rem;
+        /* No padding here — with box-sizing: border-box, a max-height
+           smaller than the padding sum still renders at that padding
+           height (content can't go negative), so a padded box never
+           actually reaches 0. The padding lives on .qa-body instead,
+           so max-height: 0 here means a truly empty, invisible box —
+           no residual sliver popping in/out before/after the smooth
+           grow/shrink. margin-top/bottom are 0 at rest for the same
+           reason (margin isn't clipped by max-height) and are animated
+           in tandem with it in JS. */
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 0;
         overflow: hidden;
-        opacity: 1;
         box-shadow:
           0 -6px 14px -6px rgba(0, 0, 0, 0.15),
           0 6px 14px -6px rgba(0, 0, 0, 0.15);
         transition:
           max-height 0.32s cubic-bezier(0.33, 1, 0.68, 1),
-          opacity 0.32s ease;
+          margin-top 0.32s cubic-bezier(0.33, 1, 0.68, 1),
+          margin-bottom 0.32s cubic-bezier(0.33, 1, 0.68, 1);
+      }
+
+      #quick-add .qa-body {
+        padding: 0.85rem 1rem;
       }
 
       /* Catches taps outside the open panel to close/commit it — kept
@@ -703,6 +716,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         overflow-wrap: anywhere;
       }
 
+      .task-note a {
+        color: var(--accent);
+        text-decoration: underline;
+      }
+
       .date-group {
         font-size: 1.15rem;
         font-weight: 700;
@@ -1017,17 +1035,19 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         <div id="quick-add-scrim" hidden></div>
         <div id="quick-add-anchor"></div>
         <form id="quick-add" hidden>
-          <div class="qa-title-row">
-            <input type="checkbox" id="qa-checkbox" class="task-check" tabindex="-1" />
-            <input id="qa-title" type="text" placeholder="New To-Do" maxlength="200" />
-          </div>
-          <textarea id="qa-note" placeholder="Notes" rows="1"></textarea>
-          <div class="qa-footer">
-            <span id="qa-context" class="qa-context" hidden></span>
-            <div class="qa-actions">
-              <button type="button" id="qa-when-btn" class="ghost-icon" aria-label="Schemalägg">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
-              </button>
+          <div class="qa-body">
+            <div class="qa-title-row">
+              <input type="checkbox" id="qa-checkbox" class="task-check" tabindex="-1" />
+              <input id="qa-title" type="text" placeholder="New To-Do" maxlength="200" />
+            </div>
+            <textarea id="qa-note" placeholder="Notes" rows="1"></textarea>
+            <div class="qa-footer">
+              <span id="qa-context" class="qa-context" hidden></span>
+              <div class="qa-actions">
+                <button type="button" id="qa-when-btn" class="ghost-icon" aria-label="Schemalägg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
+                </button>
+              </div>
             </div>
           </div>
           <!-- A form with more than one text field only submits on
@@ -1220,6 +1240,22 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           '"': "&quot;",
           "'": "&#39;"
         })[c] as string);
+      }
+
+      /** Escapes a note's text, then turns any http(s) URLs in it into
+       *  real links — target="_blank" opens a new tab in a browser, or
+       *  kicks out to the system browser when running as an installed
+       *  home-screen app, since a standalone PWA has no tabs of its
+       *  own to open one in. */
+      function linkifyNote(text: string): string {
+        return escapeHtml(text).replace(/https?:\/\/[^\s<]+/g, (url) => {
+          // Trailing punctuation right after a URL is more likely to
+          // be sentence punctuation than part of the link itself.
+          const trailingMatch = url.match(/[.,;:!?)'"]+$/);
+          const trailing = trailingMatch ? trailingMatch[0] : "";
+          const href = trailing ? url.slice(0, -trailing.length) : url;
+          return `<a href="${href}" target="_blank" rel="noopener noreferrer">${href}</a>${trailing}`;
+        });
       }
 
       async function apiFetch(method: "GET" | "POST", body?: unknown, url: string = API) {
@@ -1421,7 +1457,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
                 ${icons.join("")}
               </span>
             </div>
-            ${task.note ? `<div class="task-note">${escapeHtml(task.note)}</div>` : ""}
+            ${task.note ? `<div class="task-note">${linkifyNote(task.note)}</div>` : ""}
           </li>`;
       }
 
@@ -1706,6 +1742,9 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       let suppressNextClick = false;
 
       taskListEl.addEventListener("click", (e) => {
+        // Let a note's link navigate normally instead of also opening
+        // the row for editing (or toggling its selection).
+        if ((e.target as HTMLElement).closest("a")) return;
         if (suppressNextClick) {
           suppressNextClick = false;
           return;
@@ -1872,24 +1911,53 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         quickAdd.style.marginLeft = `${-left}px`;
       }
 
-      /** Unfolds quick-add from 0 height to fit its content — an
-       *  accordion-style reveal in place, whether it's sitting above
-       *  the list (adding) or inside the row it just replaced
-       *  (editing), rather than a separate card popping up. Once the
-       *  reveal finishes, max-height is freed to "none" so later
-       *  content growth (typing a longer note) isn't clipped by
-       *  whatever height happened to be measured at open time. */
-      function playCardOpenAnimation() {
+      /** Renders task's row markup off-screen — inside the real list,
+       *  so it inherits the exact same width/padding/wrapping as a
+       *  real row — to measure the height it will occupy once editing
+       *  closes. Lets the close animation shrink to that real target
+       *  instead of collapsing to 0 and having the closed row pop in
+       *  afterward at a different height. A <template> is used to
+       *  parse the <li> markup since it isn't restricted to a <ul>'s
+       *  normal content model the way directly setting a container's
+       *  innerHTML would be. */
+      function measureFutureRowHeight(task: Task): number {
+        const savedEditingId = editingTaskId;
+        editingTaskId = null;
+        const template = document.createElement("template");
+        template.innerHTML = taskRowHtml(task).trim();
+        editingTaskId = savedEditingId;
+        const probe = template.content.firstElementChild as HTMLElement | null;
+        if (!probe) return 0;
+        probe.style.visibility = "hidden";
+        taskListEl.appendChild(probe);
+        const height = probe.getBoundingClientRect().height;
+        probe.remove();
+        return height;
+      }
+
+      /** Grows or shrinks quick-add between startHeight and its full
+       *  content height — an accordion-style reveal in place, whether
+       *  it's sitting above the list (adding) or inside the row it
+       *  just replaced (editing). Passing the tapped row's own height
+       *  as startHeight (instead of always 0) makes the row read as
+       *  expanding into the form rather than collapsing away first and
+       *  something else growing in afterward. Once the reveal
+       *  finishes, max-height is freed to "none" so later content
+       *  growth (typing a longer note) isn't clipped by whatever
+       *  height happened to be measured at open time. */
+      function playCardOpenAnimation(startHeight = 0) {
         alignQuickAddFullBleed();
         quickAdd.style.transition = "none";
-        quickAdd.style.maxHeight = "0px";
-        quickAdd.style.opacity = "0";
+        quickAdd.style.maxHeight = `${startHeight}px`;
+        quickAdd.style.marginTop = "0px";
+        quickAdd.style.marginBottom = "0px";
         void quickAdd.offsetWidth; // force reflow so the transition below actually animates
         const targetHeight = quickAdd.scrollHeight;
         quickAdd.style.transition = "";
         requestAnimationFrame(() => {
           quickAdd.style.maxHeight = `${targetHeight}px`;
-          quickAdd.style.opacity = "1";
+          quickAdd.style.marginTop = "1.5rem";
+          quickAdd.style.marginBottom = "1.5rem";
         });
         const onOpenEnd = (e: TransitionEvent) => {
           if (e.target !== quickAdd || e.propertyName !== "max-height") return;
@@ -1899,11 +1967,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         quickAdd.addEventListener("transitionend", onOpenEnd);
       }
 
-      /** Mirrors playCardOpenAnimation for dismissal: folds back down
-       *  to 0 height first, then calls onDone (which actually hides
-       *  it) — closing reads as the same motion in reverse instead of
-       *  just vanishing. */
-      function playCardCloseAnimation(onDone: () => void) {
+      /** Mirrors playCardOpenAnimation for dismissal: folds down to
+       *  endHeight — 0 to vanish entirely, or the row's future
+       *  (post-edit) height so it settles exactly where the plain row
+       *  renderTaskList() swaps in afterward will be, avoiding a jump
+       *  — then calls onDone (which does that swap). */
+      function playCardCloseAnimation(onDone: () => void, endHeight = 0) {
         if (quickAdd.hidden) {
           onDone();
           return;
@@ -1915,13 +1984,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         quickAdd.style.maxHeight = `${quickAdd.scrollHeight}px`;
         void quickAdd.offsetWidth;
         const onTransitionEnd = (e: TransitionEvent) => {
-          if (e.target !== quickAdd || e.propertyName !== "opacity") return;
+          if (e.target !== quickAdd || e.propertyName !== "max-height") return;
           quickAdd.removeEventListener("transitionend", onTransitionEnd);
           onDone();
         };
         quickAdd.addEventListener("transitionend", onTransitionEnd);
-        quickAdd.style.maxHeight = "0px";
-        quickAdd.style.opacity = "0";
+        quickAdd.style.maxHeight = `${endHeight}px`;
+        quickAdd.style.marginTop = "0px";
+        quickAdd.style.marginBottom = "0px";
       }
 
       function hideQuickAddCard() {
@@ -1950,7 +2020,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         quickAdd.style.transition = "none";
         hideQuickAddCard();
         quickAdd.style.maxHeight = "";
-        quickAdd.style.opacity = "";
+        quickAdd.style.marginTop = "";
+        quickAdd.style.marginBottom = "";
         void quickAdd.offsetWidth; // force reflow before restoring the transition
         quickAdd.style.transition = "";
       }
@@ -1995,6 +2066,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       function openTaskEdit(task: Task) {
+        // Measured before the row is replaced by the empty editing
+        // shell, so the open animation can grow from the tapped row's
+        // own height instead of collapsing it to 0 first.
+        const tappedRow = taskListEl.querySelector(`.task-row[data-id="${task.id}"]`) as HTMLElement | null;
+        const startHeight = tappedRow ? tappedRow.getBoundingClientRect().height : 0;
         editingTaskId = task.id;
         qaCheckbox.checked = task.done;
         qaTitle.value = task.title;
@@ -2018,7 +2094,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         quickAddScrim.hidden = false;
         // Only once visible — scrollHeight measures 0 on a hidden element.
         autoGrowNote();
-        playCardOpenAnimation();
+        playCardOpenAnimation(startHeight);
         qaTitle.focus();
       }
 
@@ -2049,12 +2125,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         task.done = qaCheckbox.checked;
         task.completedAt = task.done ? new Date().toISOString() : null;
         editingTaskId = null;
+        // Only worth morphing into the closed row's own height if it's
+        // still going to be in the current view afterward — e.g.
+        // checking it done here drops it out of Today/Inbox entirely,
+        // so it should just collapse away instead.
+        const endHeight = bucket(currentView as View).includes(task) ? measureFutureRowHeight(task) : 0;
         playCardCloseAnimation(() => {
-          hideQuickAddCard();
           renderTaskList();
+          hideQuickAddCard();
           renderMenu();
           queueSave();
-        });
+        }, endHeight);
       });
 
       addBtn.addEventListener("click", () => {
@@ -2251,6 +2332,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             task.remind = pendingRemind;
           }
           editingTaskId = null;
+          // See the qaCheckbox handler above — only morph into the
+          // closed row's own height if it's still in the current view
+          // afterward (e.g. rescheduling it out of Today).
+          const endHeight = task && bucket(currentView as View).includes(task) ? measureFutureRowHeight(task) : 0;
           playCardCloseAnimation(() => {
             hideQuickAddCard();
             if (task) {
@@ -2258,7 +2343,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
               renderMenu();
               queueSave();
             }
-          });
+          }, endHeight);
           return;
         }
 
