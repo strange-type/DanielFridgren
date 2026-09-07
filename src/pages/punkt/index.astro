@@ -523,7 +523,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       li.task-row {
         display: flex;
         flex-direction: column;
-        gap: 0.15rem;
+        gap: 0.4rem;
         padding: 0.55rem 0.5rem;
         margin: 0 -0.5rem;
         border-radius: 0.6rem;
@@ -714,6 +714,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         margin-left: calc(20px + 0.7rem);
         margin-right: 1rem;
         overflow-wrap: anywhere;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
       }
 
       .task-note a {
@@ -1745,6 +1749,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // Let a note's link navigate normally instead of also opening
         // the row for editing (or toggling its selection).
         if ((e.target as HTMLElement).closest("a")) return;
+        // The row being edited holds #quick-add itself — without this,
+        // clicking into its note (or any other field) would bubble up
+        // and re-trigger openTaskEdit below, yanking focus back to the
+        // title on every click and making the note unclickable.
+        if ((e.target as HTMLElement).closest("#quick-add")) return;
         if (suppressNextClick) {
           suppressNextClick = false;
           return;
