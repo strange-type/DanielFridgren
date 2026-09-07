@@ -1516,6 +1516,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       type View = "menu" | "inbox" | "today" | "upcoming" | "logbook";
 
       let tasks: Task[] = [];
+      // The GitHub file's sha as of this client's last load or save —
+      // sent with every save so the server can tell whether something
+      // else (another tab, another device, the scheduled reminders
+      // function) changed the file in between, instead of this client
+      // blindly overwriting it with its own possibly-stale full copy.
+      let tasksSha: string | null = null;
       let currentView: View = "menu";
       let saveInFlight = false;
       let saveQueued = false;
@@ -1753,6 +1759,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       async function loadTasks() {
         const data = await apiFetch("GET");
         tasks = data.tasks || [];
+        tasksSha = data.sha || null;
         renderMenu();
       }
 
@@ -1847,8 +1854,21 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           return;
         }
         saveInFlight = true;
-        apiFetch("POST", { tasks })
-          .then(() => hideSaveError())
+        apiFetch("POST", { tasks, sha: tasksSha })
+          .then((data) => {
+            hideSaveError();
+            tasksSha = data.sha || tasksSha;
+            // The server only folds in another writer's tasks (another
+            // tab/device, or the scheduled reminders function) when
+            // this client's sha was actually stale — re-rendering on
+            // every ordinary save would otherwise yank an in-progress
+            // edit's #quick-add back out of its row for no reason.
+            if (data.merged && Array.isArray(data.tasks)) {
+              tasks = data.tasks;
+              renderTaskList();
+              renderMenu();
+            }
+          })
           .catch((err) => {
             console.error("Punkt: failed to save tasks", err);
             showSaveError(err.message);
