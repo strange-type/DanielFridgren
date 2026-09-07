@@ -19,8 +19,6 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
-- [ ] Test (id: 1788799213416-qxfwj, when: -)
-- [ ] Test (id: 1788799208660-zw8cw, when: -)
 - [ ] Kolla igen vad jag skrev kring regionens utmaningar (id: 1788772585422-ggxdg, when: today)
 - [x] Förbered presentationen imorgon (id: 1788771927161-774pw, done: 2026-09-07T12:08:28.874Z)
 - [ ] Läs Kort om PDL - openEHR (id: 1788727727911-mxc1l, when: today)
