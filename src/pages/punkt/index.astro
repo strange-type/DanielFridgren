@@ -321,6 +321,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         cursor: pointer;
       }
 
+      /* Desktop-only (see the @media block below) — doesn't fit
+         alongside the back chevron on the mobile screen-swap header. */
+      #list-icon {
+        display: none;
+      }
+
       .fab {
         width: 3rem;
         height: 3rem;
@@ -1120,6 +1126,67 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         #quick-add {
           border-radius: 0.85rem;
         }
+
+        /* Same icon+label gap as a sidebar row (.menu-row), so the
+           icon-to-title spacing here reads as the same design. */
+        .list-header-left {
+          gap: 0.75rem;
+        }
+
+        #list-icon {
+          display: flex;
+        }
+
+        /* #task-list's mobile padding-left instead lines its rows up
+           with the back chevron above it (see its own comment) — that
+           chevron is gone here, so this un-does that offset and lines
+           rows up with #list-icon's own left edge instead, which sits
+           flush with the list header's. */
+        #task-list {
+          padding-left: 0;
+        }
+
+        /* More breathing room between the header and the list below
+           it now that there's more vertical space to spend. */
+        .list-header {
+          margin-bottom: 1.75rem;
+        }
+
+        /* .sheet-overlay/.sheet-card (the When?/Add Reminder panels)
+           are a mobile bottom sheet — full-width, sliding up from the
+           bottom edge, and scrollable if its content runs long. On
+           desktop that reads as an oversized mobile control stranded
+           in the middle of a much taller window; centering a
+           smaller, fixed-width card instead — with the calendar grid
+           shrunk to match — comfortably fits Today/This Evening, the
+           month calendar, and Add Reminder/Clear without ever needing
+           to scroll, closer to how Things' own desktop scheduling
+           popover looks. */
+        .sheet-overlay {
+          align-items: center;
+          justify-content: center;
+        }
+
+        .sheet-card {
+          width: 21rem;
+          max-width: 21rem;
+          border-radius: 1.1rem;
+          max-height: none;
+          overflow-y: visible;
+          box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+
+        .sheet-row {
+          padding: 0.5rem 0.2rem;
+        }
+
+        .cal-grid {
+          gap: 0.15rem;
+        }
+
+        .cal-day {
+          font-size: 0.78rem;
+        }
       }
     </style>
   </head>
@@ -1161,6 +1228,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             <button id="back-btn" aria-label="Tillbaka">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
+            <!-- Desktop-only (see CSS) — same icon as the matching
+                 sidebar row, so the list rows below can align against
+                 it instead of against the title text. -->
+            <span id="list-icon" class="menu-icon"></span>
             <h1 id="list-title"></h1>
           </div>
           <div class="list-header-right">
@@ -1304,6 +1375,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const menuList = document.getElementById("menu-list") as HTMLElement;
       const menuAddBtn = document.getElementById("menu-add-btn") as HTMLButtonElement;
       const listTitle = document.getElementById("list-title") as HTMLHeadingElement;
+      const listIcon = document.getElementById("list-icon") as HTMLSpanElement;
       const backBtn = document.getElementById("back-btn") as HTMLButtonElement;
       const addBtn = document.getElementById("add-btn") as HTMLButtonElement;
       const doneBtn = document.getElementById("done-btn") as HTMLButtonElement;
@@ -1359,6 +1431,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         today: "Today",
         upcoming: "Upcoming",
         logbook: "Logbook"
+      };
+
+      // Shared with renderMenu()'s sidebar rows and navigateTo()'s
+      // desktop list-header icon, so both always show the same glyph.
+      const VIEW_ICONS: Record<Exclude<View, "menu">, { iconHtml: string; iconClass: string }> = {
+        inbox: { iconHtml: ICON_INBOX, iconClass: "menu-icon--inbox" },
+        today: { iconHtml: "★", iconClass: "menu-icon--today" },
+        upcoming: { iconHtml: ICON_UPCOMING, iconClass: "menu-icon--upcoming" },
+        logbook: { iconHtml: ICON_LOGBOOK, iconClass: "menu-icon--logbook" }
       };
 
       function todayStr(): string {
@@ -1553,21 +1634,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const isEveningTask = (t: Task) => t.when === "evening" || (t.when === "today" && t.remind === "18:00");
 
       function renderMenu() {
-        const rows: { view: Exclude<View, "menu">; label: string; iconHtml: string; iconClass: string }[] = [
-          { view: "inbox", label: "Inbox", iconHtml: ICON_INBOX, iconClass: "menu-icon--inbox" },
-          { view: "today", label: "Today", iconHtml: "★", iconClass: "menu-icon--today" },
-          { view: "upcoming", label: "Upcoming", iconHtml: ICON_UPCOMING, iconClass: "menu-icon--upcoming" },
-          { view: "logbook", label: "Logbook", iconHtml: ICON_LOGBOOK, iconClass: "menu-icon--logbook" }
-        ];
-        menuList.innerHTML = rows
-          .map(
-            (r) => `
-          <button class="menu-row ${r.view === currentView ? "active" : ""}" data-nav="${r.view}">
-            <span class="menu-icon ${r.iconClass}">${r.iconHtml}</span>
-            <span class="menu-label">${r.label}</span>
-            <span class="menu-count">${bucket(r.view).length}</span>
-          </button>`
-          )
+        const views: Exclude<View, "menu">[] = ["inbox", "today", "upcoming", "logbook"];
+        menuList.innerHTML = views
+          .map((v) => {
+            const { iconHtml, iconClass } = VIEW_ICONS[v];
+            return `
+          <button class="menu-row ${v === currentView ? "active" : ""}" data-nav="${v}">
+            <span class="menu-icon ${iconClass}">${iconHtml}</span>
+            <span class="menu-label">${VIEW_TITLES[v]}</span>
+            <span class="menu-count">${bucket(v).length}</span>
+          </button>`;
+          })
           .join("");
       }
 
@@ -1778,6 +1855,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         }
 
         listTitle.textContent = VIEW_TITLES[view];
+        // Only visible on the desktop sidebar layout (see CSS) — kept
+        // in sync unconditionally anyway, same as renderMenu() below.
+        const { iconHtml, iconClass } = VIEW_ICONS[view];
+        listIcon.className = `menu-icon ${iconClass}`;
+        listIcon.innerHTML = iconHtml;
         addBtn.hidden = view === "logbook";
         renderTaskList();
         // Only visibly matters on the desktop sidebar layout, where
