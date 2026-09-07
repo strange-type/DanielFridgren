@@ -26,6 +26,6 @@ inte skickas flera gånger samma dag.
 - [x] Test (id: 1788685942619-2gstb, done: 2026-09-06T10:27:59.430Z)
 - [x] Test 1 (id: 1788685964362-1416r, done: 2026-09-06T20:47:36.335Z)
   > Yrfxh
-- [ ] Logga (id: 1788688187377-su5u3, when: -)
+- [x] Logga (id: 1788688187377-su5u3, done: 2026-09-07T12:08:24.914Z)
 - [ ] Test 2 (id: 1788701665273-zmlw8, when: -)
 - [ ] Test 3 (id: 1788701668153-vyk5u, when: -)
