@@ -703,6 +703,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         overflow-wrap: anywhere;
       }
 
+      .task-note a {
+        color: var(--accent);
+        text-decoration: underline;
+      }
+
       .date-group {
         font-size: 1.15rem;
         font-weight: 700;
@@ -1222,6 +1227,22 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         })[c] as string);
       }
 
+      /** Escapes a note's text, then turns any http(s) URLs in it into
+       *  real links — target="_blank" opens a new tab in a browser, or
+       *  kicks out to the system browser when running as an installed
+       *  home-screen app, since a standalone PWA has no tabs of its
+       *  own to open one in. */
+      function linkifyNote(text: string): string {
+        return escapeHtml(text).replace(/https?:\/\/[^\s<]+/g, (url) => {
+          // Trailing punctuation right after a URL is more likely to
+          // be sentence punctuation than part of the link itself.
+          const trailingMatch = url.match(/[.,;:!?)'"]+$/);
+          const trailing = trailingMatch ? trailingMatch[0] : "";
+          const href = trailing ? url.slice(0, -trailing.length) : url;
+          return `<a href="${href}" target="_blank" rel="noopener noreferrer">${href}</a>${trailing}`;
+        });
+      }
+
       async function apiFetch(method: "GET" | "POST", body?: unknown, url: string = API) {
         const token = localStorage.getItem(TOKEN_KEY);
         const res = await fetch(url, {
@@ -1421,7 +1442,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
                 ${icons.join("")}
               </span>
             </div>
-            ${task.note ? `<div class="task-note">${escapeHtml(task.note)}</div>` : ""}
+            ${task.note ? `<div class="task-note">${linkifyNote(task.note)}</div>` : ""}
           </li>`;
       }
 
@@ -1706,6 +1727,9 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       let suppressNextClick = false;
 
       taskListEl.addEventListener("click", (e) => {
+        // Let a note's link navigate normally instead of also opening
+        // the row for editing (or toggling its selection).
+        if ((e.target as HTMLElement).closest("a")) return;
         if (suppressNextClick) {
           suppressNextClick = false;
           return;
