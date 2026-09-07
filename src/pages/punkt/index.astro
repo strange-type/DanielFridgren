@@ -32,6 +32,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111827" />
     <link rel="manifest" href="/punkt/manifest.webmanifest" />
+    <!-- Same artwork as the home-screen/manifest icons below — a
+         favicon is just a separate <link>, not a one-per-domain
+         thing, so there's no reason the desktop tab can't match. -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/punkt/icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/punkt/icons/icon-512.png" />
     <link rel="apple-touch-icon" href="/punkt/icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
