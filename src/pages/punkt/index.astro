@@ -99,11 +99,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       /* Reserves room for the floating select-bar pill only while it's
-         actually shown — applying this unconditionally made the page
-         scrollable by that much even on short lists with nothing to
-         scroll to, which reads as a rubber-band-y web page rather than
-         a native list. */
-      body.select-mode {
+         actually shown, so the last row in a long list doesn't end up
+         hidden behind it — scoped to #view-list's own padding rather
+         than body's so it only grows the page when the list is
+         actually close to (or past) one viewport tall. Adding it to
+         body unconditionally instead made even a short list — whose
+         height is otherwise governed by #app's min-height, not its
+         own content — scrollable by that much with nothing there to
+         scroll to. */
+      body.select-mode #view-list {
         padding-bottom: calc(4rem + env(safe-area-inset-bottom));
       }
 
@@ -557,6 +561,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       li.task-row.row-selected {
         background: var(--select-tint);
+        /* A small vertical margin so consecutive selected rows show a
+           gap between their own rounded corners instead of visually
+           merging into one solid block — flex siblings don't collapse
+           margins against each other, so this reliably adds up to a
+           few px between adjacent selected rows. */
+        margin: 2px -0.5rem;
       }
 
       .select-circle {
@@ -992,6 +1002,23 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         display: none !important;
       }
 
+      /* --accent is a light blue in dark mode (dark text/checkmarks
+         read well against it) but a more saturated, darker blue in
+         light mode, where the same dark elements lose contrast — so
+         they flip to white there, same as .gate-submit above. Placed
+         after the base rules it overrides (further up this block) so
+         the cascade actually picks it up. */
+      @media (prefers-color-scheme: light) {
+        .done-pill {
+          color: #fff;
+        }
+
+        .task-check:checked::after,
+        .select-circle.selected::after {
+          border-color: #fff;
+        }
+      }
+
       /* --- Desktop / wide-viewport layout ---------------------------
          A persistent Things-style sidebar sits beside the current
          list instead of the two swapping full-screen like on mobile.
@@ -1003,23 +1030,32 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
          min-width in sync with the isDesktopLayout() check in the
          script below. */
       @media (min-width: 860px) {
+        /* The sidebar and the list each scroll independently within a
+           fixed-height #app, rather than the two sitting in normal
+           document flow and the whole page scrolling — a sticky
+           sidebar (the previous approach) only stays stuck for as
+           long as its own height, so once the list scrolled past that
+           the sidebar ran out and scrolled away with it instead of
+           just always being there. */
         #app {
           display: flex;
-          align-items: flex-start;
+          align-items: stretch;
           max-width: 74rem;
-          min-height: 100vh;
+          height: 100vh;
           margin: 0 auto;
+          overflow: hidden;
         }
 
         #view-menu {
           flex: 0 0 15rem;
           width: 15rem;
           max-width: none;
-          height: 100vh;
-          position: sticky;
-          top: 0;
           margin: 0;
-          padding: calc(1.25rem + env(safe-area-inset-top)) 0.5rem 2rem 1.5rem;
+          /* Matches #view-list's own padding-top below so the first
+             sidebar row and the list's title sit at the same height,
+             now that .menu-header (hidden further down) no longer
+             pushes the row list down first. */
+          padding: calc(2rem + env(safe-area-inset-top)) 0.5rem 2rem 1.5rem;
           background: var(--surface);
           border-right: 1px solid var(--hairline);
           overflow-y: auto;
@@ -1032,10 +1068,9 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           flex-direction: column;
         }
 
-        /* One "+" is enough once both the sidebar and the list header
-           are visible at the same time — the list header's #add-btn
-           covers it. */
-        #menu-add-btn {
+        /* No "Punkt" masthead once the sidebar sits right next to the
+           list's own title — see #view-menu's padding-top above. */
+        #view-menu .menu-header {
           display: none;
         }
 
@@ -1043,6 +1078,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           flex: 1 1 auto;
           max-width: 40rem;
           margin: 0 auto;
+          height: 100%;
+          overflow-y: auto;
           padding: calc(2rem + env(safe-area-inset-top)) 2rem 3rem;
         }
 
@@ -1053,6 +1090,19 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         /* No "back" concept once the sidebar is always visible. */
         #back-btn {
           display: none !important;
+        }
+
+        /* Docked to the window's own corner (not #view-list's, which
+           would otherwise leave it stranded far from the true edge
+           once the window is wider than the centered content column)
+           so it stays put and keeps a generous, constant margin from
+           the edge as the window is resized, rather than scrolling
+           away with the list underneath it. */
+        #add-btn {
+          position: fixed;
+          top: 2rem;
+          right: 3rem;
+          z-index: 25;
         }
 
         /* A neutral gray instead of the accent blue — closer to how
