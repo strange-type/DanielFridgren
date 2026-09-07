@@ -2690,6 +2690,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       function closeQuickAdd() {
+        // Idempotent — callers like enterSelectMode() close the card
+        // unconditionally as a safety measure, even when it's already
+        // closed; without this, that redundant call would re-run
+        // addTaskFromQuickAdd() and (before it cleared its own fields)
+        // used to resubmit the same just-added title as a duplicate.
+        if (quickAdd.hidden) return;
         if (editingTaskId) {
           commitQuickAdd();
           return;
@@ -2939,6 +2945,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           done: false,
           completedAt: null
         });
+        // Clear right away so a second, unrelated call into this (e.g.
+        // closeQuickAdd() firing again via enterSelectMode() after the
+        // card is already closed) can't resubmit the same leftover
+        // title as a duplicate task.
+        qaTitle.value = "";
+        qaNote.value = "";
+        autoGrowNote();
         renderTaskList();
         renderMenu();
         queueSave();
@@ -2976,12 +2989,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
         if (!addTaskFromQuickAdd()) return;
 
-        // Things-style rapid entry: clear and keep the card open for
-        // the next to-do instead of closing it. The when/reminder
-        // choice intentionally carries over to the next to-do.
-        qaTitle.value = "";
-        qaNote.value = "";
-        autoGrowNote();
+        // Things-style rapid entry: keep the card open for the next
+        // to-do instead of closing it (addTaskFromQuickAdd() already
+        // cleared the fields). The when/reminder choice intentionally
+        // carries over to the next to-do.
         qaTitle.focus();
       }
 
