@@ -1624,6 +1624,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
       }
 
+      function tomorrowStr(): string {
+        const d = new Date();
+        d.setDate(d.getDate() + 1);
+        const pad = (n: number) => String(n).padStart(2, "0");
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+      }
+
       function makeId(): string {
         return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
       }
@@ -2615,6 +2622,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if (currentView === "today") {
           pendingWhen = "today";
           pendingWhenChoice = "today";
+        } else if (currentView === "upcoming") {
+          // Defaults to tomorrow rather than requiring a date to be
+          // picked before the to-do can be added at all — the When
+          // sheet is still there (tap the date) for picking a
+          // different one.
+          pendingWhen = tomorrowStr();
+          pendingWhenChoice = "date";
         } else {
           pendingWhen = null;
           pendingWhenChoice = null;
@@ -2766,11 +2780,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       qaContext.addEventListener("click", openWhenSheet);
       whenSheetClose.addEventListener("click", () => {
         whenSheet.hidden = true;
+        qaTitle.focus();
       });
 
       whenSheet.addEventListener("click", (e) => {
         if (e.target === whenSheet) {
           whenSheet.hidden = true;
+          qaTitle.focus();
           return;
         }
 
@@ -2791,6 +2807,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           }
           updateQaFooter();
           whenSheet.hidden = true;
+          // Otherwise focus is left on this now-hidden button — a
+          // dead end for a keyboard/Enter-to-submit user, and (worse,
+          // for a *new* to-do) tapping outside the card afterward
+          // would discard the whole draft instead of saving it, since
+          // closing only commits when editing an existing task.
+          qaTitle.focus();
           return;
         }
 
@@ -2801,6 +2823,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           pendingRemind = null;
           updateQaFooter();
           whenSheet.hidden = true;
+          qaTitle.focus();
         }
       });
 
@@ -2828,6 +2851,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         pendingRemind = null;
         updateQaFooter();
         whenSheet.hidden = true;
+        qaTitle.focus();
       });
 
       // --- "Add Reminder" sheet ---------------------------------------
@@ -2908,11 +2932,6 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         }
 
         if (!title) return;
-
-        if (currentView === "upcoming" && (!pendingWhen || pendingWhen === "today")) {
-          openWhenSheet();
-          return;
-        }
 
         tasks.unshift({
           id: makeId(),
