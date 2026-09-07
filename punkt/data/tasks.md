@@ -19,6 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Test (id: 1788800681183-69ytj, when: -)
 - [ ] Test (id: 1788800679903-rijij, when: -)
 - [ ] Kolla exempel på framtidsvision (id: 1788799255243-w7y1u, when: -)
   > https://medium.com/@Jamesroha/speculative-design-a-comprehensive-field-guide-for-2026-c09b5ca9216b
