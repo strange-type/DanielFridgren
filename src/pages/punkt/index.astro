@@ -80,13 +80,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           --danger: #dc2626;
           --hairline: rgba(0, 0, 0, 0.08);
           --select-tint: rgba(47, 111, 237, 0.12);
-          /* A crisp white button against the warm-gray page bg reads
-             clearly as "raised" — unlike a near-bg fill, which needs a
-             light rim to be visible at all, this needs a faint dark
-             hairline instead so the white circle doesn't bleed into
-             the shadow's soft edge. */
-          --fab-bg: #ffffff;
-          --fab-border: rgba(0, 0, 0, 0.06);
+          /* A crisp white rim reads as a highlight only if the fill
+             itself sits a shade below pure white — otherwise there's
+             nothing brighter left for the rim to contrast against.
+             The fill is still clearly lighter than the warm-gray page
+             bg on its own, so the button reads as "raised" even
+             before the rim is factored in. */
+          --fab-bg: #f8f8f7;
+          --fab-border: #ffffff;
           --fab-shadow:
             0 1px 2px rgba(0, 0, 0, 0.06),
             0 6px 16px rgba(0, 0, 0, 0.1);
@@ -453,7 +454,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         border-radius: 50%;
         background: var(--fab-bg);
         color: var(--text);
-        border: 1px solid var(--fab-border);
+        border: 1.5px solid var(--fab-border);
         box-shadow: var(--fab-shadow);
         display: flex;
         align-items: center;
