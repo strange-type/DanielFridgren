@@ -19,6 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Ta bild på limhamns bibliotek (id: 1788845636400-7qpwx, when: today)
 - [ ] Kolla exempel på framtidsvision (id: 1788799255243-w7y1u, when: -)
   > https://medium.com/@Jamesroha/speculative-design-a-comprehensive-field-guide-for-2026-c09b5ca9216b
   > 
