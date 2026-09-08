@@ -503,7 +503,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
            cancel out correctly once #quick-add is nested inside a row
            with asymmetric padding (editing) vs. sitting directly in
            .screen (adding); JS measures the real offset either way. */
-        background: var(--bg);
+        /* Same elevated-surface color as .fab (the add button) — both
+           are meant to read as "raised" off the page background, which
+           needs an actual color difference (var(--bg) here matched the
+           page exactly, so the card was invisible except for its
+           shadow) rather than just a shadow to sell the effect. */
+        background: var(--fab-bg);
         /* No padding here — with box-sizing: border-box, a max-height
            smaller than the padding sum still renders at that padding
            height (content can't go negative), so a padded box never
@@ -887,6 +892,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       .task-note {
         font-size: 0.82rem;
+        line-height: 1.5;
         color: var(--muted);
         margin-left: calc(20px + 0.7rem);
         margin-right: 1rem;
@@ -1309,6 +1315,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
            flush with the list header's. */
         #task-list {
           padding-left: 0;
+        }
+
+        /* The row itself (and its title) still spans the full column,
+           but a note's line length reads more comfortably capped
+           narrower than that — full-width lines of a long URL or a
+           paragraph run noticeably longer here than on a mobile
+           viewport, where the column itself is already narrow enough. */
+        .task-note {
+          max-width: 28rem;
         }
 
         /* More breathing room between the header and the list below
