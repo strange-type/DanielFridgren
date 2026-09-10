@@ -1261,8 +1261,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           /* Matches #view-list's own padding-top below so the first
              sidebar row and the list's title sit at the same height,
              now that .menu-header (hidden further down) no longer
-             pushes the row list down first. */
-          padding: calc(2rem + env(safe-area-inset-top)) 0.5rem 2rem 1.5rem;
+             pushes the row list down first. Right padding matches the
+             left so a row's own active/hover background sits evenly
+             inset from both edges instead of nearly touching the
+             right one. */
+          padding: calc(2rem + env(safe-area-inset-top)) 1.5rem 2rem 1.5rem;
           background: var(--surface);
           border-right: 1px solid var(--hairline);
           overflow-y: auto;
@@ -2421,15 +2424,56 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       taskListEl.addEventListener("pointerup", endSwipe);
       taskListEl.addEventListener("pointercancel", endSwipe);
 
+      /** Highlights the given rows as "leaving this view," then fades
+       *  them out and only actually removes them (via a fresh render)
+       *  once the fade finishes — the same highlight-pause-fade timing
+       *  the row list's own checkbox already uses when checking a task
+       *  drops it out of the current view, reused here for moving a
+       *  task to another list instead. Renders immediately instead if
+       *  none of the given rows are actually in the DOM (nothing to
+       *  wait on). */
+      function fadeOutRows(ids: string[]) {
+        const rows = ids
+          .map((id) => taskListEl.querySelector(`.task-row[data-id="${id}"]`) as HTMLElement | null)
+          .filter((r): r is HTMLElement => r !== null);
+        if (rows.length === 0) {
+          renderTaskList();
+          return;
+        }
+        rows.forEach((row) => row.classList.add("row-pending-removal"));
+        window.setTimeout(() => {
+          rows.forEach((row) => row.classList.add("row-fade-out"));
+          window.setTimeout(() => renderTaskList(), 320);
+        }, 1200);
+      }
+
       function applyWhenToSelected(when: string | null) {
-        for (const id of selectedIds) {
+        const ids = Array.from(selectedIds);
+        for (const id of ids) {
           const t = findTask(id);
-          if (t) t.when = when;
+          if (t) {
+            if (t.when !== when) t.notifiedOn = null;
+            t.when = when;
+          }
         }
         renderMenu();
         queueSave();
         whenPanel.hidden = true;
-        exitSelectMode();
+
+        // Exit select mode's own chrome right away, but leave the
+        // actual row-list rebuild to fadeOutRows below, so tasks that
+        // just left the current view get a moment to fade instead of
+        // vanishing the instant the list re-renders.
+        selectMode = false;
+        selectedIds = new Set();
+        selectBar.hidden = true;
+        doneBtn.hidden = true;
+        backBtn.hidden = false;
+        addBtn.hidden = currentView === "logbook";
+        document.body.classList.remove("select-mode");
+
+        const leavingIds = ids.filter((id) => !bucket(currentView as View).some((t) => t.id === id));
+        fadeOutRows(leavingIds);
       }
 
       sbWhen.addEventListener("click", () => {
@@ -2829,14 +2873,22 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if (task.when !== null || task.remind !== null) task.notifiedOn = null;
         task.when = null;
         task.remind = null;
+        const id = task.id;
         editingTaskId = null;
-        const endHeight = bucket(currentView as View).includes(task) ? measureFutureRowHeight(task) : 0;
+        renderMenu();
+        queueSave();
+        // Close back into the task's own row shape (not collapsed to
+        // 0) so it still reads as "still here" for a moment, then
+        // hand off to the same highlight-pause-fade fadeOutRows()
+        // uses elsewhere, instead of the card shrinking straight to
+        // nothing the instant it's moved.
+        const closedHeight = measureFutureRowHeight(task);
         playCardCloseAnimation(() => {
-          renderTaskList();
           hideQuickAddCard();
-          renderMenu();
-          queueSave();
-        }, endHeight);
+          const shell = taskListEl.querySelector(`.task-row[data-id="${id}"]`) as HTMLElement | null;
+          if (shell) shell.outerHTML = taskRowHtml(task);
+          fadeOutRows([id]);
+        }, closedHeight);
       });
 
       qaDeleteBtn.addEventListener("click", () => {
