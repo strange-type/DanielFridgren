@@ -57,6 +57,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         --green-badge: #34c759;
         --hairline: rgba(255, 255, 255, 0.06);
         --select-tint: rgba(110, 168, 254, 0.18);
+        --danger-tint: rgba(248, 113, 113, 0.18);
         /* .fab (the add-task button): a circle that reads as barely
            more than the page background itself, given definition by
            a subtle light rim and a soft shadow rather than a filled
@@ -80,6 +81,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           --danger: #dc2626;
           --hairline: rgba(0, 0, 0, 0.08);
           --select-tint: rgba(47, 111, 237, 0.12);
+          --danger-tint: rgba(220, 38, 38, 0.12);
           /* A crisp white rim reads as a highlight only if the fill
              itself sits a shade below pure white — otherwise there's
              nothing brighter left for the rim to contrast against.
@@ -294,7 +296,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         align-items: center;
         gap: 0.6rem;
         padding: 0.65rem 0.2rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid var(--hairline);
       }
 
       .security-row:last-child {
@@ -313,7 +315,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .security-row-meta {
-        color: #9aa4b8;
+        color: var(--muted);
         font-size: 0.78rem;
         margin-top: 0.1rem;
       }
@@ -329,13 +331,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .security-row-status.blocked {
-        background: rgba(248, 113, 113, 0.18);
-        color: #f87171;
+        background: var(--danger-tint);
+        color: var(--danger);
       }
 
       .security-row-status.ok {
-        background: rgba(154, 164, 184, 0.18);
-        color: #9aa4b8;
+        background: var(--border);
+        color: var(--muted);
       }
 
       .security-unblock {
@@ -969,8 +971,9 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       /* --- "When?" / "Add Reminder" sheets --------------------------
-         Deliberately fixed-dark, not theme-aware: these mimic Things'
-         own bottom sheets, which look the same in both app themes. */
+         Same tokens as the rest of the app (--surface/--text/--muted/
+         --accent/etc.), so these follow the light/dark toggle like
+         everything else instead of staying permanently dark. */
 
       .sheet-overlay {
         position: fixed;
@@ -985,8 +988,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         width: 100%;
         max-width: 32rem;
         margin: 0 auto;
-        background: #1b2333;
-        color: #f3f4f6;
+        background: var(--surface);
+        color: var(--text);
         border-radius: 1.1rem 1.1rem 0 0;
         padding: 1rem 1.1rem calc(1.5rem + env(safe-area-inset-bottom));
         max-height: 85vh;
@@ -1006,8 +1009,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .sheet-close {
-        color: #9aa4b8;
-        background: #2c3650;
+        color: var(--muted);
+        background: var(--border);
         border-radius: 50%;
         width: 1.8rem;
         height: 1.8rem;
@@ -1029,8 +1032,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         padding: 0.65rem 0.2rem;
         text-align: left;
         font-size: 1rem;
-        color: #f3f4f6;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        border-bottom: 1px solid var(--hairline);
       }
 
       .sheet-row-icon {
@@ -1040,14 +1043,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .sheet-row-icon.star {
-        color: #f5c518;
+        color: var(--gold);
       }
 
       .sheet-check {
         margin-left: auto;
         width: 16px;
         height: 16px;
-        color: #6ea8fe;
+        color: var(--accent);
       }
 
       /* #when-reminder-label reuses .sheet-check for its "pushed right"
@@ -1066,7 +1069,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         display: none;
         width: 5px;
         height: 9px;
-        border: solid #6ea8fe;
+        border: solid var(--accent);
         border-width: 0 2px 2px 0;
         transform: rotate(45deg) translate(-1px, -3px);
       }
@@ -1079,7 +1082,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         font-size: 0.7rem;
-        color: #9aa4b8;
+        color: var(--muted);
         text-align: center;
         margin-top: 0.75rem;
       }
@@ -1089,12 +1092,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         align-items: center;
         justify-content: space-between;
         font-size: 0.85rem;
-        color: #9aa4b8;
+        color: var(--muted);
         margin-top: 0.5rem;
       }
 
       .cal-month-label button {
-        color: #6ea8fe;
+        color: var(--accent);
         padding: 0.2rem 0.5rem;
       }
 
@@ -1112,18 +1115,29 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         align-items: center;
         justify-content: center;
         font-size: 0.85rem;
-        color: #f3f4f6;
+        color: var(--text);
         position: relative;
       }
 
       .cal-day.selected {
-        background: #6ea8fe;
+        background: var(--accent);
+        /* Same reasoning as .gate-submit above: --accent is a light,
+           pastel blue in dark mode (dark text reads well on it) but a
+           more saturated, darker blue in light mode, where the same
+           dark text loses contrast — flipped to white there below. */
         color: #0b1220;
         font-weight: 600;
       }
 
+      @media (prefers-color-scheme: light) {
+        .cal-day.selected {
+          color: #fff;
+        }
+      }
+
       .cal-day:disabled {
-        color: #565b66;
+        color: var(--muted);
+        opacity: 0.6;
         cursor: default;
       }
 
@@ -1131,14 +1145,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         position: absolute;
         bottom: 2px;
         font-size: 0.5rem;
-        color: #f5c518;
+        color: var(--gold);
       }
 
       .sheet-clear {
         width: 100%;
         text-align: center;
-        background: #3a2230;
-        color: #f87171;
+        background: var(--danger-tint);
+        color: var(--danger);
         font-weight: 600;
         border-radius: 999px;
         padding: 0.7rem;
@@ -1146,10 +1160,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       .reminder-time-input {
-        background: #2c3650;
+        background: var(--border);
         border: none;
         border-radius: 0.6rem;
-        color: #f3f4f6;
+        color: var(--text);
         font-size: 1.3rem;
         padding: 0.75rem;
         text-align: center;
@@ -1166,14 +1180,20 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         padding: 0.6rem;
         border-radius: 0.6rem;
         text-align: center;
-        background: #2c3650;
-        color: #f3f4f6;
+        background: var(--border);
+        color: var(--text);
       }
 
       .sheet-actions button.primary {
-        background: #6ea8fe;
+        background: var(--accent);
         color: #0b1220;
         font-weight: 600;
+      }
+
+      @media (prefers-color-scheme: light) {
+        .sheet-actions button.primary {
+          color: #fff;
+        }
       }
 
       [hidden] {
@@ -1512,7 +1532,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             <div id="cal-grid" class="cal-grid"></div>
             <button type="button" id="when-add-reminder" class="sheet-row" style="margin-top: 0.75rem; border-bottom: none;">
               <span class="sheet-row-icon">+</span> Add Reminder
-              <span id="when-reminder-label" class="sheet-check" style="color:#9aa4b8;"></span>
+              <span id="when-reminder-label" class="sheet-check" style="color: var(--muted);"></span>
             </button>
             <button type="button" id="when-clear" class="sheet-clear">Clear</button>
           </div>
