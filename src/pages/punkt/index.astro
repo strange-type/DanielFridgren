@@ -669,6 +669,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         color: var(--accent);
       }
 
+      .ghost-icon.danger {
+        color: var(--danger);
+      }
+
       .ghost-icon svg {
         width: 17px;
         height: 17px;
@@ -1452,8 +1456,19 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             <div class="qa-footer">
               <span id="qa-context" class="qa-context" hidden></span>
               <div class="qa-actions">
+                <!-- Only shown while editing an existing task (see
+                     updateQaFooter()) — a new, unsaved draft has
+                     nothing to move or delete yet. Inbox is further
+                     restricted to the Today view, same as the
+                     multiselect bar's equivalent button. -->
+                <button type="button" id="qa-inbox-btn" class="ghost-icon" aria-label="Flytta till Inbox" hidden>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l2-5h14l2 5"/><path d="M3 9v9a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h5a1 1 0 0 1 1 1 3 3 0 0 0 6 0 1 1 0 0 1 1-1h5"/></svg>
+                </button>
                 <button type="button" id="qa-when-btn" class="ghost-icon" aria-label="Schemalägg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
+                </button>
+                <button type="button" id="qa-delete-btn" class="ghost-icon danger" aria-label="Ta bort" hidden>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"></path></svg>
                 </button>
               </div>
             </div>
@@ -1524,6 +1539,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
             <span>When</span>
           </button>
+          <!-- Only shown from Today (see enterSelectMode()) — moving to
+               Inbox only makes sense as a shortcut off a scheduled
+               view; elsewhere the When sheet's own Clear already
+               covers it. -->
+          <button type="button" id="sb-inbox" class="select-bar-btn" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l2-5h14l2 5"/><path d="M3 9v9a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h5a1 1 0 0 1 1 1 3 3 0 0 0 6 0 1 1 0 0 1 1-1h5"/></svg>
+            <span>Inbox</span>
+          </button>
           <button type="button" id="sb-delete" class="select-bar-btn danger">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"></path></svg>
             <span>Delete</span>
@@ -1593,6 +1616,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       const selectBar = document.getElementById("select-bar") as HTMLDivElement;
       const sbWhen = document.getElementById("sb-when") as HTMLButtonElement;
+      const sbInbox = document.getElementById("sb-inbox") as HTMLButtonElement;
       const sbDelete = document.getElementById("sb-delete") as HTMLButtonElement;
       const whenPanel = document.getElementById("when-panel") as HTMLDivElement;
       const wpToday = document.getElementById("wp-today") as HTMLButtonElement;
@@ -1611,6 +1635,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const qaNote = document.getElementById("qa-note") as HTMLTextAreaElement;
       const qaContext = document.getElementById("qa-context") as HTMLSpanElement;
       const qaWhenBtn = document.getElementById("qa-when-btn") as HTMLButtonElement;
+      const qaInboxBtn = document.getElementById("qa-inbox-btn") as HTMLButtonElement;
+      const qaDeleteBtn = document.getElementById("qa-delete-btn") as HTMLButtonElement;
 
       const whenSheet = document.getElementById("when-sheet") as HTMLDivElement;
       const whenSheetClose = document.getElementById("when-sheet-close") as HTMLButtonElement;
@@ -2274,6 +2300,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         addBtn.hidden = true;
         doneBtn.hidden = false;
         selectBar.hidden = false;
+        sbInbox.hidden = currentView !== "today";
         document.body.classList.add("select-mode");
         renderTaskList();
       }
@@ -2390,6 +2417,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if (wpDate.value) applyWhenToSelected(wpDate.value);
       });
 
+      // A direct shortcut for the common case (clear a batch of Today
+      // items back to Inbox) rather than going through the When panel
+      // for what wpInbox above already does one tap deeper.
+      sbInbox.addEventListener("click", () => applyWhenToSelected(null));
+
       sbDelete.addEventListener("click", () => {
         if (selectedIds.size === 0) return;
         const count = selectedIds.size;
@@ -2415,13 +2447,19 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const ICON_BELL_SMALL = ICON_BELL;
 
       /**
-       * Updates the "active" tint on the when-button, and — only once a
+       * Updates the "active" tint on the when-button, shows/hides the
+       * Delete/Inbox shortcuts (only meaningful once there's an actual
+       * saved task to act on, not a still-empty new-task draft — and
+       * Inbox only from the Today view, same restriction as the
+       * multiselect bar's equivalent button), and — only once a
        * reminder time is actually set — shows a small context label
        * ("★ Today 🔔13:00") so an edited task's schedule is visible
        * without needing to reopen the When? sheet.
        */
       function updateQaFooter() {
         qaWhenBtn.classList.toggle("active", pendingWhen !== null || pendingRemind !== null);
+        qaDeleteBtn.hidden = !editingTaskId;
+        qaInboxBtn.hidden = !editingTaskId || currentView !== "today";
 
         if (!pendingRemind) {
           qaContext.hidden = true;
@@ -2755,6 +2793,40 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           renderMenu();
           queueSave();
         }, endHeight);
+      });
+
+      qaInboxBtn.addEventListener("click", () => {
+        if (!editingTaskId) return;
+        const task = findTask(editingTaskId);
+        if (!task) return;
+        // Same as picking "Clear" in the When sheet — a reminder tied
+        // to a day doesn't mean anything once the task no longer has one.
+        if (task.when !== null || task.remind !== null) task.notifiedOn = null;
+        task.when = null;
+        task.remind = null;
+        editingTaskId = null;
+        const endHeight = bucket(currentView as View).includes(task) ? measureFutureRowHeight(task) : 0;
+        playCardCloseAnimation(() => {
+          renderTaskList();
+          hideQuickAddCard();
+          renderMenu();
+          queueSave();
+        }, endHeight);
+      });
+
+      qaDeleteBtn.addEventListener("click", () => {
+        if (!editingTaskId) return;
+        const task = findTask(editingTaskId);
+        if (!task) return;
+        if (!confirm("Ta bort uppgiften?")) return;
+        editingTaskId = null;
+        playCardCloseAnimation(() => {
+          tasks = tasks.filter((t) => t.id !== task.id);
+          hideQuickAddCard();
+          renderTaskList();
+          renderMenu();
+          queueSave();
+        }, 0);
       });
 
       addBtn.addEventListener("click", () => {
