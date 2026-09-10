@@ -29,7 +29,7 @@ inte skickas flera gånger samma dag.
   > https://newconstellations.co/about/
   > 
   > https://www.robhopkins.net/2021/07/15/brian-eno-an-act-of-public-artivism-and-how-you-might-help/
-- [ ] Kolla igen vad jag skrev kring regionens utmaningar (id: 1788772585422-ggxdg, when: today)
+- [ ] Kolla igen vad jag skrev kring regionens utmaningar (id: 1788772585422-ggxdg, when: -)
 - [x] Förbered presentationen imorgon (id: 1788771927161-774pw, done: 2026-09-07T12:08:28.874Z)
 - [ ] Läs Kort om PDL - openEHR (id: 1788727727911-mxc1l, when: -)
   > https://openehr.atlassian.net/wiki/spaces/SWE/pages/2139291653/Juridiska+krav+-+Patientdatalagen
