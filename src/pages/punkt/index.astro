@@ -1122,6 +1122,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         font-weight: 600;
       }
 
+      .cal-day:disabled {
+        color: #565b66;
+        cursor: default;
+      }
+
       .cal-today-mark {
         position: absolute;
         bottom: 2px;
@@ -2867,9 +2872,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         for (let d = 1; d <= daysInMonth; d++) {
           const dateStr = `${calendarViewYear}-${pad(calendarViewMonth + 1)}-${pad(d)}`;
           const isToday = dateStr === today;
+          const isPast = dateStr < today;
           const isSelected = pendingWhenChoice === "date" && pendingWhen === dateStr;
           cells.push(
-            `<button type="button" class="cal-day ${isSelected ? "selected" : ""}" data-date="${dateStr}">${d}${
+            `<button type="button" class="cal-day ${isSelected ? "selected" : ""}" data-date="${dateStr}" ${isPast ? "disabled" : ""}>${d}${
               isToday ? '<span class="cal-today-mark">★</span>' : ""
             }</button>`
           );
