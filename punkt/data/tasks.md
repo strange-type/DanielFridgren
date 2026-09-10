@@ -19,7 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
-- [ ] Vad behöver jag för att må bra i höst? (id: 1789036786090-osnvw, when: today)
+- [ ] Vad behöver jag för att må bra i höst? (id: 1789036786090-osnvw, when: 2026-09-11)
   > enklare frågeställningar som man kan reflektera över här: https://miro.com/app/board/uXjVNBbQzkI=/?moveToWidget=3458764683259908153&cot=14
 - [ ] Gräv i samsjuklighetsreformen (id: 1789029448027-azjf0, when: today)
 - [x] Skicka bemötande-presentationen till Sara (id: 1788943272943-u1h8v, done: 2026-09-09T11:44:37.901Z)
