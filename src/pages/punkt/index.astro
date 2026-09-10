@@ -1248,14 +1248,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         #app {
           display: flex;
           align-items: stretch;
-          max-width: 74rem;
           height: 100vh;
-          margin: 0 auto;
         }
 
+        /* Pinned to the window's true left edge — #view-list below
+           keeps its own max-width/margin:auto, so on a wide window
+           the list column centers itself in the remaining space
+           rather than the whole sidebar+list block centering as one
+           unit with an empty gap in front of the sidebar. */
         #view-menu {
-          flex: 0 0 15rem;
-          width: 15rem;
+          flex: 0 0 17rem;
+          width: 17rem;
           max-width: none;
           margin: 0;
           /* Matches #view-list's own padding-top below so the first
