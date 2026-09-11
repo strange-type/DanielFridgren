@@ -21,7 +21,7 @@ inte skickas flera gånger samma dag.
 
 - [ ] Vad behöver jag för att må bra i höst? (id: 1789036786090-osnvw, when: 2026-09-11)
   > enklare frågeställningar som man kan reflektera över här: https://miro.com/app/board/uXjVNBbQzkI=/?moveToWidget=3458764683259908153&cot=14
-- [ ] Gräv i samsjuklighetsreformen (id: 1789029448027-azjf0, when: today)
+- [x] Gräv i samsjuklighetsreformen (id: 1789029448027-azjf0, done: 2026-09-11T13:31:59.668Z)
 - [x] Skicka bemötande-presentationen till Sara (id: 1788943272943-u1h8v, done: 2026-09-09T11:44:37.901Z)
   > https://regionskane-my.sharepoint.com/personal/124832_skane_se/_layouts/15/stream.aspx?id=%2Fpersonal%2F124832%5Fskane%5Fse%2FDocuments%2FInspelningar%2FM%C3%B6tesplats%20God%20V%C3%A5rd%20%2D%20Bem%C3%B6tande%2D20260908%5F135320%2DM%C3%B6tesinspelning%2Emp4&ga=1&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E85150fef%2D1274%2D475c%2D8810%2Dcf8b250b59f8
 - [ ] Ta bild på limhamns bibliotek (id: 1788845636400-7qpwx, when: 2026-09-11)
