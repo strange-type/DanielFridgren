@@ -19,6 +19,8 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Kolla upp denna på st Gertrud 9:e okt (id: 1789203141617-meexz, when: today)
+  > https://malmo.se/Aktuellt/Artiklar-Malmo-stad/2026-09-09-Valkomna-till-varldsdagen-for-psykisk-halsa.html
 - [ ] Vad behöver jag för att må bra i höst? (id: 1789036786090-osnvw, when: 2026-09-11)
   > enklare frågeställningar som man kan reflektera över här: https://miro.com/app/board/uXjVNBbQzkI=/?moveToWidget=3458764683259908153&cot=14
 - [x] Gräv i samsjuklighetsreformen (id: 1789029448027-azjf0, done: 2026-09-11T13:31:59.668Z)
