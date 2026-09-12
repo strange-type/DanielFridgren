@@ -701,6 +701,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         padding: 0 0 0 15px;
         display: flex;
         flex-direction: column;
+        /* On top of each row's own vertical padding — a row with a
+           multi-line note otherwise reads as cramped against the next
+           row's checkbox right below it. */
+        gap: 0.5rem;
       }
 
       li.task-row {
