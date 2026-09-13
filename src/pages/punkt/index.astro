@@ -2238,6 +2238,25 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         return sameYear ? month : `${month} ${date.getFullYear()}`;
       }
 
+      /** Swaps in a freshly rendered batch of rows. li.task-row's own
+       *  opacity/background transition exists for rows already in the
+       *  DOM being explicitly faded out or highlighted (see
+       *  row-fade-out / row-pending-removal, used by fadeOutRows() and
+       *  the checkbox handler) — not for a bulk rebuild like this one.
+       *  Some engines still animate that transition in on a brand-new
+       *  batch of markup like this, reading as a stray fade-in the
+       *  instant it runs — most noticeable right as quick-add's own
+       *  close finishes and this swaps its row back in. Suppressing
+       *  transitions for one frame after inserting stops that without
+       *  touching the transition later real class changes still want. */
+      function setListHtml(html: string) {
+        taskListEl.innerHTML = html;
+        const rows = taskListEl.querySelectorAll<HTMLElement>(".task-row");
+        rows.forEach((row) => (row.style.transition = "none"));
+        void taskListEl.offsetHeight; // force reflow so the "none" above actually commits
+        rows.forEach((row) => (row.style.transition = ""));
+      }
+
       function renderTaskList() {
         // #quick-add can currently be nested inside the row being
         // edited — the innerHTML replacement below would destroy it
@@ -2257,22 +2276,24 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           }
           const today = todayStr();
           let lastDate = "";
-          taskListEl.innerHTML = items
-            .map((t) => {
-              let heading = "";
-              if (t.when !== lastDate) {
-                const date = new Date(`${t.when}T00:00:00`);
-                heading = `
-                  <div class="date-group upcoming">
-                    <span class="upcoming-day-num">${date.getDate()}</span>
-                    <span class="upcoming-day-label">${upcomingGroupLabel(t.when!, today)}</span>
-                    <span class="upcoming-day-rule"></span>
-                  </div>`;
-              }
-              lastDate = t.when!;
-              return heading + taskRowHtml(t);
-            })
-            .join("");
+          setListHtml(
+            items
+              .map((t) => {
+                let heading = "";
+                if (t.when !== lastDate) {
+                  const date = new Date(`${t.when}T00:00:00`);
+                  heading = `
+                    <div class="date-group upcoming">
+                      <span class="upcoming-day-num">${date.getDate()}</span>
+                      <span class="upcoming-day-label">${upcomingGroupLabel(t.when!, today)}</span>
+                      <span class="upcoming-day-rule"></span>
+                    </div>`;
+                }
+                lastDate = t.when!;
+                return heading + taskRowHtml(t);
+              })
+              .join("")
+          );
           return;
         }
 
@@ -2288,7 +2309,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             html += `<div class="date-group">🌙 This Evening</div>`;
             html += evening.map((t) => taskRowHtml(t)).join("");
           }
-          taskListEl.innerHTML = html;
+          setListHtml(html);
           return;
         }
 
@@ -2299,19 +2320,26 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           }
           const today = todayStr();
           let lastLabel = "";
-          taskListEl.innerHTML = items
-            .map((t) => {
-              const day = (t.completedAt || "").slice(0, 10);
-              const label = logbookGroupLabel(day, today);
-              const heading = label !== lastLabel ? `<div class="date-group">${label}</div>` : "";
-              lastLabel = label;
-              return heading + taskRowHtml(t, formatCompactDate(day));
-            })
-            .join("");
+          setListHtml(
+            items
+              .map((t) => {
+                const day = (t.completedAt || "").slice(0, 10);
+                const label = logbookGroupLabel(day, today);
+                const heading = label !== lastLabel ? `<div class="date-group">${label}</div>` : "";
+                lastLabel = label;
+                return heading + taskRowHtml(t, formatCompactDate(day));
+              })
+              .join("")
+          );
           return;
         }
 
-        taskListEl.innerHTML = items.map((t) => taskRowHtml(t)).join("") || '<p class="empty">Inboxen är tom.</p>';
+        const inboxHtml = items.map((t) => taskRowHtml(t)).join("");
+        if (!inboxHtml) {
+          taskListEl.innerHTML = '<p class="empty">Inboxen är tom.</p>';
+          return;
+        }
+        setListHtml(inboxHtml);
       }
 
       function findTask(id: string): Task | undefined {
@@ -2648,12 +2676,30 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if (alreadyThere) return;
 
         const firstRects = new Map(siblings.map((el) => [el, el.getBoundingClientRect()]));
+        const renderedTopBeforeSwap = draggedRect.top;
         if (target) {
           taskListEl.insertBefore(draggingRowEl, target);
         } else if (siblings.length > 0) {
           const last = siblings[siblings.length - 1];
           taskListEl.insertBefore(draggingRowEl, last.nextElementSibling);
         }
+
+        // insertBefore just now also moved the dragged row's own static
+        // (untransformed) flow position — typically by a full row's
+        // height — but dragAnchorY (and so the transform above) is a
+        // raw pointer delta from the original pickup point, oblivious
+        // to that shift. Left alone, the row instantly jumps by that
+        // shift the moment a swap happens: dragging down, it overshoots
+        // past the finger; dragging up, it undershoots short of it —
+        // either way it's no longer under the pointer, which is exactly
+        // what made this impossible to drop with any precision.
+        // Re-anchor so the rendered position carries over with zero
+        // jump, then let the pointer keep driving it normally from here.
+        draggingRowEl.style.transform = "none";
+        const staticTopAfterSwap = draggingRowEl.getBoundingClientRect().top;
+        dragAnchorY = e.clientY - (renderedTopBeforeSwap - staticTopAfterSwap);
+        draggingRowEl.style.transform = `translateY(${e.clientY - dragAnchorY}px)`;
+
         siblings.forEach((el) => {
           const first = firstRects.get(el)!;
           const last = el.getBoundingClientRect();
