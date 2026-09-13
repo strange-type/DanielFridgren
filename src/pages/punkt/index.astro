@@ -690,16 +690,20 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         display: block;
       }
 
+      /* No gap of its own — .ghost-icon's own (much larger, see below)
+         padding already provides the spacing between them. */
       .qa-actions {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
         margin-left: auto;
       }
 
+      /* Padded out to a ~44px tap target (Apple's own minimum) around
+         the 17px icon — at 0.2rem the actual hit area was barely half
+         that, and near-impossible to tap reliably on iOS. */
       .ghost-icon {
         color: var(--muted);
-        padding: 0.2rem;
+        padding: 0.85rem;
         border-radius: 0.4rem;
       }
 
@@ -779,15 +783,26 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
          reinserted fresh once the card closes — see taskRowHtml's own
          comment on why. Pinned to the top corners without a bottom, so
          it lays out at its own natural (closed) height regardless of
-         how much taller the open card above it currently is. inert
-         (plus pointer-events as a defensive fallback) keeps this
-         untouchable and out of the tab order while it's just a
-         backdrop, not a real, interactive row yet. */
+         how much taller the open card above it currently is. The
+         parent li.task-row.editing itself has no padding (#quick-add's
+         own padding stands in for it while open) — vertical padding is
+         matched here to a plain row's own (see li.task-row) so the
+         content sits at its final resting height for the whole time
+         it's behind the card, rather than jumping down into it right
+         as finalizeEditedRow() swaps this underlay out for the real
+         thing. Horizontal padding isn't needed to match: this layer
+         and a plain row's own negative-margin/padding trick both
+         happen to land content at the same x already. inert (plus
+         pointer-events as a defensive fallback) keeps this untouchable
+         and out of the tab order while it's just a backdrop, not a
+         real, interactive row yet. */
       .row-plain-underlay {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
+        padding-top: 0.55rem;
+        padding-bottom: 0.55rem;
         pointer-events: none;
       }
 
