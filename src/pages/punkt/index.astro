@@ -813,6 +813,58 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         color: var(--danger);
       }
 
+      .row-context-menu {
+        position: fixed;
+        z-index: 50;
+        min-width: 12rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.6rem;
+        padding: 0.35rem;
+        box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.35);
+      }
+
+      .row-context-menu[hidden] {
+        display: none;
+      }
+
+      .row-context-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        width: 100%;
+        padding: 0.5rem 0.6rem;
+        border-radius: 0.4rem;
+        text-align: left;
+        font-size: 0.9rem;
+        color: var(--text);
+      }
+
+      .row-context-menu-item:hover {
+        background: var(--hairline);
+      }
+
+      .row-context-menu-item svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        color: var(--muted);
+      }
+
+      .row-context-menu-item.danger {
+        color: var(--danger);
+      }
+
+      .row-context-menu-item.danger svg {
+        color: var(--danger);
+      }
+
+      .row-context-menu-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 0.3rem 0.2rem;
+      }
+
       .when-panel {
         bottom: calc(4.75rem + env(safe-area-inset-bottom));
         display: flex;
@@ -1587,6 +1639,33 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             <span>Delete</span>
           </button>
         </div>
+
+        <!-- Desktop-only (see the contextmenu listener) — replaces
+             swipe-to-select there, since dragging with a mouse to
+             select doesn't feel natural the way a touch swipe does. -->
+        <div id="row-context-menu" class="row-context-menu" hidden>
+          <button type="button" class="row-context-menu-item" data-menu-action="toggle-done">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><rect x="3" y="4" width="18" height="17" rx="2"/></svg>
+            <span>Mark as Done</span>
+          </button>
+          <button type="button" class="row-context-menu-item" data-menu-action="when">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
+            <span>When…</span>
+          </button>
+          <button type="button" class="row-context-menu-item" data-menu-action="inbox" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l2-5h14l2 5"/><path d="M3 9v9a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h5a1 1 0 0 1 1 1 3 3 0 0 0 6 0 1 1 0 0 1 1-1h5"/></svg>
+            <span>Move to Inbox</span>
+          </button>
+          <button type="button" class="row-context-menu-item" data-menu-action="select">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg>
+            <span>Select…</span>
+          </button>
+          <div class="row-context-menu-divider"></div>
+          <button type="button" class="row-context-menu-item danger" data-menu-action="delete">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"></path></svg>
+            <span>Delete</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1653,6 +1732,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const sbWhen = document.getElementById("sb-when") as HTMLButtonElement;
       const sbInbox = document.getElementById("sb-inbox") as HTMLButtonElement;
       const sbDelete = document.getElementById("sb-delete") as HTMLButtonElement;
+      const rowContextMenu = document.getElementById("row-context-menu") as HTMLDivElement;
       const whenPanel = document.getElementById("when-panel") as HTMLDivElement;
       const wpToday = document.getElementById("wp-today") as HTMLButtonElement;
       const wpDate = document.getElementById("wp-date") as HTMLInputElement;
@@ -2388,14 +2468,25 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if (task) openTaskEdit(task);
       });
 
+      // Mobile only — desktop gets a right-click context menu instead
+      // (see further down), since dragging with a mouse to select
+      // doesn't feel natural the way a touch swipe does.
       let swipeActive = false;
       let swipeTriggered = false;
       let swipeStartX = 0;
       let swipeStartY = 0;
       let swipeRowId: string | null = null;
+      let swipeRowEl: HTMLElement | null = null;
+
+      // Distance the row has to travel before releasing commits to
+      // select-mode rather than springing back — and the cap on how
+      // far it's allowed to visually travel past that, so flinging a
+      // finger doesn't send the row sliding off toward the edge.
+      const SWIPE_COMMIT_PX = 70;
+      const SWIPE_MAX_PX = 96;
 
       taskListEl.addEventListener("pointerdown", (e) => {
-        if (selectMode) return;
+        if (selectMode || isDesktopLayout()) return;
         const row = (e.target as HTMLElement).closest(".task-row") as HTMLElement | null;
         if (!row) return;
         swipeActive = true;
@@ -2403,21 +2494,54 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         swipeStartX = (e as PointerEvent).clientX;
         swipeStartY = (e as PointerEvent).clientY;
         swipeRowId = row.dataset.id || null;
+        swipeRowEl = row;
       });
 
       taskListEl.addEventListener("pointermove", (e) => {
-        if (!swipeActive || swipeTriggered || !swipeRowId) return;
+        if (!swipeActive || swipeTriggered || !swipeRowId || !swipeRowEl) return;
         const dx = (e as PointerEvent).clientX - swipeStartX;
         const dy = (e as PointerEvent).clientY - swipeStartY;
-        if (Math.abs(dx) > 28 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        // A predominantly vertical drag is a scroll, not a swipe —
+        // hand it back to the browser (touch-action: pan-y on the row
+        // already lets that happen) rather than fighting it.
+        if (Math.abs(dy) > Math.abs(dx) * 1.5) {
+          swipeActive = false;
+          swipeRowEl = null;
+          return;
+        }
+        if (Math.abs(dx) < 4) return;
+        suppressNextClick = true;
+        const clamped = Math.max(-SWIPE_MAX_PX, Math.min(SWIPE_MAX_PX, dx));
+        swipeRowEl.style.transition = "none";
+        swipeRowEl.style.transform = `translateX(${clamped}px)`;
+        if (Math.abs(dx) > SWIPE_COMMIT_PX) {
           swipeTriggered = true;
-          suppressNextClick = true;
-          enterSelectMode(swipeRowId);
+          const id = swipeRowId;
+          const el = swipeRowEl;
+          el.style.transition = "transform 0.15s ease";
+          el.style.transform = "translateX(0)";
+          window.setTimeout(() => {
+            el.style.transition = "";
+            el.style.transform = "";
+          }, 150);
+          enterSelectMode(id);
         }
       });
 
       function endSwipe() {
         swipeActive = false;
+        // Released before the commit threshold — spring back rather
+        // than leaving it stranded mid-drag.
+        if (swipeRowEl && !swipeTriggered) {
+          const el = swipeRowEl;
+          el.style.transition = "transform 0.25s cubic-bezier(0.33, 1, 0.68, 1)";
+          el.style.transform = "translateX(0)";
+          window.setTimeout(() => {
+            el.style.transition = "";
+            el.style.transform = "";
+          }, 250);
+        }
+        swipeRowEl = null;
         swipeRowId = null;
         if (swipeTriggered) {
           // If the browser follows this drag with a synthetic click, it
@@ -2430,6 +2554,105 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
       taskListEl.addEventListener("pointerup", endSwipe);
       taskListEl.addEventListener("pointercancel", endSwipe);
+
+      // --- Right-click context menu (desktop only) --------------------
+
+      let contextMenuTaskId: string | null = null;
+
+      function closeRowContextMenu() {
+        rowContextMenu.hidden = true;
+        contextMenuTaskId = null;
+      }
+
+      function openRowContextMenu(task: Task, x: number, y: number) {
+        contextMenuTaskId = task.id;
+        const doneLabel = rowContextMenu.querySelector('[data-menu-action="toggle-done"] span') as HTMLElement;
+        doneLabel.textContent = task.done ? "Mark as Not Done" : "Mark as Done";
+        const inboxItem = rowContextMenu.querySelector('[data-menu-action="inbox"]') as HTMLElement;
+        inboxItem.hidden = currentView !== "today";
+        rowContextMenu.style.left = "0px";
+        rowContextMenu.style.top = "0px";
+        rowContextMenu.hidden = false;
+        // Measure only once actually visible (offsetWidth/Height read 0
+        // on a hidden element), then clamp so it can't render partly
+        // past the right/bottom edge of the window.
+        const rect = rowContextMenu.getBoundingClientRect();
+        const maxX = window.innerWidth - rect.width - 8;
+        const maxY = window.innerHeight - rect.height - 8;
+        rowContextMenu.style.left = `${Math.max(8, Math.min(x, maxX))}px`;
+        rowContextMenu.style.top = `${Math.max(8, Math.min(y, maxY))}px`;
+      }
+
+      taskListEl.addEventListener("contextmenu", (e) => {
+        if (!isDesktopLayout()) return;
+        const row = (e.target as HTMLElement).closest(".task-row") as HTMLElement | null;
+        if (!row) return;
+        const id = row.dataset.id;
+        const task = id ? findTask(id) : undefined;
+        if (!task) return;
+        e.preventDefault();
+        openRowContextMenu(task, e.clientX, e.clientY);
+      });
+
+      rowContextMenu.addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest("[data-menu-action]") as HTMLButtonElement | null;
+        const id = contextMenuTaskId;
+        if (!btn || !id) return;
+        const task = findTask(id);
+        const action = btn.dataset.menuAction;
+        closeRowContextMenu();
+        if (!task) return;
+
+        if (action === "toggle-done") {
+          task.done = !task.done;
+          task.completedAt = task.done ? new Date().toISOString() : null;
+          renderMenu();
+          queueSave();
+          const row = taskListEl.querySelector(`.task-row[data-id="${id}"]`) as HTMLElement | null;
+          if (row) {
+            row.classList.toggle("done", task.done);
+            row.querySelectorAll<HTMLInputElement>(".task-check").forEach((cb) => (cb.checked = task.done));
+          }
+          fadeOutRows(bucket(currentView as View).some((t) => t.id === id) ? [] : [id]);
+        } else if (action === "when") {
+          openTaskEdit(task);
+          openWhenSheet();
+        } else if (action === "inbox") {
+          if (task.when !== null || task.remind !== null) task.notifiedOn = null;
+          task.when = null;
+          task.remind = null;
+          renderMenu();
+          queueSave();
+          fadeOutRows([id]);
+        } else if (action === "select") {
+          enterSelectMode(id);
+        } else if (action === "delete") {
+          if (!confirm("Ta bort uppgiften?")) return;
+          tasks = tasks.filter((t) => t.id !== id);
+          renderTaskList();
+          renderMenu();
+          queueSave();
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        if (rowContextMenu.hidden) return;
+        if ((e.target as HTMLElement).closest("#row-context-menu")) return;
+        closeRowContextMenu();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !rowContextMenu.hidden) closeRowContextMenu();
+      });
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (!rowContextMenu.hidden) closeRowContextMenu();
+        },
+        true
+      );
+      window.addEventListener("resize", () => {
+        if (!rowContextMenu.hidden) closeRowContextMenu();
+      });
 
       /** Highlights the given rows as "leaving this view," then fades
        *  them out and only actually removes them (via a fresh render)
