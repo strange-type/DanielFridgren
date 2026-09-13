@@ -762,13 +762,33 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         opacity: 0;
       }
 
-      /* The row being edited renders as an empty shell (see
-         taskRowHtml) that #quick-add gets moved into — no padding of
-         its own so only the panel's padding shows, and no negative
-         margin so it doesn't fight the panel's own horizontal spread. */
+      /* The row being edited renders with #quick-add moved in on top
+         of its own plain content (see taskRowHtml/.row-plain-underlay
+         below) — no padding of its own so only the panel's padding
+         shows, and no negative margin so it doesn't fight the panel's
+         own horizontal spread. position: relative makes it the
+         containing block .row-plain-underlay positions itself against. */
       li.task-row.editing {
         padding: 0;
         margin: 0;
+        position: relative;
+      }
+
+      /* The row's own plain content, kept rendered behind #quick-add
+         (which sits on top via its own z-index) instead of being
+         reinserted fresh once the card closes — see taskRowHtml's own
+         comment on why. Pinned to the top corners without a bottom, so
+         it lays out at its own natural (closed) height regardless of
+         how much taller the open card above it currently is. inert
+         (plus pointer-events as a defensive fallback) keeps this
+         untouchable and out of the tab order while it's just a
+         backdrop, not a real, interactive row yet. */
+      .row-plain-underlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        pointer-events: none;
       }
 
       li.task-row.row-pending-removal {
@@ -2177,13 +2197,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           .join("");
       }
 
-      function taskRowHtml(task: Task, dateBadge?: string): string {
-        // Rendered as an empty shell — openTaskEdit() moves #quick-add
-        // into it, so the row expands in place instead of a separate
-        // card appearing elsewhere.
-        if (task.id === editingTaskId) {
-          return `<li class="task-row editing" data-id="${task.id}"></li>`;
-        }
+      /** The row's actual visible content (checkbox/title/note) —
+       *  shared between a plain row and the underlay a row being
+       *  edited keeps sitting behind #quick-add (see taskRowHtml). */
+      function taskRowInnerHtml(task: Task, dateBadge?: string): string {
         const icons: string[] = [];
         if (!task.done && task.remind && task.notifiedOn !== todayStr()) icons.push(ICON_BELL);
         if (!task.done && task.deadline) icons.push(ICON_FLAG);
@@ -2192,16 +2209,37 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           ? `<span class="select-circle ${selected ? "selected" : ""}"></span>`
           : `<input type="checkbox" class="task-check" data-action="toggle" data-id="${task.id}" ${task.done ? "checked" : ""} />`;
         return `
+          <div class="task-title-line">
+            ${indicator}
+            <span class="task-title-content">
+              ${dateBadge ? `<span class="task-date-badge">${dateBadge}</span>` : ""}
+              <span class="task-title">${escapeHtml(task.title)}</span>
+              ${icons.join("")}
+            </span>
+          </div>
+          ${task.note ? `<div class="task-note">${linkifyNote(task.note)}</div>` : ""}`;
+      }
+
+      function taskRowHtml(task: Task, dateBadge?: string): string {
+        // A row being edited keeps its own plain content rendered too —
+        // in a separate, non-interactive underlay layer sitting behind
+        // #quick-add (which openTaskEdit() moves in on top of it, see
+        // placeQuickAddInline) — instead of an empty shell with nothing
+        // behind the card at all. Closing shrinks/fades #quick-add away
+        // to reveal it (see updateEditingUnderlay/finalizeEditedRow),
+        // rather than inserting that content fresh at that exact
+        // moment, which read as the row briefly not being there at all
+        // before fading in.
+        if (task.id === editingTaskId) {
+          // dateBadge (Logbook's compact date) is stashed on the
+          // underlay itself since updateEditingUnderlay() re-renders
+          // this same content later without it being passed back in.
+          return `<li class="task-row editing" data-id="${task.id}"><div class="row-plain-underlay" data-date-badge="${dateBadge ?? ""}" inert>${taskRowInnerHtml(task, dateBadge)}</div></li>`;
+        }
+        const selected = selectedIds.has(task.id);
+        return `
           <li class="task-row ${task.done ? "done" : ""} ${selectMode && selected ? "row-selected" : ""}" data-id="${task.id}">
-            <div class="task-title-line">
-              ${indicator}
-              <span class="task-title-content">
-                ${dateBadge ? `<span class="task-date-badge">${dateBadge}</span>` : ""}
-                <span class="task-title">${escapeHtml(task.title)}</span>
-                ${icons.join("")}
-              </span>
-            </div>
-            ${task.note ? `<div class="task-note">${linkifyNote(task.note)}</div>` : ""}
+            ${taskRowInnerHtml(task, dateBadge)}
           </li>`;
       }
 
@@ -3202,6 +3240,34 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         return height;
       }
 
+      /** Refreshes the plain-row content sitting behind #quick-add
+       *  (see taskRowHtml's editing branch) to the task's latest field
+       *  values — called right before a close that's keeping the task
+       *  in the current view starts, so what gets revealed as
+       *  quick-add shrinks/fades away already matches instead of
+       *  needing to be swapped in at that exact moment. Safe to call
+       *  any time before the reveal: #quick-add's own background stays
+       *  fully opaque over it until the last stretch of the close (see
+       *  its own transition-delay), so this update itself is never
+       *  visible happening. */
+      function updateEditingUnderlay(task: Task) {
+        const underlay = taskListEl.querySelector(`.task-row[data-id="${task.id}"] .row-plain-underlay`);
+        if (!(underlay instanceof HTMLElement)) return;
+        underlay.innerHTML = taskRowInnerHtml(task, underlay.dataset.dateBadge || undefined);
+      }
+
+      /** Swaps a row that just finished closing (with the task staying
+       *  in view — see updateEditingUnderlay) from its editing markup
+       *  back to an ordinary row, now that #quick-add is gone. Targets
+       *  just this one row instead of renderTaskList()'s full rebuild,
+       *  and — since updateEditingUnderlay already kept its content
+       *  current — produces exactly the pixels already on screen, so
+       *  there's nothing for a viewer to see change here. */
+      function finalizeEditedRow(task: Task) {
+        const row = taskListEl.querySelector(`.task-row[data-id="${task.id}"]`);
+        if (row) row.outerHTML = taskRowHtml(task);
+      }
+
       /** Grows or shrinks quick-add between startHeight and its full
        *  content height — an accordion-style reveal in place, whether
        *  it's sitting above the list (adding) or inside the row it
@@ -3478,9 +3544,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // still going to be in the current view afterward — e.g.
         // checking it done here drops it out of Today/Inbox entirely,
         // so it should just collapse away instead.
-        const endHeight = bucket(currentView as View).includes(task) ? measureFutureRowHeight(task) : 0;
+        const staysInView = bucket(currentView as View).includes(task);
+        const endHeight = staysInView ? measureFutureRowHeight(task) : 0;
+        if (staysInView) updateEditingUnderlay(task);
         playCardCloseAnimation(() => {
-          renderTaskList();
+          if (staysInView) finalizeEditedRow(task);
+          else renderTaskList();
           hideQuickAddCard();
           renderMenu();
           queueSave();
@@ -3769,11 +3838,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           // See the qaCheckbox handler above — only morph into the
           // closed row's own height if it's still in the current view
           // afterward (e.g. rescheduling it out of Today).
-          const endHeight = task && bucket(currentView as View).includes(task) ? measureFutureRowHeight(task) : 0;
+          const staysInView = !!task && bucket(currentView as View).includes(task);
+          const endHeight = staysInView ? measureFutureRowHeight(task!) : 0;
+          if (staysInView) updateEditingUnderlay(task!);
           playCardCloseAnimation(() => {
             hideQuickAddCard();
             if (task) {
-              renderTaskList();
+              if (staysInView) finalizeEditedRow(task);
+              else renderTaskList();
               renderMenu();
               queueSave();
             }
