@@ -775,6 +775,22 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         background: var(--surface);
       }
 
+      /* Applied from the moment a row is armed for a possible reorder
+       *  drag (pointerdown in a reorderable view, before we know
+       *  whether it'll turn into a drag) through the drag itself — see
+       *  the pointerdown handler and beginRowDrag(). Without this, the
+       *  browser's own long-press behaviors (selecting the row's text,
+       *  or — worse — iOS's link callout menu over a note's link) can
+       *  win the same press before our 450ms timer even fires, which
+       *  both looks broken and, for a link, can hijack the gesture
+       *  into a navigation/share sheet instead of a drag. */
+      li.task-row.row-drag-pending,
+      li.task-row.row-dragging {
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+      }
+
       /* Applied while a row is being picked up for reorder (see
        *  beginRowDrag()) — the transform itself (translateY, tracking
        *  the pointer) is set inline in JS, this just gives it visual
@@ -2497,7 +2513,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // browsers and automated ones that "consume exactly the next
         // click" isn't reliable) — so instead of a single-use flag,
         // ignore every click for a short window after a drag ends.
-        if (Date.now() < dragClickCooldownUntil) return;
+        // preventDefault too, not just skip our own logic below — a
+        // drag that passed over a note's link would otherwise still
+        // navigate on release, since the browser's own default action
+        // for that click (following the href) doesn't know or care
+        // that we've decided to treat this click as drag fallout.
+        if (Date.now() < dragClickCooldownUntil) {
+          e.preventDefault();
+          return;
+        }
         // Let a note's link navigate normally instead of also opening
         // the row for editing (or toggling its selection).
         if ((e.target as HTMLElement).closest("a")) return;
@@ -2508,6 +2532,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if ((e.target as HTMLElement).closest("#quick-add")) return;
         if (suppressNextClick) {
           suppressNextClick = false;
+          // Same reasoning as the drag cooldown above — this click is
+          // fallout from a swipe gesture, not a real tap, so a link it
+          // happened to land on shouldn't navigate either.
+          e.preventDefault();
           return;
         }
         const row = (e.target as HTMLElement).closest(".task-row") as HTMLElement | null;
@@ -2587,6 +2615,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // once real movement starts — see the touch-action comment on
         // li.task-row for why that's otherwise a real risk here.
         row.style.touchAction = "none";
+        row.classList.remove("row-drag-pending");
         row.classList.add("row-dragging");
         // Captured on the list container, not the row: the row itself
         // gets reparented via insertBefore as the drag reorders siblings
@@ -2677,6 +2706,26 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         dragClickCooldownUntil = Date.now() + 300;
       }
 
+      /** Un-arms a row that was a candidate for a reorder drag but
+       *  didn't become one (released early, or the gesture turned into
+       *  a scroll/swipe instead) — see row-drag-pending's own CSS
+       *  comment for why this needs to happen as soon as that's known,
+       *  not just once the gesture fully ends. */
+      function clearDragPending(row: HTMLElement | null) {
+        row?.classList.remove("row-drag-pending");
+      }
+
+      // A mousedown-and-move starting on a note's link (or, in older
+      // browsers, its text) is also a native drag gesture as far as
+      // the browser's concerned — left unchecked, that hijacks our own
+      // pointer sequence for reordering: Chromium fires a real
+      // "dragstart" and then a "pointercancel" for the pointer that
+      // started it, ending our drag (and the whole gesture) right as
+      // it began. user-select/-webkit-touch-callout above stop the
+      // *touch* long-press equivalents (text selection, iOS's link
+      // callout); this is what stops the same thing with a mouse.
+      taskListEl.addEventListener("dragstart", (e) => e.preventDefault());
+
       taskListEl.addEventListener("pointerdown", (e) => {
         if (selectMode) return;
         if ((e.target as HTMLElement).closest("#quick-add")) return;
@@ -2691,6 +2740,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           swipeStartY = (e as PointerEvent).clientY;
           swipeRowId = id;
           swipeRowEl = row;
+          // Armed immediately, not just once the drag actually starts
+          // moving — a click-and-hold on a note's link (or its text)
+          // can otherwise still trigger the browser's own text
+          // selection before the 6px movement threshold below fires.
+          row.classList.add("row-drag-pending");
           return;
         }
 
@@ -2703,6 +2757,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
         if (id && isReorderableView()) {
           const pointerId = (e as PointerEvent).pointerId;
+          // Armed for the whole hold, not just once it's confirmed a
+          // drag at 450ms — otherwise the browser's own long-press
+          // text selection (or, over a note's link, its callout/share
+          // sheet) can win the press before the timer below even
+          // fires, and there's no undoing that once it has.
+          row.classList.add("row-drag-pending");
           dragLongPressTimer = window.setTimeout(() => {
             dragLongPressTimer = null;
             if (!swipeActive || swipeTriggered || !swipeRowEl) return;
@@ -2735,6 +2795,9 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if (dragLongPressTimer && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
           window.clearTimeout(dragLongPressTimer);
           dragLongPressTimer = null;
+          // Whatever this movement turns into (a scroll or a swipe),
+          // it's no longer a long-press-drag candidate.
+          clearDragPending(swipeRowEl);
         }
 
         // A predominantly vertical drag is a scroll, not a swipe —
@@ -2774,6 +2837,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           endRowDrag();
           return;
         }
+        // Released before ever becoming a drag — e.g. a quick tap, or
+        // (desktop) letting go before the movement threshold — so
+        // nothing else here un-arms it.
+        clearDragPending(swipeRowEl);
         swipeActive = false;
         // Released before the commit threshold — spring back rather
         // than leaving it stranded mid-drag.
