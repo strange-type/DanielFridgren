@@ -695,10 +695,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       #task-list {
         list-style: none;
         margin: 0;
-        /* Lines up with the back chevron above it, whose glyph has
-           empty space baked into the left side of its own icon box —
-           measured pixel-for-pixel with Playwright. */
-        padding: 0 0 0 4px;
+        /* Centers checkbox under the back chevron above it — its own
+           icon box is 30px wide against the checkbox's 20px, so
+           lining up their left edges (the previous approach) put
+           their actual centers 5px apart; measured pixel-for-pixel
+           with Playwright. */
+        padding: 0 0 0 9px;
         display: flex;
         flex-direction: column;
         /* On top of each row's own vertical padding — a row with a
@@ -777,8 +779,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         left: 50%;
         transform: translateX(-50%);
         width: min(92%, 30rem);
-        background: var(--surface);
-        border: 1px solid var(--border);
+        /* Same raised-surface treatment as .fab (the add button), so
+           this floating action bar reads as part of the same family
+           of "lifted off the page" controls instead of a flatter,
+           plain-surface panel. */
+        background: var(--fab-bg);
+        border: 1.5px solid var(--fab-border);
+        box-shadow: var(--fab-shadow);
         border-radius: 999px;
         z-index: 20;
       }
