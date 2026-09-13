@@ -544,11 +544,20 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
            it swaps back to a plain row on close), which reads as a
            jump of its own even though the height/position move
            smoothly under it. */
+        /* Delayed/quick like .qa-body's own opacity below — the card's
+           raised surface color stays fully solid through the first half
+           of a close, then fades out alongside the form content, so
+           it's already transparent by the time renderTaskList() swaps
+           this for the plain row underneath. Without this the swap was
+           a visible flash: height/shadow/radius had all already
+           animated down to the row's own shape, but the color itself
+           still cut instantly from the raised surface to the row. */
         transition:
           margin-top 0.32s cubic-bezier(0.33, 1, 0.68, 1),
           margin-bottom 0.32s cubic-bezier(0.33, 1, 0.68, 1),
           box-shadow 0.32s ease,
-          border-radius 0.32s ease;
+          border-radius 0.32s ease,
+          background-color 0.16s ease 0.16s;
       }
 
       #quick-add .qa-body {
@@ -587,6 +596,33 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         align-items: center;
         gap: 0.6rem;
         padding-bottom: 0.6rem;
+      }
+
+      /* While editing an existing task, #quick-add sits nested inside
+         that task's own (padding/margin: 0) row shell — see
+         placeQuickAddInline() — so .qa-body's padding stands in for the
+         row's own. The vertical half is matched here to the plain
+         row's own padding (see li.task-row) so the title input lands
+         at exactly the same height the static title text was at.
+         Left/right aren't set here — #quick-add is deliberately wider
+         than the row it replaces (see alignQuickAddFullBleed(), which
+         bleeds it to the screen's true edges rather than the row's own
+         narrower inset), so lining the title up horizontally isn't a
+         fixed offset the way the vertical one is; playCardOpenAnimation
+         measures the real gap at runtime and sets padding-left
+         directly. Left untouched for a brand-new to-do (no row
+         underneath to match), which keeps its own roomier spacing. */
+      li.task-row.editing #quick-add .qa-body {
+        padding-top: 0.55rem;
+        padding-bottom: 0.55rem;
+      }
+
+      li.task-row.editing #quick-add .qa-title-row {
+        gap: 0.7rem;
+      }
+
+      li.task-row.editing #qa-title {
+        font-size: 1rem;
       }
 
       #quick-add input:not(.task-check),
@@ -737,6 +773,22 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       li.task-row.row-pending-removal {
         background: var(--surface);
+      }
+
+      /* Applied from the moment a row is armed for a possible reorder
+       *  drag (pointerdown in a reorderable view, before we know
+       *  whether it'll turn into a drag) through the drag itself — see
+       *  the pointerdown handler and beginRowDrag(). Without this, the
+       *  browser's own long-press behaviors (selecting the row's text,
+       *  or — worse — iOS's link callout menu over a note's link) can
+       *  win the same press before our 450ms timer even fires, which
+       *  both looks broken and, for a link, can hijack the gesture
+       *  into a navigation/share sheet instead of a drag. */
+      li.task-row.row-drag-pending,
+      li.task-row.row-dragging {
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
       }
 
       /* Applied while a row is being picked up for reorder (see
@@ -1792,8 +1844,6 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
       const ICON_LOGBOOK =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><rect x="3" y="4" width="18" height="17" rx="2"/></svg>';
-      const ICON_NOTE =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7.2L18 7.3V20.5H7Z"/><path d="M14.2 3.5V7.3H18"/></svg>';
       const ICON_FLAG =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4h11l-2 4 2 4H5"/></svg>';
       const ICON_BELL =
@@ -2135,7 +2185,6 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           return `<li class="task-row editing" data-id="${task.id}"></li>`;
         }
         const icons: string[] = [];
-        if (task.note) icons.push(ICON_NOTE);
         if (!task.done && task.remind && task.notifiedOn !== todayStr()) icons.push(ICON_BELL);
         if (!task.done && task.deadline) icons.push(ICON_FLAG);
         const selected = selectedIds.has(task.id);
@@ -2461,7 +2510,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // browsers and automated ones that "consume exactly the next
         // click" isn't reliable) — so instead of a single-use flag,
         // ignore every click for a short window after a drag ends.
-        if (Date.now() < dragClickCooldownUntil) return;
+        // preventDefault too, not just skip our own logic below — a
+        // drag that passed over a note's link would otherwise still
+        // navigate on release, since the browser's own default action
+        // for that click (following the href) doesn't know or care
+        // that we've decided to treat this click as drag fallout.
+        if (Date.now() < dragClickCooldownUntil) {
+          e.preventDefault();
+          return;
+        }
         // Let a note's link navigate normally instead of also opening
         // the row for editing (or toggling its selection).
         if ((e.target as HTMLElement).closest("a")) return;
@@ -2472,6 +2529,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if ((e.target as HTMLElement).closest("#quick-add")) return;
         if (suppressNextClick) {
           suppressNextClick = false;
+          // Same reasoning as the drag cooldown above — this click is
+          // fallout from a swipe gesture, not a real tap, so a link it
+          // happened to land on shouldn't navigate either.
+          e.preventDefault();
           return;
         }
         const row = (e.target as HTMLElement).closest(".task-row") as HTMLElement | null;
@@ -2551,6 +2612,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // once real movement starts — see the touch-action comment on
         // li.task-row for why that's otherwise a real risk here.
         row.style.touchAction = "none";
+        row.classList.remove("row-drag-pending");
         row.classList.add("row-dragging");
         // Captured on the list container, not the row: the row itself
         // gets reparented via insertBefore as the drag reorders siblings
@@ -2641,6 +2703,26 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         dragClickCooldownUntil = Date.now() + 300;
       }
 
+      /** Un-arms a row that was a candidate for a reorder drag but
+       *  didn't become one (released early, or the gesture turned into
+       *  a scroll/swipe instead) — see row-drag-pending's own CSS
+       *  comment for why this needs to happen as soon as that's known,
+       *  not just once the gesture fully ends. */
+      function clearDragPending(row: HTMLElement | null) {
+        row?.classList.remove("row-drag-pending");
+      }
+
+      // A mousedown-and-move starting on a note's link (or, in older
+      // browsers, its text) is also a native drag gesture as far as
+      // the browser's concerned — left unchecked, that hijacks our own
+      // pointer sequence for reordering: Chromium fires a real
+      // "dragstart" and then a "pointercancel" for the pointer that
+      // started it, ending our drag (and the whole gesture) right as
+      // it began. user-select/-webkit-touch-callout above stop the
+      // *touch* long-press equivalents (text selection, iOS's link
+      // callout); this is what stops the same thing with a mouse.
+      taskListEl.addEventListener("dragstart", (e) => e.preventDefault());
+
       taskListEl.addEventListener("pointerdown", (e) => {
         if (selectMode) return;
         if ((e.target as HTMLElement).closest("#quick-add")) return;
@@ -2655,6 +2737,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           swipeStartY = (e as PointerEvent).clientY;
           swipeRowId = id;
           swipeRowEl = row;
+          // Armed immediately, not just once the drag actually starts
+          // moving — a click-and-hold on a note's link (or its text)
+          // can otherwise still trigger the browser's own text
+          // selection before the 6px movement threshold below fires.
+          row.classList.add("row-drag-pending");
           return;
         }
 
@@ -2667,6 +2754,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
         if (id && isReorderableView()) {
           const pointerId = (e as PointerEvent).pointerId;
+          // Armed for the whole hold, not just once it's confirmed a
+          // drag at 450ms — otherwise the browser's own long-press
+          // text selection (or, over a note's link, its callout/share
+          // sheet) can win the press before the timer below even
+          // fires, and there's no undoing that once it has.
+          row.classList.add("row-drag-pending");
           dragLongPressTimer = window.setTimeout(() => {
             dragLongPressTimer = null;
             if (!swipeActive || swipeTriggered || !swipeRowEl) return;
@@ -2699,6 +2792,9 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if (dragLongPressTimer && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
           window.clearTimeout(dragLongPressTimer);
           dragLongPressTimer = null;
+          // Whatever this movement turns into (a scroll or a swipe),
+          // it's no longer a long-press-drag candidate.
+          clearDragPending(swipeRowEl);
         }
 
         // A predominantly vertical drag is a scroll, not a swipe —
@@ -2738,6 +2834,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           endRowDrag();
           return;
         }
+        // Released before ever becoming a drag — e.g. a quick tap, or
+        // (desktop) letting go before the movement threshold — so
+        // nothing else here un-arms it.
+        clearDragPending(swipeRowEl);
         swipeActive = false;
         // Released before the commit threshold — spring back rather
         // than leaving it stranded mid-drag.
@@ -3065,9 +3165,26 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
        *  something else growing in afterward. Once the reveal
        *  finishes, max-height is freed to "none" so later content
        *  growth (typing a longer note) isn't clipped by whatever
-       *  height happened to be measured at open time. */
-      function playCardOpenAnimation(startHeight = 0) {
+       *  height happened to be measured at open time.
+       *
+       *  startCheckboxX (editing only — see openTaskEdit) is the
+       *  tapped row's own checkbox position, measured before it got
+       *  replaced by the empty shell. #quick-add is deliberately wider
+       *  than that row (alignQuickAddFullBleed bleeds it to the
+       *  screen's edges), so qa-body's static CSS padding alone doesn't
+       *  land the title back in the same spot — this measures the real
+       *  gap between where the checkbox ended up and where it used to
+       *  be, and pads qa-body by exactly that much to close it. */
+      function playCardOpenAnimation(startHeight = 0, startCheckboxX: number | null = null) {
         alignQuickAddFullBleed();
+        if (startCheckboxX !== null) {
+          qaBody.style.paddingLeft = "";
+          const currentPaddingLeft = parseFloat(getComputedStyle(qaBody).paddingLeft) || 0;
+          const currentCheckboxX = qaCheckbox.getBoundingClientRect().left;
+          qaBody.style.paddingLeft = `${currentPaddingLeft + (startCheckboxX - currentCheckboxX)}px`;
+        } else {
+          qaBody.style.paddingLeft = "";
+        }
         quickAdd.style.transition = "none";
         qaBody.style.transition = "none";
         qaBody.style.maxHeight = `${startHeight}px`;
@@ -3081,14 +3198,22 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // interrupted mid-fade — fully visible immediately, with no
         // delay, rather than picking up the close's fade-in-late timing.
         qaBody.style.opacity = "1";
+        quickAdd.style.background = "";
         void quickAdd.offsetWidth; // force reflow so the transitions below actually animate
         const targetHeight = qaBody.scrollHeight;
         quickAdd.style.transition = "";
         qaBody.style.transition = "";
+        // Editing settles with no margin of its own — it's nested
+        // inside the row's own flex slot, which already gets its
+        // spacing from #task-list's gap, so this floating card's usual
+        // breathing room here would just push it away from the row it
+        // took over from. A brand-new to-do isn't inside that flex
+        // column at all (see resetQuickAddPosition), so it keeps it.
+        const editMargin = editingTaskId !== null ? "0px" : "1.5rem";
         requestAnimationFrame(() => {
           qaBody.style.maxHeight = `${targetHeight}px`;
-          quickAdd.style.marginTop = "1.5rem";
-          quickAdd.style.marginBottom = "1.5rem";
+          quickAdd.style.marginTop = editMargin;
+          quickAdd.style.marginBottom = editMargin;
           quickAdd.style.boxShadow = "";
           quickAdd.style.borderRadius = "";
         });
@@ -3138,6 +3263,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // by the time that swap happens instead of instantly vanishing
         // at that exact moment.
         qaBody.style.opacity = "0";
+        // And the card's own raised-surface background — see
+        // #quick-add's own transition-delay, same timing as the two
+        // above. Without this, everything else (height/shadow/radius/
+        // content) had already animated down to nothing by the time
+        // renderTaskList() does its DOM swap, but the background color
+        // itself was still the solid raised surface right up to that
+        // instant — a one-frame flash from that color to the row's.
+        quickAdd.style.background = "transparent";
       }
 
       function hideQuickAddCard() {
@@ -3172,6 +3305,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         quickAdd.style.marginBottom = "";
         quickAdd.style.boxShadow = "";
         quickAdd.style.borderRadius = "";
+        quickAdd.style.background = "";
         void quickAdd.offsetWidth; // force reflow before restoring the transitions
         quickAdd.style.transition = "";
         qaBody.style.transition = "";
@@ -3226,9 +3360,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       function openTaskEdit(task: Task) {
         // Measured before the row is replaced by the empty editing
         // shell, so the open animation can grow from the tapped row's
-        // own height instead of collapsing it to 0 first.
+        // own height instead of collapsing it to 0 first, and so the
+        // title can land exactly where this checkbox currently is (see
+        // playCardOpenAnimation's own startCheckboxX handling).
         const tappedRow = taskListEl.querySelector(`.task-row[data-id="${task.id}"]`) as HTMLElement | null;
         const startHeight = tappedRow ? tappedRow.getBoundingClientRect().height : 0;
+        const startCheckboxX =
+          tappedRow?.querySelector<HTMLElement>(".task-check")?.getBoundingClientRect().left ?? null;
         editingTaskId = task.id;
         qaCheckbox.checked = task.done;
         qaTitle.value = task.title;
@@ -3252,7 +3390,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         quickAddScrim.hidden = false;
         // Only once visible — scrollHeight measures 0 on a hidden element.
         autoGrowNote();
-        playCardOpenAnimation(startHeight);
+        playCardOpenAnimation(startHeight, startCheckboxX);
         qaTitle.focus();
       }
 
