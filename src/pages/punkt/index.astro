@@ -690,16 +690,20 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         display: block;
       }
 
+      /* No gap of its own — .ghost-icon's own (much larger, see below)
+         padding already provides the spacing between them. */
       .qa-actions {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
         margin-left: auto;
       }
 
+      /* Padded out to a ~44px tap target (Apple's own minimum) around
+         the 17px icon — at 0.2rem the actual hit area was barely half
+         that, and near-impossible to tap reliably on iOS. */
       .ghost-icon {
         color: var(--muted);
-        padding: 0.2rem;
+        padding: 0.85rem;
         border-radius: 0.4rem;
       }
 
