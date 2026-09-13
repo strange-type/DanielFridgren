@@ -2676,12 +2676,30 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if (alreadyThere) return;
 
         const firstRects = new Map(siblings.map((el) => [el, el.getBoundingClientRect()]));
+        const renderedTopBeforeSwap = draggedRect.top;
         if (target) {
           taskListEl.insertBefore(draggingRowEl, target);
         } else if (siblings.length > 0) {
           const last = siblings[siblings.length - 1];
           taskListEl.insertBefore(draggingRowEl, last.nextElementSibling);
         }
+
+        // insertBefore just now also moved the dragged row's own static
+        // (untransformed) flow position — typically by a full row's
+        // height — but dragAnchorY (and so the transform above) is a
+        // raw pointer delta from the original pickup point, oblivious
+        // to that shift. Left alone, the row instantly jumps by that
+        // shift the moment a swap happens: dragging down, it overshoots
+        // past the finger; dragging up, it undershoots short of it —
+        // either way it's no longer under the pointer, which is exactly
+        // what made this impossible to drop with any precision.
+        // Re-anchor so the rendered position carries over with zero
+        // jump, then let the pointer keep driving it normally from here.
+        draggingRowEl.style.transform = "none";
+        const staticTopAfterSwap = draggingRowEl.getBoundingClientRect().top;
+        dragAnchorY = e.clientY - (renderedTopBeforeSwap - staticTopAfterSwap);
+        draggingRowEl.style.transform = `translateY(${e.clientY - dragAnchorY}px)`;
+
         siblings.forEach((el) => {
           const first = firstRects.get(el)!;
           const last = el.getBoundingClientRect();
