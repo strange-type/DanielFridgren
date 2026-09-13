@@ -739,6 +739,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         background: var(--surface);
       }
 
+      /* Applied while a row is being picked up for reorder (see
+       *  beginRowDrag()) — the transform itself (translateY, tracking
+       *  the pointer) is set inline in JS, this just gives it visual
+       *  weight so it reads as "lifted" above its siblings. */
+      li.task-row.row-dragging {
+        position: relative;
+        z-index: 30;
+        background: var(--surface);
+        box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.35);
+      }
+
       li.task-row.row-selected {
         background: var(--select-tint);
         /* A small vertical margin so consecutive selected rows show a
@@ -2445,6 +2456,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       let suppressNextClick = false;
 
       taskListEl.addEventListener("click", (e) => {
+        // A drag can trail a synthetic click anywhere from immediately
+        // to a beat later (timing is inconsistent enough between real
+        // browsers and automated ones that "consume exactly the next
+        // click" isn't reliable) — so instead of a single-use flag,
+        // ignore every click for a short window after a drag ends.
+        if (Date.now() < dragClickCooldownUntil) return;
         // Let a note's link navigate normally instead of also opening
         // the row for editing (or toggling its selection).
         if ((e.target as HTMLElement).closest("a")) return;
@@ -2475,9 +2492,9 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         if (task) openTaskEdit(task);
       });
 
-      // Mobile only — desktop gets a right-click context menu instead
-      // (see further down), since dragging with a mouse to select
-      // doesn't feel natural the way a touch swipe does.
+      // Mobile: swipe-to-select. Desktop gets a right-click context
+      // menu instead (see further down), since dragging with a mouse
+      // to select doesn't feel natural the way a touch swipe does.
       let swipeActive = false;
       let swipeTriggered = false;
       let swipeStartX = 0;
@@ -2492,22 +2509,198 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const SWIPE_COMMIT_PX = 70;
       const SWIPE_MAX_PX = 96;
 
+      // --- Drag-to-reorder (Inbox/Today only) --------------------------
+      // Mobile picks a row up with a long press (so it doesn't fight
+      // swipe-to-select or plain scrolling); desktop starts on a small
+      // movement threshold, like any ordinary desktop drag.
+
+      const REORDERABLE_VIEWS: View[] = ["inbox", "today"];
+      const isReorderableView = () => REORDERABLE_VIEWS.includes(currentView as View);
+
+      let dragLongPressTimer: number | null = null;
+      let draggingRowId: string | null = null;
+      let draggingRowEl: HTMLElement | null = null;
+      let dragClickCooldownUntil = 0;
+      let dragAnchorY = 0;
+      let desktopDragArmed = false;
+
+      /** Rows this task can trade places with — every other row in
+       *  Inbox, or (in Today, which renders a separate "This Evening"
+       *  sub-list after its own divider) only the rows sharing the same
+       *  regular/evening classification, so a drag can never smuggle a
+       *  task across that divider and silently change its schedule. */
+      function getReorderGroupRows(excludeId: string): HTMLElement[] {
+        const task = findTask(excludeId);
+        if (!task) return [];
+        const sameGroup =
+          currentView === "today" ? (t: Task) => isEveningTask(t) === isEveningTask(task) : () => true;
+        return Array.from(taskListEl.querySelectorAll<HTMLElement>(".task-row")).filter((el) => {
+          if (el.dataset.id === excludeId) return false;
+          const t = findTask(el.dataset.id || "");
+          return t ? sameGroup(t) : false;
+        });
+      }
+
+      function beginRowDrag(row: HTMLElement, id: string, pointerId: number) {
+        swipeActive = false;
+        desktopDragArmed = false;
+        draggingRowId = id;
+        draggingRowEl = row;
+        // Keeps this one row's own subsequent pointer events with us
+        // instead of the browser reclaiming them for native scrolling
+        // once real movement starts — see the touch-action comment on
+        // li.task-row for why that's otherwise a real risk here.
+        row.style.touchAction = "none";
+        row.classList.add("row-dragging");
+        // Captured on the list container, not the row: the row itself
+        // gets reparented via insertBefore as the drag reorders siblings
+        // (see handleDragMove), and moving a pointer-captured element in
+        // the DOM silently releases its capture — losing the pointerup
+        // entirely until some unrelated later click on the page happens
+        // to trigger it. The list container never moves, so capture set
+        // there survives the whole gesture.
+        taskListEl.setPointerCapture?.(pointerId);
+      }
+
+      function handleDragMove(e: PointerEvent) {
+        if (!draggingRowId || !draggingRowEl) return;
+        e.preventDefault?.();
+        draggingRowEl.style.transition = "none";
+        draggingRowEl.style.transform = `translateY(${e.clientY - dragAnchorY}px)`;
+
+        const draggedRect = draggingRowEl.getBoundingClientRect();
+        const draggedMidY = draggedRect.top + draggedRect.height / 2;
+        const siblings = getReorderGroupRows(draggingRowId);
+
+        let target: HTMLElement | null = null;
+        for (const sib of siblings) {
+          const r = sib.getBoundingClientRect();
+          if (draggedMidY < r.top + r.height / 2) {
+            target = sib;
+            break;
+          }
+        }
+
+        const currentNext = draggingRowEl.nextElementSibling as HTMLElement | null;
+        const alreadyThere = target ? target === currentNext : !siblings.includes(currentNext as HTMLElement);
+        if (alreadyThere) return;
+
+        const firstRects = new Map(siblings.map((el) => [el, el.getBoundingClientRect()]));
+        if (target) {
+          taskListEl.insertBefore(draggingRowEl, target);
+        } else if (siblings.length > 0) {
+          const last = siblings[siblings.length - 1];
+          taskListEl.insertBefore(draggingRowEl, last.nextElementSibling);
+        }
+        siblings.forEach((el) => {
+          const first = firstRects.get(el)!;
+          const last = el.getBoundingClientRect();
+          const delta = first.top - last.top;
+          if (delta === 0) return;
+          el.style.transition = "none";
+          el.style.transform = `translateY(${delta}px)`;
+          void el.offsetHeight; // force reflow so the transition below actually animates
+          el.style.transition = "transform 0.2s ease";
+          el.style.transform = "";
+          window.setTimeout(() => {
+            el.style.transition = "";
+          }, 200);
+        });
+      }
+
+      /** Applies the row list's current on-screen order back to the
+       *  underlying tasks[] array — walking the array in its existing
+       *  order and, at each position that belongs to a task currently
+       *  visible in this view, substituting the next id from the new
+       *  visual order. Tasks outside this view (and the file's own
+       *  narrative order elsewhere) are left exactly where they were. */
+      function applyDomOrderToTasks() {
+        const orderedIds = Array.from(taskListEl.querySelectorAll<HTMLElement>(".task-row"))
+          .map((el) => el.dataset.id)
+          .filter((id): id is string => !!id);
+        const idSet = new Set(orderedIds);
+        let ptr = 0;
+        tasks = tasks.map((t) => (idSet.has(t.id) ? findTask(orderedIds[ptr++])! : t));
+      }
+
+      function endRowDrag() {
+        if (!draggingRowId || !draggingRowEl) return;
+        const row = draggingRowEl;
+        applyDomOrderToTasks();
+        renderMenu();
+        queueSave();
+        row.style.touchAction = "";
+        row.style.transition = "transform 0.15s ease";
+        row.style.transform = "";
+        row.classList.remove("row-dragging");
+        window.setTimeout(() => {
+          row.style.transition = "";
+        }, 150);
+        draggingRowId = null;
+        draggingRowEl = null;
+        dragClickCooldownUntil = Date.now() + 300;
+      }
+
       taskListEl.addEventListener("pointerdown", (e) => {
-        if (selectMode || isDesktopLayout()) return;
+        if (selectMode) return;
+        if ((e.target as HTMLElement).closest("#quick-add")) return;
         const row = (e.target as HTMLElement).closest(".task-row") as HTMLElement | null;
         if (!row) return;
+        const id = row.dataset.id || null;
+
+        if (isDesktopLayout()) {
+          if (!id || !isReorderableView()) return;
+          desktopDragArmed = true;
+          swipeStartX = (e as PointerEvent).clientX;
+          swipeStartY = (e as PointerEvent).clientY;
+          swipeRowId = id;
+          swipeRowEl = row;
+          return;
+        }
+
         swipeActive = true;
         swipeTriggered = false;
         swipeStartX = (e as PointerEvent).clientX;
         swipeStartY = (e as PointerEvent).clientY;
-        swipeRowId = row.dataset.id || null;
+        swipeRowId = id;
         swipeRowEl = row;
+
+        if (id && isReorderableView()) {
+          const pointerId = (e as PointerEvent).pointerId;
+          dragLongPressTimer = window.setTimeout(() => {
+            dragLongPressTimer = null;
+            if (!swipeActive || swipeTriggered || !swipeRowEl) return;
+            dragAnchorY = swipeStartY;
+            beginRowDrag(swipeRowEl, id, pointerId);
+          }, 450);
+        }
       });
 
       taskListEl.addEventListener("pointermove", (e) => {
+        if (draggingRowId) {
+          handleDragMove(e as PointerEvent);
+          return;
+        }
+
+        if (desktopDragArmed && swipeRowEl && swipeRowId) {
+          const dx = (e as PointerEvent).clientX - swipeStartX;
+          const dy = (e as PointerEvent).clientY - swipeStartY;
+          if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+            dragAnchorY = (e as PointerEvent).clientY - dy; // the original pointerdown Y
+            beginRowDrag(swipeRowEl, swipeRowId, (e as PointerEvent).pointerId);
+          }
+          return;
+        }
+
         if (!swipeActive || swipeTriggered || !swipeRowId || !swipeRowEl) return;
         const dx = (e as PointerEvent).clientX - swipeStartX;
         const dy = (e as PointerEvent).clientY - swipeStartY;
+
+        if (dragLongPressTimer && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+          window.clearTimeout(dragLongPressTimer);
+          dragLongPressTimer = null;
+        }
+
         // A predominantly vertical drag is a scroll, not a swipe —
         // hand it back to the browser (touch-action: pan-y on the row
         // already lets that happen) rather than fighting it.
@@ -2536,6 +2729,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       });
 
       function endSwipe() {
+        if (dragLongPressTimer) {
+          window.clearTimeout(dragLongPressTimer);
+          dragLongPressTimer = null;
+        }
+        desktopDragArmed = false;
+        if (draggingRowId) {
+          endRowDrag();
+          return;
+        }
         swipeActive = false;
         // Released before the commit threshold — spring back rather
         // than leaving it stranded mid-drag.
