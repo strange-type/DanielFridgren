@@ -1578,6 +1578,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           autocomplete="current-password"
           required
         />
+        <input
+          id="gate-totp-input"
+          type="text"
+          inputmode="numeric"
+          placeholder="2FA-kod"
+          autocomplete="one-time-code"
+          required
+        />
         <button type="submit" class="gate-submit">Lås upp</button>
         <p id="gate-error" class="error"></p>
       </form>
@@ -1775,10 +1783,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
     </div>
 
     <script>
+      // Holds a session token minted by punkt-login.js once the access
+      // code and a 2FA code have both been verified there — not the
+      // access code itself, which (unlike this) is never sent or
+      // stored again after that one login request.
       const TOKEN_KEY = "punkt-token";
       const API = "/.netlify/functions/punkt-tasks";
       const SUBSCRIBE_API = "/.netlify/functions/punkt-subscribe";
       const AUTH_LOG_API = "/.netlify/functions/punkt-auth-log";
+      const LOGIN_API = "/.netlify/functions/punkt-login";
       const VAPID_PUBLIC_KEY = document.body.dataset.vapidKey || "";
 
       type Task = {
@@ -1811,6 +1824,18 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const gate = document.getElementById("gate") as HTMLDivElement;
       const gateForm = document.getElementById("gate-form") as HTMLFormElement;
       const gateInput = document.getElementById("gate-input") as HTMLInputElement;
+      const gateTotpInput = document.getElementById("gate-totp-input") as HTMLInputElement;
+      // Some authenticator apps display/copy the code as "123 456" —
+      // stripped (and capped at 6 digits) live as the field's own
+      // value, rather than relying on maxlength/pattern attributes:
+      // maxlength counts the space as a character too, so it can
+      // truncate a pasted "123 456" down to "123 45" *before* this
+      // ever runs, and pattern mismatches block native form submission
+      // outright with nothing but a browser tooltip to explain why.
+      gateTotpInput.addEventListener("input", () => {
+        const digitsOnly = gateTotpInput.value.replace(/\D+/g, "").slice(0, 6);
+        if (digitsOnly !== gateTotpInput.value) gateTotpInput.value = digitsOnly;
+      });
       const gateError = document.getElementById("gate-error") as HTMLParagraphElement;
       const app = document.getElementById("app") as HTMLElement;
       const saveError = document.getElementById("save-error") as HTMLDivElement;
@@ -1954,16 +1979,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           body: body ? JSON.stringify(body) : undefined
         });
         if (res.status === 401) {
+          // The session token is missing, invalid, or expired (see
+          // punkt-login.js/isSessionValid) — there's no refreshing it,
+          // only a fresh login with the access code and a new 2FA code
+          // gets a new one.
           localStorage.removeItem(TOKEN_KEY);
-          showGate("Fel åtkomstkod.");
+          showGate("Sessionen har gått ut. Logga in igen.");
           throw new Error("unauthorized");
-        }
-        if (res.status === 403) {
-          // Blocked for too many recent failed attempts — the token
-          // itself might still be correct, so it's kept (unlike 401)
-          // in case the block lifts before the user tries again.
-          showGate("För många felaktiga försök. Försök igen om en stund.");
-          throw new Error("blocked");
         }
         if (!res.ok) {
           let detail = "";
@@ -3893,17 +3915,41 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       gateForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        localStorage.setItem(TOKEN_KEY, gateInput.value);
         gateError.textContent = "";
         try {
+          const res = await fetch(LOGIN_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            // Stripped of all whitespace, not just trimmed — some
+            // authenticator apps display (and let you copy) the code
+            // as "123 456".
+            body: JSON.stringify({ code: gateInput.value, totp: gateTotpInput.value.replace(/\s+/g, "") })
+          });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}) as { reason?: string });
+            gateError.textContent =
+              res.status === 403
+                ? "För många felaktiga försök. Försök igen om en stund."
+                : data.reason === "totp"
+                  ? "Fel 2FA-kod."
+                  : "Fel åtkomstkod.";
+            // Codes expire in 30s and are single-use in most
+            // authenticator apps anyway — never worth resubmitting.
+            gateTotpInput.value = "";
+            return;
+          }
+          const { sessionToken } = await res.json();
+          localStorage.setItem(TOKEN_KEY, sessionToken);
           await loadTasks();
           showApp();
           navigateTo("today");
           void loadSecuritySummary();
         } catch {
-          // apiFetch already set a specific message (wrong code,
-          // blocked) via showGate() when that's why this failed — only
-          // fall back to a generic one if it didn't (network error, etc).
+          // apiFetch (inside loadTasks) already set a specific message
+          // via showGate() if THAT'S why this failed (the session
+          // turned out to be invalid right away, say) — only fall back
+          // to a generic one if nothing already did (network error,
+          // the login request itself failing, etc).
           if (!gate.hidden && !gateError.textContent) {
             gateError.textContent = "Kunde inte ansluta. Försök igen.";
           }
@@ -3927,10 +3973,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             return;
           } catch {
             // apiFetch already called showGate() with a specific
-            // message (wrong code, blocked) when that's why this
-            // failed — re-passing the current text is a no-op for it,
-            // but still clears the optimistic "already logged in"
-            // state for any other error that didn't set one.
+            // message ("session expired") when that's why this failed
+            // — re-passing the current text is a no-op for it, but
+            // still clears the optimistic "already logged in" state
+            // for any other error that didn't set one.
             showGate(gateError.textContent || "");
             return;
           }

@@ -1,15 +1,6 @@
-import { timingSafeEqual, createHash } from 'node:crypto';
-import { getAuthLogSummary, unblockIp } from './lib/punkt-data.js';
+import { getAuthLogSummary, unblockIp, isSessionValid } from './lib/punkt-data.js';
 
-const { PUNKT_GITHUB_TOKEN, PUNKT_ACCESS_TOKEN } = process.env;
-
-function isAuthorized(event) {
-    if (!PUNKT_ACCESS_TOKEN) return false;
-    const provided = event.headers['x-punkt-token'] || '';
-    const a = createHash('sha256').update(provided).digest();
-    const b = createHash('sha256').update(PUNKT_ACCESS_TOKEN).digest();
-    return timingSafeEqual(a, b);
-}
+const { PUNKT_GITHUB_TOKEN, PUNKT_SESSION_SECRET } = process.env;
 
 const SECURITY_HEADERS = {
     'Content-Type': 'application/json',
@@ -26,18 +17,18 @@ function respond(statusCode, body) {
  * Backs the in-app "someone tried to log in" indicator: GET lists
  * logged attempts per IP (see getAuthLogSummary), POST with
  * {action:"unblock", ip} clears one IP's entries. This isn't the
- * login gate itself (that's punkt-tasks.js, which is what actually
+ * login gate itself (that's punkt-login.js, which is what actually
  * records failed attempts) — reaching this endpoint at all already
- * requires a valid token, so it doesn't duplicate that gate's own
+ * requires a valid session, so it doesn't duplicate that gate's own
  * IP-blocking logic.
  */
 export const handler = async (event) => {
-    if (!PUNKT_GITHUB_TOKEN || !PUNKT_ACCESS_TOKEN) {
-        console.error('Punkt: missing PUNKT_GITHUB_TOKEN or PUNKT_ACCESS_TOKEN env vars');
+    if (!PUNKT_GITHUB_TOKEN || !PUNKT_SESSION_SECRET) {
+        console.error('Punkt: missing PUNKT_GITHUB_TOKEN or PUNKT_SESSION_SECRET env vars');
         return respond(500, { error: 'Server not configured' });
     }
 
-    if (!isAuthorized(event)) {
+    if (!isSessionValid(event.headers['x-punkt-token'])) {
         return respond(401, { error: 'Unauthorized' });
     }
 
