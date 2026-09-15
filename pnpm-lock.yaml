@@ -44,6 +44,9 @@ importers:
       lottie-web:
         specifier: ^5.13.0
         version: 5.13.0
+      otplib:
+        specifier: ^13.5.0
+        version: 13.5.0
       unist-util-visit:
         specifier: ^5.1.0
         version: 5.1.0
@@ -542,8 +545,30 @@ packages:
   '@mux/playback-core@0.35.0':
     resolution: {integrity: sha512-7Zi1EJ9sQNIUlQVBjJCXV0CB+rUVEsU3vNRElRV4xnD7dbpoioIAhe1SjZNBifjnK5aBKLDwQHypbnL3Cw3a5A==}
 
+  '@noble/hashes@2.4.0':
+    resolution: {integrity: sha512-X5XaVWZIBCT7HHZGm5I7ZQXDwLG+bGXuSrMQAW+7Zvl87h1kmc1ZB1VSRJcpUfoUrGQp4Fkoxm5kZ+Ms+aW+eA==}
+    engines: {node: '>= 20.19.0'}
+
   '@oslojs/encoding@1.1.0':
     resolution: {integrity: sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ==}
+
+  '@otplib/core@13.5.0':
+    resolution: {integrity: sha512-2rURdkYkb3BDhMs3j/oCCPTve1ybJ6ruLfLfSe1ZSPV+y6RFTbLfAuT0m0ZCnps88ogkIq9t/+Li/kg5RofQwQ==}
+
+  '@otplib/hotp@13.5.0':
+    resolution: {integrity: sha512-1EwwAti05CeWJn4xXOVMBK9N6dIJlJw/cQkQyiL9OVlkeS452wAve3ffodi+5IUZdWoF1wxVug38RisdxDqDWw==}
+
+  '@otplib/plugin-base32-scure@13.5.0':
+    resolution: {integrity: sha512-3JEIHindUMiIeNL0jXepSAkZ/7IkWq4sPdG9eXK0lrMXZG9RdKu5oz/4tuuTodtsFUPYhKlRMqv5xUvQIkMIaA==}
+
+  '@otplib/plugin-crypto-noble@13.5.0':
+    resolution: {integrity: sha512-fihOAGFvc4b8XTKyIK3jifFP2nLrUNc2bOaJ3UkUKJjy1XI2FbHKG0WmOH+jFsPfa6VsOnouCnEmSznDxIe0pA==}
+
+  '@otplib/totp@13.5.0':
+    resolution: {integrity: sha512-GD9LzQnbHDwXCp79s8AaiA5cJR6luX5fEr9AN32AWx4ooRvllPbMkG80gHSA0jbGCnAIX/ChyOtTZ8tgJHMkSg==}
+
+  '@otplib/uri@13.5.0':
+    resolution: {integrity: sha512-LsL1hqTEgJHY40U2eb/Qp6OR1tKkNGwHQTrqqjIuJj0cawGWkLEmeUFK1MHzWBQ4bgy5IdeB5Et7gIDSAH/CRw==}
 
   '@rolldown/pluginutils@1.0.0-rc.3':
     resolution: {integrity: sha512-eybk3TjzzzV97Dlj5c+XrBFW57eTNhzod66y9HrBlzJ6NsCrWCp/2kaPS3K9wJmurBC0Tdw4yPjXKZqlznim3Q==}
@@ -681,6 +706,9 @@ packages:
     resolution: {integrity: sha512-X+zaP2x+j4RXGfbp/seSoRHWnPxzApilDszisZxbYH5C/jTxFhCtDNdPGZb9lJyYPs24wGxruPF7Y+sIXt9Gzw==}
     cpu: [x64]
     os: [win32]
+
+  '@scure/base@2.4.0':
+    resolution: {integrity: sha512-thZ1TuJwFwBblOhgsjDKvvGirBxNp+wSvY/DR6tJBJOTDhdAAcHJ8Vbr2eFnqaxeca4+t0i9KBf+uHYGWwZORg==}
 
   '@sendgrid/client@8.1.6':
     resolution: {integrity: sha512-/BHu0hqwXNHr2aLhcXU7RmmlVqrdfrbY9KpaNj00KZHlVOVoRxRVrpOCabIB+91ISXJ6+mLM9vpaVUhK6TwBWA==}
@@ -1608,6 +1636,9 @@ packages:
 
   oniguruma-to-es@4.3.6:
     resolution: {integrity: sha512-csuQ9x3Yr0cEIs/Zgx/OEt9iBw9vqIunAPQkx19R/fiMq2oGVTgcMqO/V3Ybqefr1TBvosI6jU539ksaBULJyA==}
+
+  otplib@13.5.0:
+    resolution: {integrity: sha512-RpcC6aq4rANX6MverMuU3pqHVLgMPO7vl6qR8ga7YzoEHlPJknJ58cSVAaf3jBYnasiQVQHXXl2mj/4pYlsVEQ==}
 
   p-limit@7.3.0:
     resolution: {integrity: sha512-7cIXg/Z0M5WZRblrsOla88S4wAK+zOQQWeBYfV3qJuJXMr+LnbYjaadrFaS0JILfEDPVqHyKnZ1Z/1d6J9VVUw==}
@@ -2603,7 +2634,36 @@ snapshots:
       hls.js: 1.6.16
       mux-embed: 5.18.1
 
+  '@noble/hashes@2.4.0': {}
+
   '@oslojs/encoding@1.1.0': {}
+
+  '@otplib/core@13.5.0': {}
+
+  '@otplib/hotp@13.5.0':
+    dependencies:
+      '@otplib/core': 13.5.0
+      '@otplib/uri': 13.5.0
+
+  '@otplib/plugin-base32-scure@13.5.0':
+    dependencies:
+      '@otplib/core': 13.5.0
+      '@scure/base': 2.4.0
+
+  '@otplib/plugin-crypto-noble@13.5.0':
+    dependencies:
+      '@noble/hashes': 2.4.0
+      '@otplib/core': 13.5.0
+
+  '@otplib/totp@13.5.0':
+    dependencies:
+      '@otplib/core': 13.5.0
+      '@otplib/hotp': 13.5.0
+      '@otplib/uri': 13.5.0
+
+  '@otplib/uri@13.5.0':
+    dependencies:
+      '@otplib/core': 13.5.0
 
   '@rolldown/pluginutils@1.0.0-rc.3': {}
 
@@ -2689,6 +2749,8 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.61.1':
     optional: true
+
+  '@scure/base@2.4.0': {}
 
   '@sendgrid/client@8.1.6':
     dependencies:
@@ -3965,6 +4027,15 @@ snapshots:
       oniguruma-parser: 0.12.2
       regex: 6.1.0
       regex-recursion: 6.0.2
+
+  otplib@13.5.0:
+    dependencies:
+      '@otplib/core': 13.5.0
+      '@otplib/hotp': 13.5.0
+      '@otplib/plugin-base32-scure': 13.5.0
+      '@otplib/plugin-crypto-noble': 13.5.0
+      '@otplib/totp': 13.5.0
+      '@otplib/uri': 13.5.0
 
   p-limit@7.3.0:
     dependencies:

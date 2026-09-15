@@ -1,4 +1,3 @@
-import { timingSafeEqual, createHash } from 'node:crypto';
 import {
     readTasksFile,
     writeTasksFile,
@@ -6,16 +5,17 @@ import {
     serializeTasks,
     validateTasks,
     mergeTasks,
-    isIpBlocked,
-    logFailedAuthAttempt
+    isSessionValid
 } from './lib/punkt-data.js';
 
-const { PUNKT_GITHUB_TOKEN, PUNKT_ACCESS_TOKEN } = process.env;
+const { PUNKT_GITHUB_TOKEN, PUNKT_SESSION_SECRET } = process.env;
 
-// In-memory rate limiting per IP, to slow down brute-forcing of
-// PUNKT_ACCESS_TOKEN. Best-effort only — resets whenever the function
-// cold-starts — but combined with a long random token that's enough
-// for a low-value single-user target.
+// In-memory rate limiting per IP, general abuse protection independent
+// of auth outcome. Best-effort only — resets whenever the function
+// cold-starts — but fine for a low-value single-user target. Guessing
+// against the access code + 2FA themselves is guarded separately, by
+// punkt-login.js's own IP-blocking (the session token checked below
+// isn't a realistic brute-force target on its own).
 const REQUEST_LOG = new Map();
 const RATE_LIMIT_WINDOW = 60 * 1000;
 const MAX_REQUESTS_PER_WINDOW = 30;
@@ -26,21 +26,6 @@ function isRateLimited(ip) {
     recent.push(now);
     REQUEST_LOG.set(ip, recent);
     return recent.length > MAX_REQUESTS_PER_WINDOW;
-}
-
-/**
- * Constant-time comparison of the shared-secret header against
- * PUNKT_ACCESS_TOKEN, so a wrong guess can't be timed to learn how
- * many leading characters matched.
- */
-function isAuthorized(event) {
-    if (!PUNKT_ACCESS_TOKEN) return false;
-    const provided = event.headers['x-punkt-token'] || '';
-    // Compare hashes of equal (fixed) length rather than the raw
-    // strings, so differing input lengths don't short-circuit early.
-    const a = createHash('sha256').update(provided).digest();
-    const b = createHash('sha256').update(PUNKT_ACCESS_TOKEN).digest();
-    return timingSafeEqual(a, b);
 }
 
 const SECURITY_HEADERS = {
@@ -55,8 +40,8 @@ function respond(statusCode, body) {
 }
 
 export const handler = async (event) => {
-    if (!PUNKT_GITHUB_TOKEN || !PUNKT_ACCESS_TOKEN) {
-        console.error('Punkt: missing PUNKT_GITHUB_TOKEN or PUNKT_ACCESS_TOKEN env vars');
+    if (!PUNKT_GITHUB_TOKEN || !PUNKT_SESSION_SECRET) {
+        console.error('Punkt: missing PUNKT_GITHUB_TOKEN or PUNKT_SESSION_SECRET env vars');
         return respond(500, { error: 'Server not configured' });
     }
 
@@ -66,18 +51,8 @@ export const handler = async (event) => {
         return respond(429, { error: 'Too many requests. Try again shortly.' });
     }
 
-    // Checking the auth log costs a GitHub API round-trip, so it only
-    // runs once the (cheap, local) token check actually fails —
-    // otherwise every ordinary request from the one legitimate user
-    // would pay that cost for no reason.
-    if (!isAuthorized(event)) {
-        if (await isIpBlocked(clientIp)) {
-            return respond(403, { error: 'Too many failed login attempts. Try again later.' });
-        }
-        const nowBlocked = await logFailedAuthAttempt(clientIp);
-        return nowBlocked
-            ? respond(403, { error: 'Too many failed login attempts. Try again later.' })
-            : respond(401, { error: 'Unauthorized' });
+    if (!isSessionValid(event.headers['x-punkt-token'])) {
+        return respond(401, { error: 'Unauthorized' });
     }
 
     try {

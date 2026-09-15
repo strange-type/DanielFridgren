@@ -1,15 +1,6 @@
-import { timingSafeEqual, createHash } from 'node:crypto';
-import { readSubscriptions, writeSubscriptions } from './lib/punkt-data.js';
+import { readSubscriptions, writeSubscriptions, isSessionValid } from './lib/punkt-data.js';
 
-const { PUNKT_GITHUB_TOKEN, PUNKT_ACCESS_TOKEN } = process.env;
-
-function isAuthorized(event) {
-    if (!PUNKT_ACCESS_TOKEN) return false;
-    const provided = event.headers['x-punkt-token'] || '';
-    const a = createHash('sha256').update(provided).digest();
-    const b = createHash('sha256').update(PUNKT_ACCESS_TOKEN).digest();
-    return timingSafeEqual(a, b);
-}
+const { PUNKT_GITHUB_TOKEN, PUNKT_SESSION_SECRET } = process.env;
 
 const SECURITY_HEADERS = {
     'Content-Type': 'application/json',
@@ -28,12 +19,12 @@ function respond(statusCode, body) {
  * re-subscribing the same device just replaces its keys.
  */
 export const handler = async (event) => {
-    if (!PUNKT_GITHUB_TOKEN || !PUNKT_ACCESS_TOKEN) {
-        console.error('Punkt: missing PUNKT_GITHUB_TOKEN or PUNKT_ACCESS_TOKEN env vars');
+    if (!PUNKT_GITHUB_TOKEN || !PUNKT_SESSION_SECRET) {
+        console.error('Punkt: missing PUNKT_GITHUB_TOKEN or PUNKT_SESSION_SECRET env vars');
         return respond(500, { error: 'Server not configured' });
     }
 
-    if (!isAuthorized(event)) {
+    if (!isSessionValid(event.headers['x-punkt-token'])) {
         return respond(401, { error: 'Unauthorized' });
     }
 

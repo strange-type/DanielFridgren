@@ -3,6 +3,8 @@
 // separately) showed how easy it is for two copies of this logic to
 // drift out of sync.
 
+import { createHmac, timingSafeEqual } from 'node:crypto';
+
 const OWNER = process.env.PUNKT_GITHUB_OWNER || 'strange-type';
 const REPO = process.env.PUNKT_GITHUB_REPO || 'DanielFridgren';
 const BRANCH = process.env.PUNKT_GITHUB_BRANCH || 'main';
@@ -12,7 +14,13 @@ const SUBSCRIPTIONS_PATH =
 const ERROR_LOG_PATH = process.env.PUNKT_ERROR_LOG_PATH || 'punkt/data/last-reminder-error.json';
 const AUTH_LOG_PATH = process.env.PUNKT_AUTH_LOG_PATH || 'punkt/data/auth-log.json';
 
-const { PUNKT_GITHUB_TOKEN } = process.env;
+const { PUNKT_GITHUB_TOKEN, PUNKT_SESSION_SECRET } = process.env;
+
+// How long a session token stays valid after a successful login (code
+// + 2FA) — deliberately long for a single-user app opened throughout
+// the day; the tradeoff for a shorter window is just re-entering both
+// factors more often, not any real security gain here.
+const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 // An IP is blocked once it has this many failed attempts within the
 // window below — both numbers are deliberately generous for a
@@ -372,6 +380,55 @@ async function unblockIp(ip) {
     await writeAuthLog(remaining, sha, `Unblock Punkt IP ${ip}`);
 }
 
+/**
+ * Mints a session token once punkt-login.js has verified both the
+ * access code and a 2FA code — an HMAC-signed, time-limited bearer
+ * credential the client then sends on every ordinary request instead
+ * of the code itself. This is what actually makes 2FA count for
+ * something beyond the login screen: the raw access code is no longer
+ * transmitted or stored for everyday use, and a leaked session token
+ * — unlike a leaked static access code — expires on its own and can
+ * be invalidated for every session at once just by rotating
+ * PUNKT_SESSION_SECRET, without the user having to change their code
+ * or redo 2FA enrollment.
+ *
+ * Deliberately not a JWT — there's exactly one claim (an expiry) and
+ * one signing key, so a small hand-rolled `payload.signature` format
+ * avoids pulling in a whole JWT library for it.
+ */
+function createSessionToken() {
+    const payload = Buffer.from(JSON.stringify({ exp: Date.now() + SESSION_TTL_MS })).toString(
+        'base64url'
+    );
+    const signature = createHmac('sha256', PUNKT_SESSION_SECRET).update(payload).digest('base64url');
+    return `${payload}.${signature}`;
+}
+
+/**
+ * Verifies a session token's signature and expiry. Pure local crypto
+ * (no GitHub round-trip, unlike isIpBlocked) since this runs on every
+ * authenticated request.
+ */
+function isSessionValid(token) {
+    if (!PUNKT_SESSION_SECRET || typeof token !== 'string') return false;
+    const [payload, signature] = token.split('.');
+    if (!payload || !signature) return false;
+    const expected = createHmac('sha256', PUNKT_SESSION_SECRET).update(payload).digest('base64url');
+    // Signatures usually differ in length here (a forged or truncated
+    // token, not just a wrong one) — timingSafeEqual throws rather
+    // than returning false on a length mismatch, so that's checked
+    // first rather than caught as an error.
+    const a = Buffer.from(signature);
+    const b = Buffer.from(expected);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) return false;
+    try {
+        const { exp } = JSON.parse(Buffer.from(payload, 'base64url').toString('utf-8'));
+        return typeof exp === 'number' && exp > Date.now();
+    } catch {
+        return false;
+    }
+}
+
 export {
     readTasksFile,
     writeTasksFile,
@@ -385,5 +442,7 @@ export {
     isIpBlocked,
     logFailedAuthAttempt,
     getAuthLogSummary,
-    unblockIp
+    unblockIp,
+    createSessionToken,
+    isSessionValid
 };
