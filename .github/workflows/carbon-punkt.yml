@@ -1,0 +1,85 @@
+name: Carbon footprint - punkt
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/pages/punkt/**'
+      - 'public/punkt/**'
+      - 'netlify/functions/punkt-*.js'
+      - 'netlify/functions/lib/punkt-data.js'
+      - 'punkt/**'
+  pull_request:
+    paths:
+      - 'src/pages/punkt/**'
+      - 'public/punkt/**'
+      - 'netlify/functions/punkt-*.js'
+      - 'netlify/functions/lib/punkt-data.js'
+      - 'punkt/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  measure:
+    name: Punkt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        with:
+          task: start-measurement
+          project: 'punkt'
+          tags: 'danielfridgren,punkt,astro'
+        continue-on-error: true
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Measure checkout
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        with:
+          task: get-measurement
+          label: 'punkt: checkout'
+        continue-on-error: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Measure install
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        with:
+          task: get-measurement
+          label: 'punkt: pnpm install'
+        continue-on-error: true
+
+      # Punkt is a feature within the shared Astro site, not its own
+      # package, so this builds the whole site. The measurement still
+      # only triggers on punkt-path changes, but reflects full-site
+      # build cost, not punkt in isolation.
+      - name: Build
+        run: pnpm astro build
+
+      - name: Measure build
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        with:
+          task: get-measurement
+          label: 'punkt: build (full site)'
+        continue-on-error: true
+
+      - name: Display results
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        with:
+          task: display-results
+          pr-comment: true
+        continue-on-error: true
