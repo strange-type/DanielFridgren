@@ -20,7 +20,7 @@ inte skickas flera gånger samma dag.
 ## Tasks
 
 - [ ] Ta ledigt 26-30/10 (höstlov) (id: 1789675381460-hza4s, when: 2026-09-18)
-- [ ] Kolla upp digitala studiebesök (id: 1789542287149-ylh5e, when: today)
+- [ ] Kolla upp digitala studiebesök (id: 1789542287149-ylh5e, when: -)
   > https://www.skane.se/jobb-och-utbildning/jobba-hos-oss/att-jobba-i-region-skane/hang-med-pa-digitala-studiebesok/
 - [ ] Kolla upp denna på st Gertrud 9:e okt (id: 1789203141617-meexz, when: today)
   > https://malmo.se/Aktuellt/Artiklar-Malmo-stad/2026-09-09-Valkomna-till-varldsdagen-for-psykisk-halsa.html
