@@ -1125,6 +1125,35 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         padding: 0.5rem 0;
       }
 
+      /* Today's own glimpse of what's waiting in Inbox — a button (see
+         its click handler) styled as a plain, non-interactive-looking
+         card so it reads as a preview rather than another set of
+         to-dos to check off. */
+      .inbox-peek {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        text-align: left;
+        background: var(--surface);
+        border-radius: 0.6rem;
+        padding: 0.6rem 0.75rem;
+        margin-bottom: 1rem;
+        gap: 0.15rem;
+      }
+
+      .inbox-peek-title {
+        font-size: 0.85rem;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .inbox-peek-more {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
       .error {
         color: var(--danger);
         font-size: 0.85rem;
@@ -2313,6 +2342,23 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         return sameYear ? month : `${month} ${date.getFullYear()}`;
       }
 
+      const INBOX_PEEK_LIMIT = 3;
+
+      /** A glimpse of what's waiting in Inbox, shown at the top of
+       *  Today — up to INBOX_PEEK_LIMIT titles, tapping it (see the
+       *  click handler further down) jumps straight to Inbox. Empty
+       *  string (nothing rendered) once there's nothing to glimpse. */
+      function inboxPeekHtml(inboxItems: Task[]): string {
+        if (inboxItems.length === 0) return "";
+        const shown = inboxItems.slice(0, INBOX_PEEK_LIMIT);
+        const remaining = inboxItems.length - shown.length;
+        const titles = shown
+          .map((t) => `<span class="inbox-peek-title">${escapeHtml(t.title)}</span>`)
+          .join("");
+        const more = remaining > 0 ? `<span class="inbox-peek-more">+${remaining} mer</span>` : "";
+        return `<button type="button" class="inbox-peek" id="inbox-peek">${titles}${more}</button>`;
+      }
+
       /** Swaps in a freshly rendered batch of rows. li.task-row's own
        *  opacity/background transition exists for rows already in the
        *  DOM being explicitly faded out or highlighted (see
@@ -2373,13 +2419,16 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         }
 
         if (currentView === "today") {
+          // Shown even on an otherwise-empty Today — that's exactly
+          // when a glimpse of what's waiting in Inbox is most useful.
+          const peek = inboxPeekHtml(bucket("inbox"));
           if (items.length === 0) {
-            taskListEl.innerHTML = '<p class="empty">Inget för idag.</p>';
+            setListHtml(`${peek}<p class="empty">Inget för idag.</p>`);
             return;
           }
           const regular = items.filter((t) => !isEveningTask(t));
           const evening = items.filter(isEveningTask);
-          let html = regular.map((t) => taskRowHtml(t)).join("");
+          let html = peek + regular.map((t) => taskRowHtml(t)).join("");
           if (evening.length > 0) {
             html += `<div class="date-group">🌙 This Evening</div>`;
             html += evening.map((t) => taskRowHtml(t)).join("");
@@ -2636,6 +2685,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           // fallout from a swipe gesture, not a real tap, so a link it
           // happened to land on shouldn't navigate either.
           e.preventDefault();
+          return;
+        }
+        if ((e.target as HTMLElement).closest("#inbox-peek")) {
+          navigateTo("inbox");
           return;
         }
         const row = (e.target as HTMLElement).closest(".task-row") as HTMLElement | null;
