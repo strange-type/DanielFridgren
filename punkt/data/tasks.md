@@ -19,6 +19,12 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Tidrapportering (id: 1789675648658-i7zvk, when: 2026-09-18)
+  > Mån 
+  > Tis 2? + 1h
+  > Ons 6h
+  > Tor 6h
+  > Fre 3h + 1h
 - [ ] Ta ledigt 26-30/10 (höstlov) (id: 1789675381460-hza4s, when: 2026-09-18)
 - [ ] Kolla upp digitala studiebesök (id: 1789542287149-ylh5e, when: -)
   > https://www.skane.se/jobb-och-utbildning/jobba-hos-oss/att-jobba-i-region-skane/hang-med-pa-digitala-studiebesok/
