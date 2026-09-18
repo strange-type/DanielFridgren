@@ -67,11 +67,11 @@ Core layout files in `src/layouts/`:
 Netlify functions in `netlify/functions/`:
 
 1. **contact.js**: Contact form handler
-   - Uses SendGrid for email delivery
+   - Uses Resend for email delivery
    - Implements rate limiting (3 submissions per minute per IP)
    - Anti-spam: honeypot field + minimum form fill time (3 seconds)
    - Validates name (2+ chars), email format, message (10+ chars)
-   - Environment variables: `SENDGRID_API_KEY`, `SENDGRID_FROM_EMAIL`, `CONTACT_EMAIL`
+   - Environment variables: `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_EMAIL`
 
 ### Integrations
 
@@ -85,7 +85,7 @@ Configured in `astro.config.mjs`:
 ### Key Dependencies
 
 - **Video**: `@mux/mux-player` for video playback
-- **Email**: `@sendgrid/mail` for transactional emails
+- **Email**: Resend's HTTP API (plain `fetch`, no SDK dependency) for transactional emails
 - **Animations**: `gsap@^3.13.0` (local npm package, not CDN) for animations with ScrollTrigger plugin, `lottie-web` + `astro-integration-lottie` for Lottie animations
 - **SEO**: SEO component at `src/components/seo.astro`
 

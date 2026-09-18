@@ -1,5 +1,3 @@
-const sgMail = require('@sendgrid/mail');
-
 // Simple in-memory rate limiting
 const submissionTracker = new Map();
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
@@ -8,12 +6,7 @@ const MAX_SUBMISSIONS = 3;
 // Minimum time to fill form (in milliseconds) to prevent instant bot submissions
 const MIN_FORM_TIME = 3000; // 3 seconds
 
-const { SENDGRID_API_KEY, SENDGRID_FROM_EMAIL, CONTACT_EMAIL } = process.env;
-
-// Configure SendGrid
-sgMail.setApiKey(SENDGRID_API_KEY);
-// Note: setDataResidency is only available if using EU regional sending
-// sgMail.setDataResidency('eu');
+const { RESEND_API_KEY, CONTACT_FROM_EMAIL, CONTACT_EMAIL } = process.env;
 
 /**
  * Clean and validate rate limiting
@@ -121,11 +114,11 @@ export const handler = async (event, context) => {
 
         console.log(`Contact form submission from: ${name} <${email}>`);
 
-        // Prepare SendGrid message
+        // Prepare message for Resend
         const msg = {
-            to: CONTACT_EMAIL || SENDGRID_FROM_EMAIL,
-            from: SENDGRID_FROM_EMAIL, // Must be a verified sender in SendGrid
-            replyTo: email,
+            to: CONTACT_EMAIL || CONTACT_FROM_EMAIL,
+            from: CONTACT_FROM_EMAIL, // Must be a verified sender/domain in Resend
+            reply_to: email,
             subject: `New contact from ${name}`,
             text: `
 Name: ${name}
@@ -154,8 +147,27 @@ Time: ${new Date().toISOString()}
             `.trim()
         };
 
-        // Send email via SendGrid
-        await sgMail.send(msg);
+        // Send email via Resend
+        const response = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${RESEND_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(msg)
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.json().catch(() => ({}));
+            console.error(`Resend request failed (${response.status}):`, errorBody);
+            return {
+                statusCode: 502,
+                body: JSON.stringify({
+                    error: 'Failed to send message. Please try again later.',
+                    ...(errorBody.message ? { details: [errorBody.message] } : {})
+                })
+            };
+        }
 
         console.log('Email sent successfully');
 
@@ -168,17 +180,10 @@ Time: ${new Date().toISOString()}
 
     } catch (error) {
         console.error('Error processing contact form:', error);
-
-        const sendGridErrors = error.response?.body?.errors;
-        const details = Array.isArray(sendGridErrors)
-            ? sendGridErrors.map(e => e.message).filter(Boolean)
-            : undefined;
-
         return {
             statusCode: 500,
             body: JSON.stringify({
-                error: 'Failed to send message. Please try again later.',
-                ...(details && details.length ? { details } : {})
+                error: 'Failed to send message. Please try again later.'
             })
         };
     }

@@ -74,8 +74,8 @@ public/               # Static assets (fonts, images)
 
 Required for full functionality:
 
-- `SENDGRID_API_KEY` - SendGrid API key for contact form
-- `SENDGRID_FROM_EMAIL` - Verified sender email
+- `RESEND_API_KEY` - Resend API key for contact form
+- `CONTACT_FROM_EMAIL` - Verified sender email
 - `CONTACT_EMAIL` - Recipient email for contact form
 - `INDEXNOW_KEY` - Key for IndexNow API (optional)
 
