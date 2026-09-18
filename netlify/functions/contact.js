@@ -114,6 +114,18 @@ export const handler = async (event, context) => {
 
         console.log(`Contact form submission from: ${name} <${email}>`);
 
+        if (!RESEND_API_KEY || !CONTACT_FROM_EMAIL) {
+            console.error(
+                `Missing required env vars: ${!RESEND_API_KEY ? 'RESEND_API_KEY ' : ''}${!CONTACT_FROM_EMAIL ? 'CONTACT_FROM_EMAIL' : ''}`
+            );
+            return {
+                statusCode: 500,
+                body: JSON.stringify({
+                    error: 'Failed to send message. Please try again later.'
+                })
+            };
+        }
+
         // Prepare message for Resend
         const msg = {
             to: CONTACT_EMAIL || CONTACT_FROM_EMAIL,

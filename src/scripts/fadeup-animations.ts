@@ -24,7 +24,7 @@ export function initFadeUpAnimations() {
         window.gsap.to(section, {
             opacity: 1,
             y: 0,
-            duration: 1,
+            duration: 0.65,
             ease: "power2.out",
             scrollTrigger: {
                 trigger: section,
