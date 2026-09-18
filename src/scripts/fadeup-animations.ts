@@ -24,11 +24,11 @@ export function initFadeUpAnimations() {
         window.gsap.to(section, {
             opacity: 1,
             y: 0,
-            duration: 0.9,
-            ease: "power4.out",
+            duration: 0.65,
+            ease: "power2.out",
             scrollTrigger: {
                 trigger: section,
-                start: "top 85%",
+                start: "top 92%",
                 toggleActions: "play none none none",
                 invalidateOnRefresh: true,
             },

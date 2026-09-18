@@ -213,10 +213,12 @@ const {
 
                     if (response.ok) {
                         // Redirect to confirmation page
-                        window.location.href = "/confirmation?type=contact";
+                        window.location.href = "/confirmation";
                     } else {
                         const data = await response.json();
                         statusMessage.textContent =
+                            (Array.isArray(data.details) &&
+                                data.details.join(" ")) ||
                             data.error ||
                             "Something went wrong. Please try again.";
                         statusMessage.style.display = "block";
