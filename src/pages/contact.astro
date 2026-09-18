@@ -156,8 +156,11 @@ const {
     </style>
 
     <script>
-        // Set form start time for bot detection
-        document.addEventListener("DOMContentLoaded", () => {
+        // Astro's View Transitions router means this page can be entered via
+        // a soft navigation, after which "DOMContentLoaded" never fires
+        // again — use astro:page-load (fires on the initial load too) so
+        // the submit handler is always (re)attached.
+        document.addEventListener("astro:page-load", () => {
             const formStartTime = document.getElementById(
                 "form-start-time",
             ) as HTMLInputElement;
