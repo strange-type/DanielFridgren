@@ -48,7 +48,6 @@ Both collections use MDX format and have frontmatter validation via Zod schemas.
   - `about.astro`: About page
   - `contact.astro`: Contact form page
   - `colophon.astro`: Site details/credits
-  - `newsletter.astro`: Newsletter signup
   - `blog/[slug].astro`: Dynamic blog post pages
   - `blog/index.astro`: Blog listing
   - `work/[slug].astro`: Dynamic case study pages
@@ -73,8 +72,6 @@ Netlify functions in `netlify/functions/`:
    - Anti-spam: honeypot field + minimum form fill time (3 seconds)
    - Validates name (2+ chars), email format, message (10+ chars)
    - Environment variables: `SENDGRID_API_KEY`, `SENDGRID_FROM_EMAIL`, `CONTACT_EMAIL`
-
-2. **subscribe-email.js**: Newsletter subscription handler
 
 ### Integrations
 

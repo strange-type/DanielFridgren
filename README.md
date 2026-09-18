@@ -56,7 +56,7 @@ The build command runs `astro build` followed by `scripts/submit-indexnow.js` wh
 
 ```
 scripts/              # Build scripts (IndexNow submission)
-netlify/functions/    # Serverless functions (contact, newsletter)
+netlify/functions/    # Serverless functions (contact)
 src/
   components/         # Reusable UI components (.astro)
   content/
@@ -83,7 +83,7 @@ Required for full functionality:
 
 Deployed on **Netlify** with:
 - Automatic builds on push
-- Serverless functions for contact/newsletter
+- Serverless functions for contact
 - Redirects: www → non-www, http → https
 - Build command: `pnpm build`
 
