@@ -12,7 +12,6 @@
     "@astrojs/sitemap": "^3.7.4",
     "@iconify-json/heroicons": "^1.2.3",
     "@mux/mux-player": "^3.13.4",
-    "@sendgrid/mail": "^8.1.6",
     "astro": "^7.3.3",
     "astro-icon": "^1.2.0",
     "astro-robots": "^2.3.1",

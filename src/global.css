@@ -1021,24 +1021,11 @@ span.metadata {
 }
 
 /* Input style */
-.form-newsletter {
-  margin-top: var(--space-m);
-  max-width: 40ch;
-}
-
 .form-label {
   display: block;
   margin-bottom: var(--space-2xs);
   font-size: var(--fs-sm);
   color: var(--color-fg);
-}
-
-.form-group {
-  display: flex;
-  gap: var(--space-s);
-  margin-top: var(--space-s);
-  margin-bottom: var(--space-s);
-  align-items: flex-end;
 }
 
 .form-input {
