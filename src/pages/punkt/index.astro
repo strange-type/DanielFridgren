@@ -58,6 +58,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         --hairline: rgba(255, 255, 255, 0.06);
         --select-tint: rgba(110, 168, 254, 0.18);
         --danger-tint: rgba(248, 113, 113, 0.18);
+        --peek-bg: #262626;
         /* .fab (the add-task button): a circle that reads as barely
            more than the page background itself, given definition by
            a subtle light rim and a soft shadow rather than a filled
@@ -82,6 +83,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           --hairline: rgba(0, 0, 0, 0.08);
           --select-tint: rgba(47, 111, 237, 0.12);
           --danger-tint: rgba(220, 38, 38, 0.12);
+          --peek-bg: #fbfbfa;
           /* A crisp white rim reads as a highlight only if the fill
              itself sits a shade below pure white — otherwise there's
              nothing brighter left for the rim to contrast against.
@@ -1134,7 +1136,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         flex-direction: column;
         width: 100%;
         text-align: left;
-        background: var(--surface);
+        background: var(--peek-bg);
+        border: 1px solid var(--border);
         border-radius: 0.6rem;
         padding: 0.6rem 0.75rem;
         margin-bottom: 1rem;
