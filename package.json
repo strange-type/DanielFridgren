@@ -9,18 +9,14 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/react": "^6.0.6",
     "@astrojs/sitemap": "^3.7.4",
     "@iconify-json/heroicons": "^1.2.3",
     "@mux/mux-player": "^3.13.4",
     "@sendgrid/mail": "^8.1.6",
     "astro": "^7.3.3",
-    "astro-config": "^0.2.2",
     "astro-icon": "^1.2.0",
-    "astro-integration-lottie": "^0.3.2",
     "astro-robots": "^2.3.1",
     "gsap": "^3.15.0",
-    "lottie-web": "^5.13.0",
     "otplib": "^13.5.0",
     "unist-util-visit": "^5.1.0",
     "web-push": "^3.6.7"
