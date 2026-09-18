@@ -67,6 +67,13 @@ import { Icon } from "astro-icon/components";
     becomes part of the backdrop that .navbar's mix-blend-mode: difference
     reads — nudging the invert away from the low-contrast midtone zone
     without capping how much it still reacts to the real page content.
+
+    --scrim-alpha is written continuously by nav-scrim.ts, which samples
+    the actual rendered pixels/colors behind the nav (live, on scroll and
+    on an interval for autoplaying video) and derives an alpha from how
+    close the sampled luminance is to the 50%-grey dead zone where
+    difference-blended text loses contrast. Defaults to 0 so a JS failure
+    fails safe to "no scrim" rather than a wrong static guess.
   */
   .nav-scrim {
     position: fixed;
@@ -78,21 +85,14 @@ import { Icon } from "astro-icon/components";
     pointer-events: none;
     opacity: 0;
     transition: transform 0.4s ease-in-out;
+    --scrim-alpha: 0;
   }
 
-  /*
-    Only show the darkening gradient on pages with hero media directly
-    under the nav (homepage/case-study .section-hero, blog post
-    .hero-image-container) — that's where a plain photo/video benefits
-    from a top-fade for contrast. Over plain text pages the same
-    gradient just reads as an unwanted grey smudge on white, so it
-    stays off there.
-  */
   @media (prefers-color-scheme: light) {
-    body:has(.section-hero, .hero-image-container) .nav-scrim {
+    .nav-scrim {
       background: linear-gradient(
         to bottom,
-        rgba(0, 0, 0, 0.35),
+        rgba(0, 0, 0, var(--scrim-alpha)),
         rgba(0, 0, 0, 0)
       );
     }
