@@ -20,6 +20,14 @@ export const handler = async (event, context) => {
     let responseText = await response.text();
     console.log('response:', responseText);
 
+    if (!response.ok) {
+        console.error(`ConvertKit subscription failed (${response.status}): ${responseText}`);
+        return {
+            statusCode: 502,
+            body: JSON.stringify({ error: 'Failed to subscribe. Please try again later.' })
+        };
+    }
+
     // Return success - Netlify will redirect to the action="/confirmation" page
     return {
         statusCode: 200,
