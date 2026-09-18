@@ -110,6 +110,7 @@ const { title, desc, type, coverImage } = Astro.props;
   import { initFadeUpAnimations } from "../scripts/fadeup-animations";
   import { initFooterAnimation } from "../scripts/footer-animation";
   import { initNavbar } from "../scripts/navbar";
+  import { initNavScrim } from "../scripts/nav-scrim";
   import { initMobileMenuLinks } from "../scripts/mobile-menu";
 
   // Make GSAP globally available
@@ -131,6 +132,7 @@ const { title, desc, type, coverImage } = Astro.props;
     initFadeUpAnimations();
     initFooterAnimation();
     initNavbar();
+    initNavScrim();
     initMobileMenuLinks();
   }
 
