@@ -63,6 +63,17 @@ import { Icon } from "astro-icon/components";
   }
 
   /*
+    Registering --scrim-alpha as a typed number makes it animatable, so
+    the `transition` below can smoothly interpolate it instead of the
+    gradient snapping instantly each time nav-scrim.ts updates it.
+  */
+  @property --scrim-alpha {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+  }
+
+  /*
     Sits behind (and is a sibling of, not nested in) .navbar so its gradient
     becomes part of the backdrop that .navbar's mix-blend-mode: difference
     reads — nudging the invert away from the low-contrast midtone zone
@@ -84,7 +95,7 @@ import { Icon } from "astro-icon/components";
     z-index: 1000;
     pointer-events: none;
     opacity: 0;
-    transition: transform 0.4s ease-in-out;
+    transition: transform 0.4s ease-in-out, --scrim-alpha 0.3s ease-out;
     --scrim-alpha: 0;
   }
 

@@ -8,7 +8,10 @@
 
 const SAMPLE_Y = 48;
 const SAMPLE_COUNT = 7;
-const MAX_ALPHA = 0.45;
+const SAMPLE_BLOCK = 10; // px, area averaged per point instead of a single pixel
+const MAX_ALPHA = 0.3;
+const SMOOTHING = 0.25; // exponential moving average factor, lower = smoother/slower
+const VIDEO_FALLBACK_LUMINANCE = 0.35; // used when a video can't be read (cross-origin canvas taint)
 const TEXT_TAGS = new Set([
     "P", "H1", "H2", "H3", "H4", "H5", "H6", "A", "SPAN", "LI", "TIME",
     "LABEL", "BUTTON", "TD", "TH", "STRONG", "EM", "BLOCKQUOTE",
@@ -21,6 +24,7 @@ let sampleCtx: CanvasRenderingContext2D | null = null;
 let scrollHandler: (() => void) | null = null;
 let resizeHandler: (() => void) | null = null;
 let intervalId: ReturnType<typeof setInterval> | null = null;
+let smoothedStrength: number | null = null;
 
 function relativeLuminance(r: number, g: number, b: number): number {
     return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
@@ -39,6 +43,20 @@ function parseCssColor(value: string): [number, number, number, number] | null {
     ];
 }
 
+function findVideoInShadowTree(root: ShadowRoot | null | undefined): HTMLVideoElement | null {
+    if (!root) return null;
+    const direct = root.querySelector("video");
+    if (direct instanceof HTMLVideoElement) return direct;
+    // mux-player wraps media-chrome elements that nest their own shadow
+    // roots (e.g. <media-controller>), so the <video> can be more than
+    // one shadow boundary deep.
+    for (const el of root.querySelectorAll("*")) {
+        const found = findVideoInShadowTree(el.shadowRoot);
+        if (found) return found;
+    }
+    return null;
+}
+
 function findMediaSource(candidates: Element[]): HTMLImageElement | HTMLVideoElement | null {
     // Search the whole stack at this point, not just ancestors of the
     // topmost hit: an image/video is often a sibling of an overlay div
@@ -48,8 +66,8 @@ function findMediaSource(candidates: Element[]): HTMLImageElement | HTMLVideoEle
             return el;
         }
         if (el.tagName === "MUX-PLAYER") {
-            const video = (el as HTMLElement).shadowRoot?.querySelector("video");
-            if (video instanceof HTMLVideoElement) return video;
+            const video = findVideoInShadowTree((el as HTMLElement).shadowRoot);
+            if (video) return video;
         }
     }
     return null;
@@ -83,17 +101,40 @@ function sampleMediaLuminance(
 
         if (!sampleCanvas) {
             sampleCanvas = document.createElement("canvas");
-            sampleCanvas.width = 1;
-            sampleCanvas.height = 1;
+            sampleCanvas.width = SAMPLE_BLOCK;
+            sampleCanvas.height = SAMPLE_BLOCK;
             sampleCtx = sampleCanvas.getContext("2d", { willReadFrequently: true });
         }
         if (!sampleCtx) return null;
 
-        sampleCtx.drawImage(media, sourceX, sourceY, 1, 1, 0, 0, 1, 1);
-        const [r, g, b] = sampleCtx.getImageData(0, 0, 1, 1).data;
-        return relativeLuminance(r, g, b);
+        // Average a small block rather than a single pixel: sampling one
+        // pixel is prone to landing exactly on a thin bright letter/logo
+        // edge on one frame and just beside it the next, causing visible
+        // flicker as the value swings wildly between adjacent frames.
+        const blockSourceW = Math.min(sw, SAMPLE_BLOCK * 2);
+        const blockSourceH = Math.min(sh, SAMPLE_BLOCK * 2);
+        sampleCtx.clearRect(0, 0, SAMPLE_BLOCK, SAMPLE_BLOCK);
+        sampleCtx.drawImage(
+            media,
+            Math.max(0, sourceX - blockSourceW / 2),
+            Math.max(0, sourceY - blockSourceH / 2),
+            blockSourceW,
+            blockSourceH,
+            0,
+            0,
+            SAMPLE_BLOCK,
+            SAMPLE_BLOCK,
+        );
+        const data = sampleCtx.getImageData(0, 0, SAMPLE_BLOCK, SAMPLE_BLOCK).data;
+        let total = 0;
+        let count = 0;
+        for (let i = 0; i < data.length; i += 4) {
+            total += relativeLuminance(data[i], data[i + 1], data[i + 2]);
+            count++;
+        }
+        return count > 0 ? total / count : null;
     } catch {
-        // Tainted canvas (cross-origin media) or not decoded yet
+        // Tainted canvas (cross-origin media, e.g. Mux's streaming CDN) or not decoded yet
         return null;
     }
 }
@@ -120,6 +161,10 @@ function computeLuminanceAt(x: number, y: number): number | null {
     if (media) {
         const luminance = sampleMediaLuminance(media, x, y);
         if (luminance !== null) return luminance;
+        // Cross-origin video (e.g. Mux's streaming CDN) taints the canvas so
+        // getImageData throws — fall back to a reasonable guess rather than
+        // treating it as plain background, which would read as page-white.
+        if (media instanceof HTMLVideoElement) return VIDEO_FALLBACK_LUMINANCE;
     }
 
     const bgLuminance = findBackgroundLuminance(target);
@@ -148,8 +193,20 @@ function updateScrim() {
 
     const avgLuminance = samples.reduce((sum, v) => sum + v, 0) / samples.length;
     // Peaks at luminance 0.5 (the dead zone for difference blend), 0 at the extremes
-    const strength = Math.max(0, 1 - Math.abs(avgLuminance - 0.5) / 0.5);
-    navScrim.style.setProperty("--scrim-alpha", (strength * MAX_ALPHA).toFixed(3));
+    const rawStrength = Math.max(0, 1 - Math.abs(avgLuminance - 0.5) / 0.5);
+
+    // Smooth over time on top of the CSS opacity transition below: the
+    // transition alone softens each jump, but consecutive noisy samples
+    // (e.g. scrolling fast over a busy image) can still fight it.
+    smoothedStrength =
+        smoothedStrength === null
+            ? rawStrength
+            : smoothedStrength + (rawStrength - smoothedStrength) * SMOOTHING;
+
+    // Note: this is a separate custom property from the element's own
+    // `opacity` (used elsewhere for the nav's load-in fade and scroll-hide
+    // behavior) — reusing that would fight with those animations.
+    navScrim.style.setProperty("--scrim-alpha", (smoothedStrength * MAX_ALPHA).toFixed(3));
 }
 
 export function cleanupNavScrim() {
