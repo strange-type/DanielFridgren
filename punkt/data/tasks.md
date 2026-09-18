@@ -26,7 +26,7 @@ inte skickas flera gånger samma dag.
   > Ons 6h
   > Tor 6h
   > Fre 3h + 1h
-- [ ] Ta ledigt 26-30/10 (höstlov) (id: 1789675381460-hza4s, when: 2026-09-18)
+- [x] Ta ledigt 26-30/10 (höstlov) (id: 1789675381460-hza4s, done: 2026-09-18T12:28:07.510Z)
 - [ ] Kolla upp digitala studiebesök (id: 1789542287149-ylh5e, when: -)
   > https://www.skane.se/jobb-och-utbildning/jobba-hos-oss/att-jobba-i-region-skane/hang-med-pa-digitala-studiebesok/
 - [ ] Kolla upp denna på st Gertrud 9:e okt (id: 1789203141617-meexz, when: 2026-09-24)
