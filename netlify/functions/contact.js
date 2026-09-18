@@ -168,10 +168,17 @@ Time: ${new Date().toISOString()}
 
     } catch (error) {
         console.error('Error processing contact form:', error);
+
+        const sendGridErrors = error.response?.body?.errors;
+        const details = Array.isArray(sendGridErrors)
+            ? sendGridErrors.map(e => e.message).filter(Boolean)
+            : undefined;
+
         return {
             statusCode: 500,
             body: JSON.stringify({
-                error: 'Failed to send message. Please try again later.'
+                error: 'Failed to send message. Please try again later.',
+                ...(details && details.length ? { details } : {})
             })
         };
     }
