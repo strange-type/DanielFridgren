@@ -20,7 +20,7 @@ inte skickas flera gånger samma dag.
 ## Tasks
 
 - [x] Lägg in tid i arket (id: 1789711570469-ik7rc, done: 2026-09-18T08:49:32.849Z)
-- [ ] Tidrapportering (id: 1789675648658-i7zvk, when: 2026-09-18)
+- [x] Tidrapportering (id: 1789675648658-i7zvk, done: 2026-09-18T14:43:53.631Z)
   > Mån 
   > Tis 2? + 1h
   > Ons 6h
