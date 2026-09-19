@@ -52,14 +52,14 @@ const { title, desc, type, coverImage } = Astro.props;
         <>
           <script
             defer
-            src="https://cloud.umami.is/script.js"
-            data-website-id="afa4fdc4-b9ba-493d-84ed-b3ff7a41884f"
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon='{"token":"c2d1eb89e36d42b3af5daa6253a5f323"}'
           />
 
           <script
-            defer
-            src="https://static.cloudflareinsights.com/beacon.min.js"
-            data-cf-beacon='{"token":"c2d1eb89e36d42b3af5daa6253a5f323"}'
+            data-goatcounter="https://fridgren.goatcounter.com/count"
+            async
+            src="//gc.zgo.at/count.js"
           />
         </>
       )
