@@ -46,5 +46,5 @@ inte skickas flera gånger samma dag.
 - [ ] Kolla igen vad jag skrev kring regionens utmaningar (id: 1788772585422-ggxdg, when: -)
   > Text
 - [x] Förbered presentationen imorgon (id: 1788771927161-774pw, done: 2026-09-07T12:08:28.874Z)
-- [ ] Läs Kort om PDL - openEHR (id: 1788727727911-mxc1l, when: -)
+- [x] Läs Kort om PDL - openEHR (id: 1788727727911-mxc1l, done: 2026-09-20T15:46:15.861Z)
   > https://openehr.atlassian.net/wiki/spaces/SWE/pages/2139291653/Juridiska+krav+-+Patientdatalagen
