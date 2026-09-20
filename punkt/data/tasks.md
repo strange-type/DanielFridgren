@@ -19,6 +19,8 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Kolla upp om Linda Strandberg avd 54 har berättat om Safewards (id: 1789923355449-ere8z, when: today)
+  > https://intra.skane.se/nyheter/safewards-starker-bade-teamet-och-relationerna2
 - [x] Lägg in tid i arket (id: 1789711570469-ik7rc, done: 2026-09-18T08:49:32.849Z)
 - [x] Tidrapportering (id: 1789675648658-i7zvk, done: 2026-09-18T14:43:53.631Z)
   > Mån 
