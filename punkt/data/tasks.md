@@ -19,6 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Se om jag kan integrera prototypen i Power Platform (id: 1789997641402-he6hh, when: today)
 - [ ] Kolla upp om Linda Strandberg avd 54 har berättat om Safewards (id: 1789923355449-ere8z, when: today)
   > https://intra.skane.se/nyheter/safewards-starker-bade-teamet-och-relationerna2
 - [x] Lägg in tid i arket (id: 1789711570469-ik7rc, done: 2026-09-18T08:49:32.849Z)
