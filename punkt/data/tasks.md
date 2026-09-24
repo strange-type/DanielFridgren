@@ -19,7 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
-- [ ] Testa Col pilot studio (id: 1790001245274-lwe3v, when: today)
+- [x] Testa Col pilot studio (id: 1790001245274-lwe3v, done: 2026-09-24T07:22:44.419Z)
 - [ ] Se om jag kan integrera prototypen i Power Platform (id: 1789997641402-he6hh, when: today)
 - [ ] Kolla upp om Linda Strandberg avd 54 har berättat om Safewards (id: 1789923355449-ere8z, when: today)
   > https://intra.skane.se/nyheter/safewards-starker-bade-teamet-och-relationerna2
