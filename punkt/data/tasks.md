@@ -19,6 +19,8 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Skaffa skåp på Medicon (id: 1790239803859-mk5b2, when: 2026-09-25)
+  > Om du har din arbetsplats på Medicon Village får du ett skåp där du kan förvara dina saker. Vi ser gärna att du delar skåp med en eller flera kollegor. Skåpen öppnas och stängs med de e-tjänstekort som är kopplade till skåpet. För att få ett skåp är du välkommen till Leveransrummet under ordinarie öppetiider eller skicka ett mejl till DigITMTadministration@skane.se.
 - [x] Testa Col pilot studio (id: 1790001245274-lwe3v, done: 2026-09-24T07:22:44.419Z)
 - [x] Se om jag kan integrera prototypen i Power Platform (id: 1789997641402-he6hh, done: 2026-09-24T07:22:45.245Z)
 - [ ] Kolla upp om Linda Strandberg avd 54 har berättat om Safewards (id: 1789923355449-ere8z, when: today)
