@@ -37,7 +37,7 @@ inte skickas flera gånger samma dag.
 - [x] Ta ledigt 26-30/10 (höstlov) (id: 1789675381460-hza4s, done: 2026-09-18T12:28:07.510Z)
 - [ ] Kolla upp digitala studiebesök (id: 1789542287149-ylh5e, when: -)
   > https://www.skane.se/jobb-och-utbildning/jobba-hos-oss/att-jobba-i-region-skane/hang-med-pa-digitala-studiebesok/
-- [ ] Kolla upp denna på st Gertrud 9:e okt (id: 1789203141617-meexz, when: 2026-09-24)
+- [ ] Kolla upp denna på st Gertrud 9:e okt (id: 1789203141617-meexz, when: 2026-09-29)
   > https://malmo.se/Aktuellt/Artiklar-Malmo-stad/2026-09-09-Valkomna-till-varldsdagen-for-psykisk-halsa.html
 - [ ] Ta bild på limhamns bibliotek (id: 1788845636400-7qpwx, when: 2026-09-22)
 - [x] Gräv i samsjuklighetsreformen (id: 1789029448027-azjf0, done: 2026-09-11T13:31:59.668Z)
