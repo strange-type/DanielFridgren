@@ -19,6 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Testa pamdemiförberedelser av prototyp på Claude (id: 1790356701358-np994, when: today)
 - [ ] Kolla system Regionen o komplettera wikin (id: 1790313707114-nwi1a, when: today)
 - [ ] Planera workshop kring fyrfältare (id: 1790264676222-yivwj, when: -)
 - [ ] Planera en AI-tool camp för design (id: 1790264651888-513zd, when: -)
