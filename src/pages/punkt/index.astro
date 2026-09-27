@@ -481,11 +481,16 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       /* Mobile: floats over the content in the corner instead of
-         sitting inline in the list header, same safe-area corner
-         inset as .security-badge below. The desktop @media block
-         moves it back up next to the header (and resets bottom, since
-         this position: fixed sticks around at any width). */
-      #add-btn {
+         sitting inline in a header (list header or menu header), same
+         safe-area corner inset as .security-badge below, and the same
+         spot on every mobile screen so it's always where you expect
+         it. #menu-add-btn is hidden outright on desktop (its parent
+         .menu-header is — see the @media block), so this only ever
+         applies to it on mobile; #add-btn gets its own desktop
+         override below (which resets bottom, since this position:
+         fixed otherwise sticks around at any width). */
+      #add-btn,
+      #menu-add-btn {
         position: fixed;
         right: calc(1.25rem + env(safe-area-inset-right));
         bottom: calc(1.25rem + env(safe-area-inset-bottom));
@@ -494,7 +499,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       /* 20% larger than the other .fab icons — this is the primary
          create-task action, now living on its own in the corner. */
-      #add-btn svg {
+      #add-btn svg,
+      #menu-add-btn svg {
         width: 28.8px;
         height: 28.8px;
       }
