@@ -480,6 +480,25 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         display: none;
       }
 
+      /* Mobile: floats over the content in the corner instead of
+         sitting inline in the list header, same safe-area corner
+         inset as .security-badge below. The desktop @media block
+         moves it back up next to the header (and resets bottom, since
+         this position: fixed sticks around at any width). */
+      #add-btn {
+        position: fixed;
+        right: calc(1.25rem + env(safe-area-inset-right));
+        bottom: calc(1.25rem + env(safe-area-inset-bottom));
+        z-index: 25;
+      }
+
+      /* 20% larger than the other .fab icons — this is the primary
+         create-task action, now living on its own in the corner. */
+      #add-btn svg {
+        width: 28.8px;
+        height: 28.8px;
+      }
+
       .list-header-right {
         display: flex;
         align-items: center;
@@ -1508,6 +1527,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           position: fixed;
           top: 2rem;
           right: 3rem;
+          bottom: auto;
           z-index: 25;
         }
 
