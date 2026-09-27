@@ -19,6 +19,8 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Ladda ner Raycast (id: 1790500374039-3y5ta, when: today)
+  > https://apps.microsoft.com/detail/9pfxxshc64h3?hl=sv-SE&gl=SE
 - [ ] Testa pamdemiförberedelser av prototyp på Claude (id: 1790356701358-np994, when: today)
 - [ ] Kolla system Regionen o komplettera wikin (id: 1790313707114-nwi1a, when: today)
 - [ ] Planera workshop kring fyrfältare (id: 1790264676222-yivwj, when: -)
