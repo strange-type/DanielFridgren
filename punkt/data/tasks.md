@@ -19,7 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
-- [ ] Ladda ner Raycast? (id: 1790500374039-3y5ta, when: today)
+- [x] Ladda ner Raycast? (id: 1790500374039-3y5ta, done: 2026-09-28T12:15:42.310Z)
   > https://apps.microsoft.com/detail/9pfxxshc64h3?hl=sv-SE&gl=SE
 - [ ] Testa pamdemiförberedelser av prototyp på Claude (id: 1790356701358-np994, when: today)
 - [ ] Kolla system Regionen o komplettera wikin (id: 1790313707114-nwi1a, when: today)
