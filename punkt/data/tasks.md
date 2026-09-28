@@ -29,7 +29,7 @@ inte skickas flera gånger samma dag.
   > Om du har din arbetsplats på Medicon Village får du ett skåp där du kan förvara dina saker. Vi ser gärna att du delar skåp med en eller flera kollegor. Skåpen öppnas och stängs med de e-tjänstekort som är kopplade till skåpet. För att få ett skåp är du välkommen till Leveransrummet under ordinarie öppetiider eller skicka ett mejl till DigITMTadministration@skane.se.
 - [x] Testa Col pilot studio (id: 1790001245274-lwe3v, done: 2026-09-24T07:22:44.419Z)
 - [x] Se om jag kan integrera prototypen i Power Platform (id: 1789997641402-he6hh, done: 2026-09-24T07:22:45.245Z)
-- [ ] Kolla upp om Linda Strandberg avd 54 har berättat om Safewards (id: 1789923355449-ere8z, when: today)
+- [ ] Kolla upp om Linda Strandberg avd 54 har berättat om Safewards (id: 1789923355449-ere8z, when: -)
   > https://intra.skane.se/nyheter/safewards-starker-bade-teamet-och-relationerna2
 - [x] Lägg in tid i arket (id: 1789711570469-ik7rc, done: 2026-09-18T08:49:32.849Z)
 - [x] Tidrapportering (id: 1789675648658-i7zvk, done: 2026-09-18T14:43:53.631Z)
