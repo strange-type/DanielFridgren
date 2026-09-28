@@ -24,7 +24,6 @@ inte skickas flera gånger samma dag.
 - [ ] Testa pamdemiförberedelser av prototyp på Claude (id: 1790356701358-np994, when: today)
 - [ ] Kolla system Regionen o komplettera wikin (id: 1790313707114-nwi1a, when: today)
 - [ ] Planera workshop kring fyrfältare (id: 1790264676222-yivwj, when: -)
-- [ ] Planera en AI-tool camp för design (id: 1790264651888-513zd, when: -)
 - [ ] Skaffa skåp på Medicon (id: 1790239803859-mk5b2, when: 2026-09-28)
   > Om du har din arbetsplats på Medicon Village får du ett skåp där du kan förvara dina saker. Vi ser gärna att du delar skåp med en eller flera kollegor. Skåpen öppnas och stängs med de e-tjänstekort som är kopplade till skåpet. För att få ett skåp är du välkommen till Leveransrummet under ordinarie öppetiider eller skicka ett mejl till DigITMTadministration@skane.se.
 - [x] Testa Col pilot studio (id: 1790001245274-lwe3v, done: 2026-09-24T07:22:44.419Z)
