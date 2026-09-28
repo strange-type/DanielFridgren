@@ -898,8 +898,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         transform: rotate(45deg) translate(-1px, -1px);
       }
 
-      .select-bar,
-      .when-panel {
+      .select-bar {
         position: fixed;
         left: 50%;
         transform: translateX(-50%);
@@ -995,32 +994,6 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         height: 1px;
         background: var(--border);
         margin: 0.3rem 0.2rem;
-      }
-
-      .when-panel {
-        bottom: calc(4.75rem + env(safe-area-inset-bottom));
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.85rem;
-      }
-
-      .when-panel[hidden] {
-        display: none;
-      }
-
-      .when-panel button {
-        color: var(--accent);
-        padding: 0.3rem 0.5rem;
-      }
-
-      .when-panel input[type="date"] {
-        width: auto;
-        background: transparent;
-        border: none;
-        color: var(--text);
-        padding: 0;
       }
 
       .task-check {
@@ -1786,12 +1759,6 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
         <ul id="task-list"></ul>
 
-        <div id="when-panel" class="when-panel" hidden>
-          <button type="button" id="wp-today">Idag</button>
-          <input type="date" id="wp-date" />
-          <button type="button" id="wp-inbox">Inbox</button>
-        </div>
-
         <div id="select-bar" class="select-bar" hidden>
           <button type="button" id="sb-when" class="select-bar-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
@@ -1921,10 +1888,6 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const sbInbox = document.getElementById("sb-inbox") as HTMLButtonElement;
       const sbDelete = document.getElementById("sb-delete") as HTMLButtonElement;
       const rowContextMenu = document.getElementById("row-context-menu") as HTMLDivElement;
-      const whenPanel = document.getElementById("when-panel") as HTMLDivElement;
-      const wpToday = document.getElementById("wp-today") as HTMLButtonElement;
-      const wpDate = document.getElementById("wp-date") as HTMLInputElement;
-      const wpInbox = document.getElementById("wp-inbox") as HTMLButtonElement;
 
       const quickAdd = document.getElementById("quick-add") as HTMLFormElement;
       // Holds the animated max-height/overflow-clip (see its own CSS
@@ -2672,7 +2635,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         const wasSelecting = selectMode;
         selectMode = false;
         selectedIds = new Set();
-        whenPanel.hidden = true;
+        whenSheet.hidden = true;
         selectBar.hidden = true;
         doneBtn.hidden = true;
         backBtn.hidden = false;
@@ -3200,7 +3163,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         }
         renderMenu();
         queueSave();
-        whenPanel.hidden = true;
+        whenSheet.hidden = true;
 
         // Exit select mode's own chrome right away, but leave the
         // actual row-list rebuild to fadeOutRows below, so tasks that
@@ -3218,19 +3181,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         fadeOutRows(leavingIds);
       }
 
-      sbWhen.addEventListener("click", () => {
-        whenPanel.hidden = !whenPanel.hidden;
-      });
-
-      wpToday.addEventListener("click", () => applyWhenToSelected("today"));
-      wpInbox.addEventListener("click", () => applyWhenToSelected(null));
-      wpDate.addEventListener("change", () => {
-        if (wpDate.value) applyWhenToSelected(wpDate.value);
-      });
+      sbWhen.addEventListener("click", openWhenSheetForSelection);
 
       // A direct shortcut for the common case (clear a batch of Today
-      // items back to Inbox) rather than going through the When panel
-      // for what wpInbox above already does one tap deeper.
+      // items back to Inbox) rather than going through the When sheet
+      // for what its Clear option already does one tap deeper.
       sbInbox.addEventListener("click", () => applyWhenToSelected(null));
 
       sbDelete.addEventListener("click", () => {
@@ -3734,6 +3689,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       let calendarViewYear = 0;
       let calendarViewMonth = 0; // 0-indexed
 
+      // True while the sheet is open on behalf of the select-bar's bulk
+      // "When" action (multiple already-saved tasks) rather than the
+      // quick-add/edit-task flow's single pendingWhen/pendingWhenChoice
+      // draft — see openWhenSheetForSelection().
+      let whenSheetSelectMode = false;
+
       function renderCalendar() {
         const first = new Date(calendarViewYear, calendarViewMonth, 1);
         const startWeekday = (first.getDay() + 6) % 7; // 0 = Monday
@@ -3774,6 +3735,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       function openWhenSheet() {
+        whenSheetSelectMode = false;
+        whenAddReminder.hidden = false;
         const now = new Date();
         calendarViewYear = now.getFullYear();
         calendarViewMonth = now.getMonth();
@@ -3782,23 +3745,46 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         whenSheet.hidden = false;
       }
 
+      // Opened from the select-bar instead, to apply a when-choice to
+      // every selected (already-saved) task at once. There's no single
+      // pendingWhen to show a checkmark or highlighted day for here — the
+      // selection can span tasks with different when values — so this
+      // skips updateWhenSheetChecks() and hides Add Reminder rather than
+      // bulk-editing reminder times too, which is a bigger feature than
+      // what the select-bar's "When" button has ever done.
+      function openWhenSheetForSelection() {
+        whenSheetSelectMode = true;
+        whenAddReminder.hidden = true;
+        const now = new Date();
+        calendarViewYear = now.getFullYear();
+        calendarViewMonth = now.getMonth();
+        renderCalendar();
+        whenSheet.querySelectorAll<HTMLElement>("[data-check]").forEach((el) => el.classList.remove("checked"));
+        whenSheet.hidden = false;
+      }
+
       qaWhenBtn.addEventListener("click", openWhenSheet);
       qaContext.addEventListener("click", openWhenSheet);
       whenSheetClose.addEventListener("click", () => {
         whenSheet.hidden = true;
-        qaTitle.focus();
+        if (!whenSheetSelectMode) qaTitle.focus();
       });
 
       whenSheet.addEventListener("click", (e) => {
         if (e.target === whenSheet) {
           whenSheet.hidden = true;
-          qaTitle.focus();
+          if (!whenSheetSelectMode) qaTitle.focus();
           return;
         }
 
         const choiceBtn = (e.target as HTMLElement).closest("[data-when-choice]") as HTMLElement | null;
         if (choiceBtn) {
           const choice = choiceBtn.dataset.whenChoice;
+          if (whenSheetSelectMode) {
+            if (choice === "today" || choice === "evening") applyWhenToSelected(choice);
+            whenSheet.hidden = true;
+            return;
+          }
           if (choice === "today") {
             pendingWhen = "today";
             pendingWhenChoice = "today";
@@ -3824,6 +3810,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
         const dayBtn = (e.target as HTMLElement).closest(".cal-day") as HTMLElement | null;
         if (dayBtn) {
+          if (whenSheetSelectMode) {
+            applyWhenToSelected(dayBtn.dataset.date || null);
+            whenSheet.hidden = true;
+            return;
+          }
           pendingWhen = dayBtn.dataset.date || null;
           pendingWhenChoice = "date";
           pendingRemind = null;
@@ -3852,6 +3843,11 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       });
 
       whenClear.addEventListener("click", () => {
+        if (whenSheetSelectMode) {
+          applyWhenToSelected(null);
+          whenSheet.hidden = true;
+          return;
+        }
         pendingWhen = null;
         pendingWhenChoice = null;
         pendingRemind = null;
