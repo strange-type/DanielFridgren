@@ -19,17 +19,16 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
-- [ ] Ladda ner Raycast (id: 1790500374039-3y5ta, when: today)
+- [ ] Ladda ner Raycast? (id: 1790500374039-3y5ta, when: today)
   > https://apps.microsoft.com/detail/9pfxxshc64h3?hl=sv-SE&gl=SE
 - [ ] Testa pamdemiförberedelser av prototyp på Claude (id: 1790356701358-np994, when: today)
 - [ ] Kolla system Regionen o komplettera wikin (id: 1790313707114-nwi1a, when: today)
 - [ ] Planera workshop kring fyrfältare (id: 1790264676222-yivwj, when: -)
-- [ ] Planera en AI-tool camp för design (id: 1790264651888-513zd, when: -)
 - [ ] Skaffa skåp på Medicon (id: 1790239803859-mk5b2, when: 2026-09-28)
   > Om du har din arbetsplats på Medicon Village får du ett skåp där du kan förvara dina saker. Vi ser gärna att du delar skåp med en eller flera kollegor. Skåpen öppnas och stängs med de e-tjänstekort som är kopplade till skåpet. För att få ett skåp är du välkommen till Leveransrummet under ordinarie öppetiider eller skicka ett mejl till DigITMTadministration@skane.se.
 - [x] Testa Col pilot studio (id: 1790001245274-lwe3v, done: 2026-09-24T07:22:44.419Z)
 - [x] Se om jag kan integrera prototypen i Power Platform (id: 1789997641402-he6hh, done: 2026-09-24T07:22:45.245Z)
-- [ ] Kolla upp om Linda Strandberg avd 54 har berättat om Safewards (id: 1789923355449-ere8z, when: today)
+- [ ] Kolla upp om Linda Strandberg avd 54 har berättat om Safewards (id: 1789923355449-ere8z, when: -)
   > https://intra.skane.se/nyheter/safewards-starker-bade-teamet-och-relationerna2
 - [x] Lägg in tid i arket (id: 1789711570469-ik7rc, done: 2026-09-18T08:49:32.849Z)
 - [x] Tidrapportering (id: 1789675648658-i7zvk, done: 2026-09-18T14:43:53.631Z)
@@ -43,7 +42,7 @@ inte skickas flera gånger samma dag.
   > https://www.skane.se/jobb-och-utbildning/jobba-hos-oss/att-jobba-i-region-skane/hang-med-pa-digitala-studiebesok/
 - [ ] Kolla upp denna på st Gertrud 9:e okt (id: 1789203141617-meexz, when: 2026-09-29)
   > https://malmo.se/Aktuellt/Artiklar-Malmo-stad/2026-09-09-Valkomna-till-varldsdagen-for-psykisk-halsa.html
-- [ ] Ta bild på limhamns bibliotek (id: 1788845636400-7qpwx, when: 2026-09-22)
+- [ ] Ta bild på limhamns bibliotek (id: 1788845636400-7qpwx, when: 2026-09-29)
 - [x] Gräv i samsjuklighetsreformen (id: 1789029448027-azjf0, done: 2026-09-11T13:31:59.668Z)
 - [x] Skicka bemötande-presentationen till Sara (id: 1788943272943-u1h8v, done: 2026-09-09T11:44:37.901Z)
   > https://regionskane-my.sharepoint.com/personal/124832_skane_se/_layouts/15/stream.aspx?id=%2Fpersonal%2F124832%5Fskane%5Fse%2FDocuments%2FInspelningar%2FM%C3%B6tesplats%20God%20V%C3%A5rd%20%2D%20Bem%C3%B6tande%2D20260908%5F135320%2DM%C3%B6tesinspelning%2Emp4&ga=1&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E85150fef%2D1274%2D475c%2D8810%2Dcf8b250b59f8
