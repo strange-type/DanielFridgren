@@ -13,6 +13,15 @@ const SUBSCRIPTIONS_PATH =
     process.env.PUNKT_SUBSCRIPTIONS_PATH || 'punkt/data/subscriptions.json';
 const ERROR_LOG_PATH = process.env.PUNKT_ERROR_LOG_PATH || 'punkt/data/last-reminder-error.json';
 const AUTH_LOG_PATH = process.env.PUNKT_AUTH_LOG_PATH || 'punkt/data/auth-log.json';
+const DIGEST_STATE_PATH = process.env.PUNKT_DIGEST_STATE_PATH || 'punkt/data/last-digest-sent.json';
+
+// Both punkt-send-reminders.js and punkt-send-digest.js run on a tight
+// cron cadence (every 10-15 min) and need today's date/time *as it is
+// in Sweden*, not the function's own host timezone (always UTC on
+// Netlify) — this is what makes "remind: 18:00" or a 07:00 digest land
+// at the right wall-clock moment across the DST switch, without the
+// cron schedule itself needing to change twice a year.
+const TIMEZONE = 'Europe/Stockholm';
 
 const { PUNKT_GITHUB_TOKEN, PUNKT_SESSION_SECRET } = process.env;
 
@@ -35,6 +44,29 @@ const AUTH_LOG_RETENTION_MS = 24 * 60 * 60 * 1000;
 const TASK_LINE =
     /^- \[( |x)\] (.+?) \(id: ([^,)]+)(?:, when: ([^,)]+))?(?:, deadline: ([^,)]+))?(?:, remind: ([^,)]+))?(?:, notified: ([^,)]+))?(?:, done: ([^,)]+))?\)\s*$/;
 const NOTE_LINE = /^ {2}> (.*)$/;
+
+/**
+ * Today's date and current time, both as read in Sweden right now —
+ * see TIMEZONE's own comment for why this matters over just using
+ * `new Date()` directly.
+ */
+function stockholmNow() {
+    const now = new Date();
+    const parts = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: TIMEZONE,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    }).formatToParts(now);
+    const get = (type) => parts.find((p) => p.type === type)?.value;
+    return {
+        date: `${get('year')}-${get('month')}-${get('day')}`,
+        time: `${get('hour')}:${get('minute')}`
+    };
+}
 
 /**
  * Call the GitHub Contents API for a file in this repo.
@@ -270,6 +302,39 @@ async function writeLastReminderError(info) {
     }
 }
 
+/**
+ * The date (YYYY-MM-DD, Stockholm-local) the daily "what's in Today"
+ * digest was last sent — punkt-send-digest.js's own idempotency check,
+ * separate from per-task `notifiedOn` since a digest isn't tied to any
+ * one task. Returns null if no digest has ever been sent yet.
+ */
+async function readLastDigestSent() {
+    try {
+        const { content, sha } = await readFile(DIGEST_STATE_PATH);
+        const parsed = JSON.parse(content || '{}');
+        return { date: typeof parsed.date === 'string' ? parsed.date : null, sha };
+    } catch (err) {
+        if (err.status === 404) return { date: null, sha: null };
+        throw err;
+    }
+}
+
+async function writeLastDigestSent(date, sha) {
+    const content = JSON.stringify({ date }, null, 2) + '\n';
+    if (sha) {
+        await writeFile(DIGEST_STATE_PATH, content, sha, `Mark Punkt digest as sent for ${date}`);
+    } else {
+        await githubRequest(`contents/${DIGEST_STATE_PATH}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                message: `Mark Punkt digest as sent for ${date}`,
+                content: Buffer.from(content, 'utf-8').toString('base64'),
+                branch: BRANCH
+            })
+        });
+    }
+}
+
 async function readAuthLog() {
     try {
         const { content, sha } = await readFile(AUTH_LOG_PATH);
@@ -430,6 +495,7 @@ function isSessionValid(token) {
 }
 
 export {
+    stockholmNow,
     readTasksFile,
     writeTasksFile,
     parseTasks,
@@ -439,6 +505,8 @@ export {
     readSubscriptions,
     writeSubscriptions,
     writeLastReminderError,
+    readLastDigestSent,
+    writeLastDigestSent,
     isIpBlocked,
     logFailedAuthAttempt,
     getAuthLogSummary,

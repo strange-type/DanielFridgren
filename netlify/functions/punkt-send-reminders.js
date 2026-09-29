@@ -1,5 +1,6 @@
 import webpush from 'web-push';
 import {
+    stockholmNow,
     readTasksFile,
     writeTasksFile,
     parseTasks,
@@ -11,25 +12,6 @@ import {
 
 const { PUNKT_VAPID_PRIVATE_KEY, PUNKT_VAPID_SUBJECT } = process.env;
 const PUBLIC_VAPID_KEY = process.env.PUBLIC_PUNKT_VAPID_KEY;
-const TIMEZONE = 'Europe/Stockholm';
-
-function stockholmNow() {
-    const now = new Date();
-    const parts = new Intl.DateTimeFormat('sv-SE', {
-        timeZone: TIMEZONE,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    }).formatToParts(now);
-    const get = (type) => parts.find((p) => p.type === type)?.value;
-    return {
-        date: `${get('year')}-${get('month')}-${get('day')}`,
-        time: `${get('hour')}:${get('minute')}`
-    };
-}
 
 /**
  * Runs on a schedule (see netlify.toml) rather than being called by

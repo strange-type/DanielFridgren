@@ -14,6 +14,13 @@
 [functions."punkt-send-reminders"]
   schedule = "*/10 * * * *"
 
+# Checks every 15 minutes whether it's past today's digest time yet
+# (07:00 Stockholm-local by default — see PUNKT_DIGEST_TIME in
+# punkt-send-digest.js) and sends the "what's in Today" push once per
+# day via netlify/functions/punkt-send-digest.js.
+[functions."punkt-send-digest"]
+  schedule = "*/15 * * * *"
+
 # Keep Punkt out of search engines and other sites' frames, in addition
 # to the page's own <meta name="robots"> tag and astro-robots.txt entry.
 [[headers]]
