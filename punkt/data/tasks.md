@@ -21,10 +21,10 @@ inte skickas flera gånger samma dag.
 
 - [x] Ladda ner Raycast? (id: 1790500374039-3y5ta, done: 2026-09-28T12:15:42.310Z)
   > https://apps.microsoft.com/detail/9pfxxshc64h3?hl=sv-SE&gl=SE
-- [ ] Testa pamdemiförberedelser av prototyp på Claude (id: 1790356701358-np994, when: today)
+- [ ] Testa pamdemiförberedelser av prototyp på Claude (id: 1790356701358-np994, when: -)
 - [x] Kolla system Regionen o komplettera wikin (id: 1790313707114-nwi1a, done: 2026-09-28T20:30:32.647Z)
 - [ ] Planera workshop kring fyrfältare (id: 1790264676222-yivwj, when: -)
-- [ ] Skaffa skåp på Medicon (id: 1790239803859-mk5b2, when: 2026-09-28)
+- [ ] Skaffa skåp på Medicon (id: 1790239803859-mk5b2, when: 2026-10-01)
   > Om du har din arbetsplats på Medicon Village får du ett skåp där du kan förvara dina saker. Vi ser gärna att du delar skåp med en eller flera kollegor. Skåpen öppnas och stängs med de e-tjänstekort som är kopplade till skåpet. För att få ett skåp är du välkommen till Leveransrummet under ordinarie öppetiider eller skicka ett mejl till DigITMTadministration@skane.se.
 - [x] Testa Col pilot studio (id: 1790001245274-lwe3v, done: 2026-09-24T07:22:44.419Z)
 - [x] Se om jag kan integrera prototypen i Power Platform (id: 1789997641402-he6hh, done: 2026-09-24T07:22:45.245Z)
@@ -40,7 +40,7 @@ inte skickas flera gånger samma dag.
 - [x] Ta ledigt 26-30/10 (höstlov) (id: 1789675381460-hza4s, done: 2026-09-18T12:28:07.510Z)
 - [ ] Kolla upp digitala studiebesök (id: 1789542287149-ylh5e, when: -)
   > https://www.skane.se/jobb-och-utbildning/jobba-hos-oss/att-jobba-i-region-skane/hang-med-pa-digitala-studiebesok/
-- [ ] Kolla upp denna på st Gertrud 9:e okt (id: 1789203141617-meexz, when: 2026-09-29)
+- [ ] Kolla upp denna på st Gertrud 9:e okt (id: 1789203141617-meexz, when: 2026-10-02)
   > https://malmo.se/Aktuellt/Artiklar-Malmo-stad/2026-09-09-Valkomna-till-varldsdagen-for-psykisk-halsa.html
 - [ ] Ta bild på limhamns bibliotek (id: 1788845636400-7qpwx, when: 2026-09-29)
 - [x] Gräv i samsjuklighetsreformen (id: 1789029448027-azjf0, done: 2026-09-11T13:31:59.668Z)
