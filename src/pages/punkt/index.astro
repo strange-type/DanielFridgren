@@ -254,10 +254,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
 
       /* Only shown at all once there's something to report (see
          loadSecuritySummary) — a failed login attempt or an active
-         IP block logged server-side. */
+         IP block logged server-side. Left corner, not right — #add-btn
+         and #menu-add-btn's own mobile FAB already claims the right
+         one (see their own comment). */
       .security-badge {
         position: fixed;
-        right: calc(1.25rem + env(safe-area-inset-right));
+        left: calc(1.25rem + env(safe-area-inset-left));
         bottom: calc(1.25rem + env(safe-area-inset-bottom));
         width: 2.75rem;
         height: 2.75rem;
@@ -2143,7 +2145,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             ${
               e.blocked
                 ? `<button type="button" class="security-unblock" data-unblock-ip="${escapeHtml(e.ip)}">Avblockera</button>`
-                : `<span class="security-row-status ok">OK</span>`
+                : `<button type="button" class="security-row-status ok" data-unblock-ip="${escapeHtml(e.ip)}">Rensa</button>`
             }
           </div>`
           )
@@ -2168,6 +2170,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         const btn = (e.target as HTMLElement).closest("[data-unblock-ip]") as HTMLButtonElement | null;
         if (!btn) return;
         const ip = btn.dataset.unblockIp!;
+        // Same server action clears an IP's logged entries whether or
+        // not it's currently blocked (see unblockIp's own comment) —
+        // only the button's label differs between "Avblockera" and
+        // "Rensa", so restoring on failure just reuses whichever this
+        // button already had rather than assuming one or the other.
+        const originalLabel = btn.textContent || "";
         btn.disabled = true;
         btn.textContent = "...";
         try {
@@ -2176,7 +2184,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         } catch (err) {
           console.error("Punkt: failed to unblock IP", err);
           btn.disabled = false;
-          btn.textContent = "Avblockera";
+          btn.textContent = originalLabel;
         }
       });
 
