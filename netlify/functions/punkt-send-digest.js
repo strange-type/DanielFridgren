@@ -6,7 +6,8 @@ import {
     readSubscriptions,
     writeSubscriptions,
     readLastDigestSent,
-    writeLastDigestSent
+    writeLastDigestSent,
+    writeLastReminderError
 } from './lib/punkt-data.js';
 
 const { PUNKT_VAPID_PRIVATE_KEY, PUNKT_VAPID_SUBJECT } = process.env;
@@ -36,9 +37,11 @@ function todayBucket(tasks, today) {
  * punkt-send-reminders.js. Once Stockholm-local time reaches
  * DIGEST_TIME and today's digest hasn't already gone out, pushes a
  * notification listing everything currently in Today to every stored
- * subscription. Sends nothing on a day Today is empty, but still
- * records the date as handled either way so this doesn't keep
- * re-checking (and re-reading the tasks file) for the rest of the day.
+ * subscription. Sends nothing on a day Today is empty, and still
+ * records the date as handled then (so this doesn't keep re-checking
+ * for the rest of the day) — but a real delivery failure leaves the
+ * date unmarked so the next run retries instead of silently skipping
+ * the day, same as punkt-send-reminders.js's own retry behavior.
  */
 export const handler = async () => {
     if (!PUNKT_VAPID_PRIVATE_KEY || !PUBLIC_VAPID_KEY || !PUNKT_VAPID_SUBJECT) {
@@ -79,10 +82,13 @@ export const handler = async () => {
     });
 
     const deadEndpoints = new Set();
+    let deliveredToAtLeastOne = false;
+    let lastError = null;
     await Promise.all(
         subscriptions.map(async (subscription) => {
             try {
                 await webpush.sendNotification(subscription, payload);
+                deliveredToAtLeastOne = true;
             } catch (error) {
                 if (error.statusCode === 404 || error.statusCode === 410) {
                     deadEndpoints.add(subscription.endpoint);
@@ -93,17 +99,40 @@ export const handler = async () => {
                         error.statusCode,
                         error.body || error.message
                     );
+                    lastError = {
+                        source: 'digest',
+                        date: today,
+                        taskCount: due.length,
+                        endpoint: subscription.endpoint,
+                        statusCode: error.statusCode ?? null,
+                        body: error.body || error.message || String(error)
+                    };
                 }
             }
         })
     );
 
-    await writeLastDigestSent(today, digestSha);
+    if (lastError) await writeLastReminderError(lastError);
+
+    // Only mark today as handled once the digest actually went out (or
+    // every subscription turned out dead, in which case there's simply
+    // nothing left to retry) — same "only mark on real delivery"
+    // reasoning as punkt-send-reminders.js. A transient failure to every
+    // subscription instead leaves lastSent alone, so the next run
+    // (within 15 min) retries rather than silently giving up on the day.
+    if (deliveredToAtLeastOne || deadEndpoints.size === subscriptions.length) {
+        await writeLastDigestSent(today, digestSha);
+    }
 
     if (deadEndpoints.size > 0) {
         const remaining = subscriptions.filter((s) => !deadEndpoints.has(s.endpoint));
         await writeSubscriptions(remaining, subsSha, 'Prune expired Punkt push subscriptions');
     }
 
-    return { statusCode: 200, body: `sent digest with ${due.length} task(s)` };
+    return {
+        statusCode: 200,
+        body: deliveredToAtLeastOne
+            ? `sent digest with ${due.length} task(s)`
+            : 'digest delivery failed, will retry'
+    };
 };
