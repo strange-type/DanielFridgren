@@ -19,6 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Kravlista MVP (id: 1790864700714-y9l9g, when: today)
 - [x] Ladda ner Raycast? (id: 1790500374039-3y5ta, done: 2026-09-28T12:15:42.310Z)
   > https://apps.microsoft.com/detail/9pfxxshc64h3?hl=sv-SE&gl=SE
 - [ ] Testa pamdemiförberedelser av prototyp på Claude (id: 1790356701358-np994, when: -)
