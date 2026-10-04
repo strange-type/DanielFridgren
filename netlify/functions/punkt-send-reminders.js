@@ -57,8 +57,8 @@ export const handler = async () => {
 
     for (const task of due) {
         const payload = JSON.stringify({
-            title: 'Punkt',
-            body: task.title,
+            title: task.title,
+            body: '',
             taskId: task.id
         });
         let deliveredToAtLeastOne = false;
