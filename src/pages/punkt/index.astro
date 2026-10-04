@@ -2040,23 +2040,36 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
        * exactly when a notification becomes relevant.
        */
       async function ensurePushSubscription() {
-        if (!VAPID_PUBLIC_KEY || !("serviceWorker" in navigator) || !("PushManager" in window)) {
+        if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+          // iOS only exposes PushManager once the app is installed to the home screen.
+          alert("Pushnotiser kräver att Punkt är tillagd på hemskärmen (Dela → Lägg till på hemskärmen) och öppnas därifrån.");
           return;
         }
+        if (!VAPID_PUBLIC_KEY) return;
         try {
+          // Must be the first await: iOS only honours the permission prompt
+          // while the tap's user activation is still fresh.
+          if (Notification.permission === "default") {
+            await Notification.requestPermission();
+          }
+          if (Notification.permission !== "granted") {
+            alert("Notiser är avstängda för Punkt. Slå på dem i Inställningar → Notiser → Punkt.");
+            return;
+          }
           const registration = await navigator.serviceWorker.ready;
           let subscription = await registration.pushManager.getSubscription();
           if (!subscription) {
-            const permission = await Notification.requestPermission();
-            if (permission !== "granted") return;
             subscription = await registration.pushManager.subscribe({
               userVisibleOnly: true,
               applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
             });
           }
+          // Always re-send, so the server gets this device even if the
+          // browser already held a subscription the server lost.
           await apiFetch("POST", { subscription: subscription.toJSON() }, SUBSCRIBE_API);
         } catch (err) {
           console.warn("Punkt: push subscription failed", err);
+          alert("Kunde inte aktivera pushnotiser: " + (err instanceof Error ? err.message : err));
         }
       }
 
