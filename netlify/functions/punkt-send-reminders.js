@@ -92,7 +92,11 @@ export const handler = async () => {
         // it unconditionally here previously hid real delivery failures
         // (a bad VAPID config, a rejected payload, etc.) since the task
         // would never be retried on the next run.
-        if (deliveredToAtLeastOne) task.notifiedOn = today;
+        if (deliveredToAtLeastOne) {
+            task.notifiedOn = today;
+            // The time has served its purpose once the push has gone out.
+            task.remind = null;
+        }
     }
 
     if (lastError) await writeLastReminderError(lastError);
