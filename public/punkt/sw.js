@@ -29,7 +29,7 @@ self.addEventListener('push', (event) => {
             body: payload.body,
             icon: '/punkt/icons/icon-192.png',
             badge: '/punkt/icons/icon-192.png',
-            data: { url: '/punkt/' }
+            data: { url: payload.taskId ? `/punkt/?task=${encodeURIComponent(payload.taskId)}` : '/punkt/', taskId: payload.taskId || null }
         })
     );
 });
@@ -40,7 +40,12 @@ self.addEventListener('notificationclick', (event) => {
     event.waitUntil(
         self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
             for (const client of clients) {
-                if (client.url.includes('/punkt/') && 'focus' in client) return client.focus();
+                if (client.url.includes('/punkt/') && 'focus' in client) {
+                    // Already open: hand the task over instead of navigating,
+                    // which iOS standalone apps don't reliably do.
+                    client.postMessage({ type: 'notification-click', taskId: event.notification.data?.taskId });
+                    return client.focus();
+                }
             }
             return self.clients.openWindow(url);
         })
