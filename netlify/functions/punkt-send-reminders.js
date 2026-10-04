@@ -58,7 +58,8 @@ export const handler = async () => {
     for (const task of due) {
         const payload = JSON.stringify({
             title: task.title,
-            body: task.note || 'Påminnelse från Punkt'
+            body: task.note || 'Påminnelse från Punkt',
+            taskId: task.id
         });
         let deliveredToAtLeastOne = false;
         await Promise.all(

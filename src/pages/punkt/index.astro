@@ -403,6 +403,14 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       .menu-icon--logbook {
         background: var(--green-badge);
       }
+      .menu-icon--notifications {
+        background: var(--muted);
+        color: #fff;
+      }
+      .menu-icon--notifications svg {
+        width: 16px;
+        height: 16px;
+      }
       .menu-icon--today {
         background: none;
         font-size: 1.5rem;
@@ -838,6 +846,21 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         padding-top: 0.55rem;
         padding-bottom: 0.55rem;
         pointer-events: none;
+      }
+
+      /* Subtle yellow flash on the task whose notification opened the
+         app; fades out over 5s and is removed on animationend. */
+      li.task-row.row-notified {
+        animation: row-notified-fade 5s ease-out forwards;
+      }
+
+      @keyframes row-notified-fade {
+        from {
+          background: rgba(255, 214, 10, 0.22);
+        }
+        to {
+          background: rgba(255, 214, 10, 0);
+        }
       }
 
       li.task-row.row-pending-removal {
@@ -2301,6 +2324,23 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           </button>`;
           })
           .join("");
+        menuList.insertAdjacentHTML(
+          "beforeend",
+          `
+          <button class="menu-row" data-action="notifications">
+            <span class="menu-icon menu-icon--notifications">${ICON_BELL}</span>
+            <span class="menu-label">Notiser</span>
+            <span class="menu-count">${notificationStatusLabel()}</span>
+          </button>`
+        );
+      }
+
+      /** Short status shown next to the sidebar's Notiser row. */
+      function notificationStatusLabel(): string {
+        if (!("Notification" in window) || !("PushManager" in window)) return "Ej tillgängligt";
+        if (Notification.permission === "granted") return "På";
+        if (Notification.permission === "denied") return "Av";
+        return "Aktivera";
       }
 
       /** The row's actual visible content (checkbox/title/note) —
@@ -2603,7 +2643,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       menuList.addEventListener("click", (e) => {
-        const btn = (e.target as HTMLElement).closest("[data-nav]") as HTMLElement | null;
+        const target = e.target as HTMLElement;
+        if (target.closest('[data-action="notifications"]')) {
+          void ensurePushSubscription().then(renderMenu);
+          return;
+        }
+        const btn = target.closest("[data-nav]") as HTMLElement | null;
         if (btn) navigateTo(btn.dataset.nav as View);
       });
 
@@ -4075,6 +4120,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           await loadTasks();
           showApp();
           navigateTo("today");
+          showNotifiedTask();
           void loadSecuritySummary();
         } catch {
           // apiFetch (inside loadTasks) already set a specific message
@@ -4087,6 +4133,35 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           }
         }
       });
+
+      /** Task id from a tapped notification, read once from ?task= (cold
+       *  start) or handed over by the service worker (app already open). */
+      let notifiedTaskId: string | null = new URLSearchParams(location.search).get("task");
+      if (notifiedTaskId) history.replaceState(null, "", location.pathname);
+
+      /** Opens the view holding the notified task and flashes its row. */
+      function showNotifiedTask() {
+        const id = notifiedTaskId;
+        if (!id || !findTask(id)) return;
+        notifiedTaskId = null;
+        const views: Exclude<View, "menu">[] = ["today", "inbox", "upcoming", "logbook"];
+        const view = views.find((v) => bucket(v).some((t) => t.id === id));
+        if (view && view !== currentView) navigateTo(view);
+        const row = taskListEl.querySelector(`.task-row[data-id="${id}"]`) as HTMLElement | null;
+        if (!row) return;
+        row.scrollIntoView({ block: "center" });
+        row.classList.add("row-notified");
+        row.addEventListener("animationend", () => row.classList.remove("row-notified"), { once: true });
+      }
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.addEventListener("message", (e) => {
+          if (e.data?.type === "notification-click" && e.data.taskId) {
+            notifiedTaskId = e.data.taskId;
+            showNotifiedTask();
+          }
+        });
+      }
 
       (async function initServiceWorker() {
         if (!("serviceWorker" in navigator)) return;
@@ -4101,6 +4176,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             await loadTasks();
             showApp();
             navigateTo("today");
+            showNotifiedTask();
             void loadSecuritySummary();
             return;
           } catch {
