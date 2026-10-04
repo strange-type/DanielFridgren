@@ -663,7 +663,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         gap: 0.7rem;
       }
 
-      li.task-row.editing #qa-title {
+      li.task-row.editing #quick-add #qa-title {
         font-size: 1rem;
       }
 
@@ -685,8 +685,16 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         color: var(--muted);
       }
 
-      #qa-title {
+      /* A textarea (not an input) so a long title wraps onto a second
+         line, same as it does in the list, instead of scrolling sideways. */
+      #quick-add #qa-title {
         font-size: 1.05rem;
+        font-family: inherit;
+        line-height: inherit;
+        resize: none;
+        overflow: hidden;
+        display: block;
+        overflow-wrap: anywhere;
       }
 
       #quick-add #qa-note {
@@ -894,14 +902,22 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.35);
       }
 
+      /* The tint is a pseudo-element inset 2px top and bottom, so
+         consecutive selected rows keep a gap between their rounded
+         corners without the row itself growing a margin — selecting
+         or deselecting must never move it. */
       li.task-row.row-selected {
+        position: relative;
+        isolation: isolate;
+      }
+
+      li.task-row.row-selected::before {
+        content: "";
+        position: absolute;
+        inset: 2px 0;
         background: var(--select-tint);
-        /* A small vertical margin so consecutive selected rows show a
-           gap between their own rounded corners instead of visually
-           merging into one solid block — flex siblings don't collapse
-           margins against each other, so this reliably adds up to a
-           few px between adjacent selected rows. */
-        margin: 2px -0.5rem;
+        border-radius: 0.6rem;
+        z-index: -1;
       }
 
       .select-circle {
@@ -1711,7 +1727,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           <div class="qa-body">
             <div class="qa-title-row">
               <input type="checkbox" id="qa-checkbox" class="task-check" tabindex="-1" />
-              <input id="qa-title" type="text" placeholder="New To-Do" maxlength="200" />
+              <textarea id="qa-title" placeholder="New To-Do" maxlength="200" rows="1" enterkeyhint="done"></textarea>
             </div>
             <textarea id="qa-note" placeholder="Notes" rows="1"></textarea>
             <div class="qa-footer">
@@ -1927,7 +1943,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const quickAddAnchor = document.getElementById("quick-add-anchor") as HTMLDivElement;
       const quickAddScrim = document.getElementById("quick-add-scrim") as HTMLDivElement;
       const qaCheckbox = document.getElementById("qa-checkbox") as HTMLInputElement;
-      const qaTitle = document.getElementById("qa-title") as HTMLInputElement;
+      const qaTitle = document.getElementById("qa-title") as HTMLTextAreaElement;
       const qaNote = document.getElementById("qa-note") as HTMLTextAreaElement;
       const qaContext = document.getElementById("qa-context") as HTMLSpanElement;
       const qaWhenBtn = document.getElementById("qa-when-btn") as HTMLButtonElement;
@@ -3603,6 +3619,8 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
        *  while it's still a fixed px value (mid open/close transition),
        *  so newly-typed content can't get clipped by a stale cap. */
       function autoGrowNote() {
+        qaTitle.style.height = "auto";
+        qaTitle.style.height = `${qaTitle.scrollHeight}px`;
         qaNote.style.height = "auto";
         qaNote.style.height = `${qaNote.scrollHeight}px`;
         if (qaBody.style.maxHeight && qaBody.style.maxHeight !== "none") {
@@ -3610,6 +3628,17 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         }
       }
       qaNote.addEventListener("input", autoGrowNote);
+      qaTitle.addEventListener("input", () => {
+        // Pasted line breaks would otherwise sneak into the title.
+        if (qaTitle.value.includes("\n")) qaTitle.value = qaTitle.value.replace(/\s*\n\s*/g, " ");
+        autoGrowNote();
+      });
+      qaTitle.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          quickAdd.requestSubmit();
+        }
+      });
 
       function openQuickAdd() {
         editingTaskId = null;
