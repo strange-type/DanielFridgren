@@ -12,5 +12,13 @@
       "p256dh": "BDrZFrJTpELuJ8EavjNK_2LEdUoJwa1aJZvItOuAQUHDIX_d70OQSqnUXkkxkguRx0kWnvin3FCFrIUuADj3qIQ",
       "auth": "uHAcuHIDau2I0hLyE0b5zw"
     }
+  },
+  {
+    "endpoint": "https://web.push.apple.com/QKa3aFpkvs-oXXOODIyi1O3iizY5NztHNclJImsgm7pPkBcuxKIMyDF3BsRuRhm92Cc7PyYCQ4aog0yGlx8OUgidKHWWefis0QlSZgVDmFGLv1zLAK-zKCO457k31fOXJd3nnwOrAHggJe0gHk0gkliQM1xvNDGHGsF6txXbfZs",
+    "expirationTime": null,
+    "keys": {
+      "p256dh": "BG2PYiU-DC9x9DrEGrqFqPZUbvJg2d8nvEgn_njpo0OiAe4NyxvOc4mzqNe0lp2s9gRQhbwlR0ETATO75sT33YM",
+      "auth": "UTk8vq8oFlzZKCLnYUkLuw"
+    }
   }
 ]
