@@ -211,7 +211,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         top: 0;
         left: 0;
         right: 0;
-        transition: transform 0.28s ease;
+        /* Slides via left/right rather than transform: a transformed
+           ancestor becomes the containing block for the position: fixed
+           add button, which would make it jump with the screen. */
+        transition:
+          left 0.28s ease,
+          right 0.28s ease;
       }
 
       /* --- Menu (root) screen -------------------------------------- */
@@ -2514,22 +2519,26 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
        * mirror image, matching a standard iOS push/pop transition.
        */
       function slideScreens(outgoing: HTMLElement, incoming: HTMLElement, direction: "forward" | "backward") {
-        const outTarget = direction === "forward" ? "-100%" : "100%";
-        const inStart = direction === "forward" ? "100%" : "-100%";
+        const outOffset = direction === "forward" ? "-100%" : "100%";
+        const inOffset = direction === "forward" ? "100%" : "-100%";
+        const setOffset = (el: HTMLElement, offset: string) => {
+          el.style.left = offset;
+          el.style.right = `calc(-1 * ${offset})`;
+        };
 
         outgoing.classList.add("sliding");
         incoming.classList.add("sliding");
         incoming.hidden = false;
         incoming.style.transition = "none";
-        incoming.style.transform = `translateX(${inStart})`;
+        setOffset(incoming, inOffset);
         void incoming.offsetWidth; // force reflow so the transition below actually animates
 
         outgoing.style.transition = "";
         incoming.style.transition = "";
 
         requestAnimationFrame(() => {
-          outgoing.style.transform = `translateX(${outTarget})`;
-          incoming.style.transform = "translateX(0)";
+          setOffset(outgoing, outOffset);
+          setOffset(incoming, "0px");
         });
 
         const onDone = (e: TransitionEvent) => {
@@ -2537,8 +2546,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           outgoing.hidden = true;
           outgoing.classList.remove("sliding");
           incoming.classList.remove("sliding");
-          outgoing.style.transform = "";
-          incoming.style.transform = "";
+          for (const el of [outgoing, incoming]) {
+            el.style.left = "";
+            el.style.right = "";
+          }
           outgoing.removeEventListener("transitionend", onDone);
         };
         outgoing.addEventListener("transitionend", onDone);
