@@ -2039,10 +2039,10 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
        * user sets a reminder — a natural moment to ask, since that's
        * exactly when a notification becomes relevant.
        */
-      async function ensurePushSubscription() {
+      async function ensurePushSubscription(silent = false) {
         if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
           // iOS only exposes PushManager once the app is installed to the home screen.
-          alert("Pushnotiser kräver att Punkt är tillagd på hemskärmen (Dela → Lägg till på hemskärmen) och öppnas därifrån.");
+          if (!silent) alert("Pushnotiser kräver att Punkt är tillagd på hemskärmen (Dela → Lägg till på hemskärmen) och öppnas därifrån.");
           return;
         }
         if (!VAPID_PUBLIC_KEY) return;
@@ -2053,6 +2053,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
             await Notification.requestPermission();
           }
           if (Notification.permission !== "granted") {
+            if (silent) return;
             alert("Notiser är avstängda för Punkt. Slå på dem i Inställningar → Notiser → Punkt.");
             return;
           }
@@ -2069,7 +2070,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           await apiFetch("POST", { subscription: subscription.toJSON() }, SUBSCRIBE_API);
         } catch (err) {
           console.warn("Punkt: push subscription failed", err);
-          alert("Kunde inte aktivera pushnotiser: " + (err instanceof Error ? err.message : err));
+          if (!silent) alert("Kunde inte aktivera pushnotiser: " + (err instanceof Error ? err.message : err));
         }
       }
 
@@ -2083,10 +2084,31 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         gateError.textContent = message;
       }
 
+      let pushSyncStarted = false;
+
+      /**
+       * Runs once per app launch (so after every update too): re-syncs the
+       * subscription if notifications are already allowed, otherwise asks
+       * on the first tap, since iOS only shows the prompt after a gesture.
+       * The system never re-asks once the user has answered.
+       */
+      function syncPushOnLaunch() {
+        if (pushSyncStarted || !("Notification" in window)) return;
+        pushSyncStarted = true;
+        if (Notification.permission === "granted") {
+          void ensurePushSubscription(true);
+        } else if (Notification.permission === "default") {
+          document.addEventListener("pointerdown", () => void ensurePushSubscription(true), {
+            once: true
+          });
+        }
+      }
+
       function showApp() {
         document.documentElement.classList.remove("punkt-booting");
         gate.hidden = true;
         app.hidden = false;
+        syncPushOnLaunch();
       }
 
       function showSaveError(message: string) {
