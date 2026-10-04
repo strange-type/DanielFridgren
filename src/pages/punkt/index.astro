@@ -616,6 +616,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
            the row expanding to reveal more, not a swap. */
         transition:
           max-height 0.32s cubic-bezier(0.33, 1, 0.68, 1),
+          padding-top 0.32s cubic-bezier(0.33, 1, 0.68, 1),
           opacity 0.2s ease 0.06s;
       }
 
@@ -653,6 +654,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       li.task-row.editing #quick-add .qa-body {
         padding-top: 0.55rem;
         padding-bottom: 0.55rem;
+      }
+
+      /* Roomier above the title once the card is open (it opens from the
+         row's own 0.55rem so the title doesn't jump, then eases to this,
+         and back again on close — see qa-open in playCardOpenAnimation). */
+      li.task-row.editing #quick-add.qa-open .qa-body {
+        padding-top: 1.1rem;
       }
 
       li.task-row.editing #quick-add .qa-title-row {
@@ -3511,7 +3519,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         } else {
           qaBody.style.paddingLeft = "";
         }
-        quickAdd.classList.remove("qa-closing");
+        quickAdd.classList.remove("qa-closing", "qa-open");
         quickAdd.style.transition = "none";
         qaBody.style.transition = "none";
         qaBody.style.maxHeight = `${startHeight}px`;
@@ -3527,7 +3535,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         qaBody.style.opacity = "1";
         quickAdd.style.background = "";
         void quickAdd.offsetWidth; // force reflow so the transitions below actually animate
+        // Measured with the open-state top padding applied, then rolled
+        // back so the padding itself animates in below.
+        quickAdd.classList.add("qa-open");
         const targetHeight = qaBody.scrollHeight;
+        quickAdd.classList.remove("qa-open");
+        void quickAdd.offsetWidth;
         quickAdd.style.transition = "";
         qaBody.style.transition = "";
         // Editing settles with no margin of its own — it's nested
@@ -3538,6 +3551,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         // column at all (see resetQuickAddPosition), so it keeps it.
         const editMargin = editingTaskId !== null ? "0px" : "1.5rem";
         requestAnimationFrame(() => {
+          quickAdd.classList.add("qa-open");
           qaBody.style.maxHeight = `${targetHeight}px`;
           quickAdd.style.marginTop = editMargin;
           quickAdd.style.marginBottom = editMargin;
@@ -3576,6 +3590,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         qaBody.addEventListener("transitionend", onTransitionEnd);
         qaBody.style.maxHeight = `${endHeight}px`;
         quickAdd.classList.add("qa-closing");
+        quickAdd.classList.remove("qa-open");
         quickAdd.style.marginTop = "0px";
         quickAdd.style.marginBottom = "0px";
         // Faded out in sync with the collapse so it's already gone by
@@ -3602,7 +3617,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       }
 
       function hideQuickAddCard() {
-        quickAdd.classList.remove("qa-closing");
+        quickAdd.classList.remove("qa-closing", "qa-open");
         quickAdd.hidden = true;
         quickAddScrim.hidden = true;
         whenSheet.hidden = true;
