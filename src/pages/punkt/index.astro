@@ -586,20 +586,16 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
            it swaps back to a plain row on close), which reads as a
            jump of its own even though the height/position move
            smoothly under it. */
-        /* Delayed/quick like .qa-body's own opacity below — the card's
-           raised surface color stays fully solid through the first half
-           of a close, then fades out alongside the form content, so
-           it's already transparent by the time renderTaskList() swaps
-           this for the plain row underneath. Without this the swap was
-           a visible flash: height/shadow/radius had all already
-           animated down to the row's own shape, but the color itself
-           still cut instantly from the raised surface to the row. */
+        /* The raised surface color fades out over the close, finishing
+           (0.26s) just before the height/margin settle (0.32s), so it's
+           already transparent by the time renderTaskList() swaps this
+           for the plain row underneath — no flash at the swap. */
         transition:
           margin-top 0.32s cubic-bezier(0.33, 1, 0.68, 1),
           margin-bottom 0.32s cubic-bezier(0.33, 1, 0.68, 1),
           box-shadow 0.32s ease,
           border-radius 0.32s ease,
-          background-color 0.16s ease 0.16s;
+          background-color 0.26s ease;
       }
 
       #quick-add .qa-body {
@@ -620,7 +616,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
            the row expanding to reveal more, not a swap. */
         transition:
           max-height 0.32s cubic-bezier(0.33, 1, 0.68, 1),
-          opacity 0.16s ease 0.16s;
+          opacity 0.2s ease 0.06s;
       }
 
       /* Catches taps outside the open panel to close/commit it — kept
@@ -854,6 +850,12 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         padding-top: 0.55rem;
         padding-bottom: 0.55rem;
         pointer-events: none;
+        /* Same stacking and gap as li.task-row itself, so the note sits
+           where it will once finalizeEditedRow() swaps in the real row
+           (without this the note jumped down by the row's gap). */
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
       }
 
       /* Subtle yellow flash on the task whose notification opened the
