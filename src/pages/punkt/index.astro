@@ -374,6 +374,21 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         width: 100%;
       }
 
+      /* Separates the settings row from the lists above it. */
+      .menu-row[data-action="notifications"] {
+        margin-top: 1.25rem;
+        position: relative;
+      }
+
+      .menu-row[data-action="notifications"]::before {
+        content: "";
+        position: absolute;
+        top: -0.65rem;
+        left: 0.6rem;
+        right: 0.6rem;
+        border-top: 1px solid var(--border);
+      }
+
       .menu-row:active {
         background: var(--surface);
       }
