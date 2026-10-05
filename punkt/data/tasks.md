@@ -19,6 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Kontakta Charlotta Willstedt kring presentation av prototyp (id: 1791195436130-0nikw, when: -)
 - [ ] Kolla utbildningar framtidsveckan nu samt Kairos Future (id: 1791184925775-bf2ul, when: today)
 - [ ] Boka träning inför Bättre Utbildningsval (id: 1791173274167-xaj2o, when: today)
 - [ ] Gå igenom kravlista MVP (id: 1790864700714-y9l9g, when: 2026-10-04, notified: 2026-10-04)
