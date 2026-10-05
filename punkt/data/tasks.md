@@ -19,7 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
-- [ ] Boka träning (id: 1791173274167-xaj2o, when: today)
+- [ ] Boka träning inför Bättre Utbildningsval (id: 1791173274167-xaj2o, when: today)
 - [ ] Gå igenom kravlista MVP (id: 1790864700714-y9l9g, when: 2026-10-04, notified: 2026-10-04)
 - [x] Ladda ner Raycast? (id: 1790500374039-3y5ta, done: 2026-09-28T12:15:42.310Z)
   > https://apps.microsoft.com/detail/9pfxxshc64h3?hl=sv-SE&gl=SE
