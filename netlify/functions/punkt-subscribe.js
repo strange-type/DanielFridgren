@@ -14,9 +14,16 @@ function respond(statusCode, body) {
 }
 
 /**
- * Store (or refresh) a browser's PushSubscription so the scheduled
- * reminders function can send to it later. Upserts by endpoint —
- * re-subscribing the same device just replaces its keys.
+ * Store a browser's PushSubscription so the scheduled reminders/digest
+ * functions can send to it later — replacing whatever was stored
+ * before, not upserting by endpoint. Punkt is single-user, so whoever
+ * just (re)subscribed is the only intended recipient: iOS can issue a
+ * new push endpoint for the same install (most visibly after removing
+ * and re-adding the home-screen app) without the old one ever 404ing,
+ * so keyed-by-endpoint storage just accumulated stale-but-still-live
+ * entries — each one a duplicate notification landing on the same
+ * phone. ensurePushSubscription() in the client calls this on every
+ * app open specifically to keep this one entry current.
  */
 export const handler = async (event) => {
     if (!PUNKT_GITHUB_TOKEN || !PUNKT_SESSION_SECRET) {
@@ -39,11 +46,8 @@ export const handler = async (event) => {
             return respond(400, { error: 'subscription with an endpoint is required' });
         }
 
-        const { subscriptions, sha } = await readSubscriptions();
-        const withoutThis = subscriptions.filter((s) => s.endpoint !== subscription.endpoint);
-        withoutThis.push(subscription);
-
-        await writeSubscriptions(withoutThis, sha, 'Add Punkt push subscription');
+        const { sha } = await readSubscriptions();
+        await writeSubscriptions([subscription], sha, 'Replace Punkt push subscription');
         return respond(200, { ok: true });
     } catch (error) {
         console.error('Punkt subscribe error:', error);
