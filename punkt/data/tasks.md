@@ -19,7 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
-- [ ] Gör en presentation med bara citat (id: 1791298777010-puad6, when: today)
+- [x] Gör en presentation med bara citat (id: 1791298777010-puad6, done: 2026-10-07T11:13:35.977Z)
 - [ ] Kontakta Charlotta Willstedt kring presentation av prototyp (id: 1791195436130-0nikw, when: -)
 - [ ] Kolla utbildningar framtidsveckan nu samt Kairos Future (id: 1791184925775-bf2ul, when: 2026-10-09)
 - [ ] Boka träning inför Bättre Utbildningsval (id: 1791173274167-xaj2o, when: 2026-10-07)
