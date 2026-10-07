@@ -2129,7 +2129,15 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
        * Asks for notification permission (if needed) and registers a
        * push subscription with the server. Called the first time the
        * user sets a reminder — a natural moment to ask, since that's
-       * exactly when a notification becomes relevant.
+       * exactly when a notification becomes relevant — and silently
+       * (silent=true) on every launch via syncPushOnLaunch() below,
+       * which is what actually keeps the server's subscription current:
+       * iOS can rotate a PWA's push endpoint (most visibly after a
+       * home-screen reinstall) without the old one ever failing a send,
+       * and the server now keeps only the latest endpoint it's told
+       * about (see punkt-subscribe.js) rather than accumulating every
+       * endpoint it's ever seen, so this re-POST is what retires a
+       * stale one instead of leaving it to double up notifications.
        */
       async function ensurePushSubscription(silent = false) {
         if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
