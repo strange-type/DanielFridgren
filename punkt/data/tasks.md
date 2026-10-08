@@ -19,6 +19,18 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Boka tid för utvecklingssamtal (id: 1791470768911-g5cj9, when: today)
+  > Gå in via länken till bokningslistan och skriv ditt namn vid en tid som passar dig. Skicka sedan en Teams-inbjudan till mig för den bokade tiden. Boka en timme som onlinemöte och ge mötet titeln [Ditt namn] - medarbetarsamtal.
+  > Nytt för i år är att du ansvarar för både förberedelserna och att leda samtalet.
+  > Inför mötet förväntar jag mig att du har förberett dig och uppdaterat ditt material i kompetensplattformen. Det ska vara klart före mötet.
+  > Vi har 55 minuter för själva samtalet. Under den tiden ska vi hinna prata om mål för 2027. I övrigt bestämmer du vad du vill ta upp och hur tiden ska användas. Du faciliterar samtalet och ansvarar för att vi håller tidsramen.
+  > Pinga mig om du har några frågor!
+  >  
+  > 
+  > https://regionskane.sharepoint.com/:x:/s/fv72digitalatjnsterochdesign/IQAY5q6lUrfESoWqmWUSwVHQAb_eDlJerUN0Jx4g8r5VAwc?e=k4efks
+  > 
+  >  
+  > Allmänt
 - [x] Förbered tänka högt (id: 1791442948803-hoscm, done: 2026-10-08T08:55:10.778Z)
 - [x] förbered frågor til Stretch (id: 1791441878270-h8ewo, done: 2026-10-08T11:18:17.569Z)
 - [x] Gör en prototyp som visar MVP (id: 1791441815215-6tr0x, done: 2026-10-08T11:18:13.151Z)
