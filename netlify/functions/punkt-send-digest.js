@@ -7,16 +7,12 @@ import {
     writeSubscriptions,
     readLastDigestSent,
     writeLastDigestSent,
-    writeLastReminderError
+    writeLastReminderError,
+    readSettings
 } from './lib/punkt-data.js';
 
 const { PUNKT_VAPID_PRIVATE_KEY, PUNKT_VAPID_SUBJECT } = process.env;
 const PUBLIC_VAPID_KEY = process.env.PUBLIC_PUNKT_VAPID_KEY;
-
-// Stockholm-local time the digest should go out at. Env-overridable
-// like the rest of Punkt's config (see lib/punkt-data.js) so the time
-// can change from the Netlify dashboard without a redeploy.
-const DIGEST_TIME = process.env.PUNKT_DIGEST_TIME || '07:00';
 
 /**
  * Same "Today" bucket the app itself shows (see bucket() in
@@ -34,14 +30,17 @@ function todayBucket(tasks, today) {
 
 /**
  * Runs on a schedule (see netlify.toml), independently of
- * punkt-send-reminders.js. Once Stockholm-local time reaches
- * DIGEST_TIME and today's digest hasn't already gone out, pushes a
- * notification listing everything currently in Today to every stored
- * subscription. Sends nothing on a day Today is empty, and still
- * records the date as handled then (so this doesn't keep re-checking
- * for the rest of the day) — but a real delivery failure leaves the
- * date unmarked so the next run retries instead of silently skipping
- * the day, same as punkt-send-reminders.js's own retry behavior.
+ * punkt-send-reminders.js. Once Stockholm-local time reaches the
+ * configured digest time and today's digest hasn't already gone out,
+ * pushes a notification listing everything currently in Today to every
+ * stored subscription. The send time comes from punkt-settings.js's
+ * stored value (set from the app's Notiser panel), falling back to
+ * PUNKT_DIGEST_TIME/"07:00" when nothing's been saved yet. Sends
+ * nothing on a day Today is empty, and still records the date as
+ * handled then (so this doesn't keep re-checking for the rest of the
+ * day) — but a real delivery failure leaves the date unmarked so the
+ * next run retries instead of silently skipping the day, same as
+ * punkt-send-reminders.js's own retry behavior.
  */
 export const handler = async () => {
     if (!PUNKT_VAPID_PRIVATE_KEY || !PUBLIC_VAPID_KEY || !PUNKT_VAPID_SUBJECT) {
@@ -50,7 +49,9 @@ export const handler = async () => {
     }
 
     const { date: today, time: nowTime } = stockholmNow();
-    if (nowTime < DIGEST_TIME) {
+    const { settings } = await readSettings();
+    const digestTime = settings.digestTime || process.env.PUNKT_DIGEST_TIME || '07:00';
+    if (nowTime < digestTime) {
         return { statusCode: 200, body: 'not time yet' };
     }
 
