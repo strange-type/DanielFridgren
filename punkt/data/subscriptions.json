@@ -1,10 +1,10 @@
 [
   {
-    "endpoint": "https://wns2-am3p.notify.windows.com/w/?token=BQYAAAAboi%2fsSO5NT1eGk%2blil5tVpw7ni%2fDclZtFor6LFnVkcXwRUnraPDPMY2WBqXdVfq5picYwufe5oMsygJnYnghv5z%2fIxXSru0wkeAZpA%2f1tXCKbexawSKht38F%2btPY8aqco%2bqG7wfJlsnh%2bZtrdSwaffUUeclzbnBdO%2fPnKSWTmo082j5i5qGJzBsGliXJcUbZYep48hIrNePm3XEq2n2SbRQ0AwRmpnSd0GDTebiNVbCXPgbK02JYdmPA9S21Ec5L4xj8dcHe%2bhRs%2bGY6m6InW5CvXMVZjgXDQr3xxq8CvW12mTJvHMyJ9cNzrRY1uKh0%3d",
+    "endpoint": "https://web.push.apple.com/QOm8DOkzueNeO8sLjSZg4H6Sc0bhbWqwaEYm_Y5E7DJ9OWDTUgIJaEArDiSX3eFEgoIcBAYBleXv7uf1aOzr0sxPy-HYSyEE1u7pn8LVpJ0F4rOhjpdE10OaulX-z0wEeBRzRn8QNdAmqbQMLAqL4sxekvHXYv8iaBrsKa-GAgc",
     "expirationTime": null,
     "keys": {
-      "p256dh": "BL6odLyUtyLsYMZpff0n60Jvz8UKachr5YLyEojw6XCwXBgs1LjDHwhffuepD9q97nyNCrZQ7ogKXkIIB8CycgQ",
-      "auth": "BTF1WE27j3hJji5fIYRLCw"
+      "p256dh": "BBGMiz0XGIvKk0O4Hu79sTFj4N0h7ZBxhcFnXOiKUeHn8RZGOxBpofqK8zZraE_VS_EqOPgc9kjQfo-6hzcgtTU",
+      "auth": "UXf-xROmHzM2KjJX-6LLiQ"
     }
   }
 ]
