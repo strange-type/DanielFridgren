@@ -19,6 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Förbered tänka högt (id: 1791442948803-hoscm, when: today, remind: 09:12)
 - [ ] förbered frågor til Stretch (id: 1791441878270-h8ewo, when: today)
   > - typ vad av detta har de idag? Vad behöver de lägga till? Vad är ett ungefärligt estimat (med någon form av felmarginal)
 - [ ] Gör en prototyp som visar MVP (id: 1791441815215-6tr0x, when: today)
