@@ -1739,6 +1739,26 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         </div>
       </div>
 
+      <div id="notification-settings-sheet" class="sheet-overlay" hidden>
+        <div class="sheet-card">
+          <div class="sheet-header">
+            <span class="sheet-title">Notiser</span>
+            <button type="button" id="notification-settings-close" class="sheet-close" aria-label="Stäng">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+          </div>
+          <p id="notification-settings-status" class="empty"></p>
+          <button type="button" id="notification-settings-enable" class="sheet-row" style="justify-content: center; color: var(--accent); font-weight: 600; border-bottom: none;">Aktivera notiser</button>
+          <div class="sheet-row" style="border-bottom: none;">
+            <span class="sheet-row-icon">🕐</span> Morgondigest
+            <input type="time" id="digest-time-input" class="reminder-time-input" style="margin: 0 0 0 auto;" />
+          </div>
+          <div class="sheet-actions">
+            <button type="button" id="digest-time-save" class="primary">Spara</button>
+          </div>
+        </div>
+      </div>
+
       <div id="view-menu" class="screen">
         <div class="menu-header">
           <h1>Punkt</h1>
@@ -1911,6 +1931,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const SUBSCRIBE_API = "/.netlify/functions/punkt-subscribe";
       const AUTH_LOG_API = "/.netlify/functions/punkt-auth-log";
       const LOGIN_API = "/.netlify/functions/punkt-login";
+      const SETTINGS_API = "/.netlify/functions/punkt-settings";
       const VAPID_PUBLIC_KEY = document.body.dataset.vapidKey || "";
 
       type Task = {
@@ -1965,6 +1986,13 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       const securitySheet = document.getElementById("security-sheet") as HTMLDivElement;
       const securitySheetClose = document.getElementById("security-sheet-close") as HTMLButtonElement;
       const securityList = document.getElementById("security-list") as HTMLDivElement;
+
+      const notificationSettingsSheet = document.getElementById("notification-settings-sheet") as HTMLDivElement;
+      const notificationSettingsClose = document.getElementById("notification-settings-close") as HTMLButtonElement;
+      const notificationSettingsStatus = document.getElementById("notification-settings-status") as HTMLParagraphElement;
+      const notificationSettingsEnable = document.getElementById("notification-settings-enable") as HTMLButtonElement;
+      const digestTimeInput = document.getElementById("digest-time-input") as HTMLInputElement;
+      const digestTimeSave = document.getElementById("digest-time-save") as HTMLButtonElement;
 
       const viewMenu = document.getElementById("view-menu") as HTMLDivElement;
       const viewList = document.getElementById("view-list") as HTMLDivElement;
@@ -2320,6 +2348,63 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
           console.error("Punkt: failed to unblock IP", err);
           btn.disabled = false;
           btn.textContent = originalLabel;
+        }
+      });
+
+      /** Longer status text for the notification settings sheet — the
+       *  sidebar's own notificationStatusLabel() stays a short badge. */
+      function notificationSettingsStatusText(): string {
+        if (!("Notification" in window) || !("PushManager" in window)) return "Push stöds inte i den här webbläsaren.";
+        if (Notification.permission === "granted") return "Pushnotiser är aktiverade.";
+        if (Notification.permission === "denied") return "Notiser är avstängda. Slå på dem i Inställningar → Notiser → Punkt.";
+        return "Notiser är inte aktiverade än.";
+      }
+
+      function updateNotificationSheetStatus() {
+        notificationSettingsStatus.textContent = notificationSettingsStatusText();
+        notificationSettingsEnable.hidden = Notification.permission === "granted";
+      }
+
+      /** Opens the Notiser panel and loads the digest time stored on the
+       *  server (see punkt-settings.js) — not just read from localStorage,
+       *  since punkt-send-digest.js is the other reader/writer of that
+       *  same value and this should always reflect its current state. */
+      async function openNotificationSettings() {
+        updateNotificationSheetStatus();
+        notificationSettingsSheet.hidden = false;
+        try {
+          const data = await apiFetch("GET", undefined, SETTINGS_API);
+          digestTimeInput.value = data.digestTime || "07:00";
+        } catch (err) {
+          console.error("Punkt: failed to load notification settings", err);
+        }
+      }
+
+      notificationSettingsClose.addEventListener("click", () => {
+        notificationSettingsSheet.hidden = true;
+      });
+
+      notificationSettingsSheet.addEventListener("click", (e) => {
+        if (e.target === notificationSettingsSheet) notificationSettingsSheet.hidden = true;
+      });
+
+      notificationSettingsEnable.addEventListener("click", () => {
+        void ensurePushSubscription().then(() => {
+          updateNotificationSheetStatus();
+          renderMenu();
+        });
+      });
+
+      digestTimeSave.addEventListener("click", async () => {
+        digestTimeSave.disabled = true;
+        try {
+          await apiFetch("POST", { digestTime: digestTimeInput.value }, SETTINGS_API);
+          notificationSettingsSheet.hidden = true;
+        } catch (err) {
+          console.error("Punkt: failed to save digest time", err);
+          alert("Kunde inte spara: " + (err instanceof Error ? err.message : err));
+        } finally {
+          digestTimeSave.disabled = false;
         }
       });
 
@@ -2717,7 +2802,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       menuList.addEventListener("click", (e) => {
         const target = e.target as HTMLElement;
         if (target.closest('[data-action="notifications"]')) {
-          void ensurePushSubscription().then(renderMenu);
+          void openNotificationSettings();
           return;
         }
         const btn = target.closest("[data-nav]") as HTMLElement | null;
