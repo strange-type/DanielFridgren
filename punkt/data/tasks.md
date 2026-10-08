@@ -37,7 +37,7 @@ inte skickas flera gånger samma dag.
 - [x] Gör en presentation med bara citat (id: 1791298777010-puad6, done: 2026-10-07T11:13:35.977Z)
 - [x] Kontakta Charlotta Willstedt kring presentation av prototyp (id: 1791195436130-0nikw, done: 2026-10-08T06:43:15.952Z)
 - [ ] Kolla utbildningar framtidsveckan nu samt Kairos Future (id: 1791184925775-bf2ul, when: 2026-10-09)
-- [ ] Boka träning inför Bättre Utbildningsval (id: 1791173274167-xaj2o, when: 2026-10-07)
+- [ ] Boka träning inför Bättre Utbildningsval (id: 1791173274167-xaj2o, when: 2026-10-12)
 - [x] Gå igenom kravlista MVP (id: 1790864700714-y9l9g, done: 2026-10-05T15:07:06.630Z)
 - [x] Ladda ner Raycast? (id: 1790500374039-3y5ta, done: 2026-09-28T12:15:42.310Z)
   > https://apps.microsoft.com/detail/9pfxxshc64h3?hl=sv-SE&gl=SE
