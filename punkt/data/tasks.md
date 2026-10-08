@@ -20,7 +20,7 @@ inte skickas flera gånger samma dag.
 ## Tasks
 
 - [x] Gör en presentation med bara citat (id: 1791298777010-puad6, done: 2026-10-07T11:13:35.977Z)
-- [ ] Kontakta Charlotta Willstedt kring presentation av prototyp (id: 1791195436130-0nikw, when: -)
+- [x] Kontakta Charlotta Willstedt kring presentation av prototyp (id: 1791195436130-0nikw, done: 2026-10-08T06:43:15.952Z)
 - [ ] Kolla utbildningar framtidsveckan nu samt Kairos Future (id: 1791184925775-bf2ul, when: 2026-10-09)
 - [ ] Boka träning inför Bättre Utbildningsval (id: 1791173274167-xaj2o, when: 2026-10-07)
 - [x] Gå igenom kravlista MVP (id: 1790864700714-y9l9g, done: 2026-10-05T15:07:06.630Z)
