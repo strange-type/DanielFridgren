@@ -20,7 +20,7 @@ inte skickas flera gånger samma dag.
 ## Tasks
 
 - [x] Förbered tänka högt (id: 1791442948803-hoscm, done: 2026-10-08T08:55:10.778Z)
-- [ ] förbered frågor til Stretch (id: 1791441878270-h8ewo, when: today)
+- [x] förbered frågor til Stretch (id: 1791441878270-h8ewo, done: 2026-10-08T11:18:17.569Z)
 - [x] Gör en prototyp som visar MVP (id: 1791441815215-6tr0x, done: 2026-10-08T11:18:13.151Z)
 - [x] Gör en presentation med bara citat (id: 1791298777010-puad6, done: 2026-10-07T11:13:35.977Z)
 - [x] Kontakta Charlotta Willstedt kring presentation av prototyp (id: 1791195436130-0nikw, done: 2026-10-08T06:43:15.952Z)
