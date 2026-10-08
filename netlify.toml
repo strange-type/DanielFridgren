@@ -15,9 +15,10 @@
   schedule = "*/10 * * * *"
 
 # Checks every 15 minutes whether it's past today's digest time yet
-# (07:00 Stockholm-local by default — see PUNKT_DIGEST_TIME in
-# punkt-send-digest.js) and sends the "what's in Today" push once per
-# day via netlify/functions/punkt-send-digest.js.
+# (07:00 Stockholm-local by default, changeable in-app via the Notiser
+# panel — see punkt-settings.js/PUNKT_DIGEST_TIME) and sends the
+# "what's in Today" push once per day via
+# netlify/functions/punkt-send-digest.js.
 [functions."punkt-send-digest"]
   schedule = "*/15 * * * *"
 

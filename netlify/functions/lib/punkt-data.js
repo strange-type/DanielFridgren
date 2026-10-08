@@ -14,6 +14,7 @@ const SUBSCRIPTIONS_PATH =
 const ERROR_LOG_PATH = process.env.PUNKT_ERROR_LOG_PATH || 'punkt/data/last-reminder-error.json';
 const AUTH_LOG_PATH = process.env.PUNKT_AUTH_LOG_PATH || 'punkt/data/auth-log.json';
 const DIGEST_STATE_PATH = process.env.PUNKT_DIGEST_STATE_PATH || 'punkt/data/last-digest-sent.json';
+const SETTINGS_PATH = process.env.PUNKT_SETTINGS_PATH || 'punkt/data/settings.json';
 
 // Both punkt-send-reminders.js and punkt-send-digest.js run on a tight
 // cron cadence (every 10-15 min) and need today's date/time *as it is
@@ -335,6 +336,41 @@ async function writeLastDigestSent(date, sha) {
     }
 }
 
+/**
+ * App-configurable settings (currently just the daily digest's send
+ * time) — a plain object rather than per-key files, since this is
+ * meant to grow into a small general settings bag rather than staying
+ * digest-specific. A key simply absent means "never set"; the caller
+ * decides its own default (punkt-settings.js and punkt-send-digest.js
+ * both fall back to PUNKT_DIGEST_TIME/07:00 for `digestTime`).
+ */
+async function readSettings() {
+    try {
+        const { content, sha } = await readFile(SETTINGS_PATH);
+        const parsed = JSON.parse(content || '{}');
+        return { settings: parsed && typeof parsed === 'object' ? parsed : {}, sha };
+    } catch (err) {
+        if (err.status === 404) return { settings: {}, sha: null };
+        throw err;
+    }
+}
+
+async function writeSettings(settings, sha) {
+    const content = JSON.stringify(settings, null, 2) + '\n';
+    if (sha) {
+        await writeFile(SETTINGS_PATH, content, sha, 'Update Punkt settings');
+    } else {
+        await githubRequest(`contents/${SETTINGS_PATH}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                message: 'Update Punkt settings',
+                content: Buffer.from(content, 'utf-8').toString('base64'),
+                branch: BRANCH
+            })
+        });
+    }
+}
+
 async function readAuthLog() {
     try {
         const { content, sha } = await readFile(AUTH_LOG_PATH);
@@ -507,6 +543,8 @@ export {
     writeLastReminderError,
     readLastDigestSent,
     writeLastDigestSent,
+    readSettings,
+    writeSettings,
     isIpBlocked,
     logFailedAuthAttempt,
     getAuthLogSummary,
