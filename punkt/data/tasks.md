@@ -21,7 +21,6 @@ inte skickas flera gånger samma dag.
 
 - [x] Förbered tänka högt (id: 1791442948803-hoscm, done: 2026-10-08T08:55:10.778Z)
 - [ ] förbered frågor til Stretch (id: 1791441878270-h8ewo, when: today)
-  > - typ vad av detta har de idag? Vad behöver de lägga till? Vad är ett ungefärligt estimat (med någon form av felmarginal)
 - [ ] Gör en prototyp som visar MVP (id: 1791441815215-6tr0x, when: today)
 - [x] Gör en presentation med bara citat (id: 1791298777010-puad6, done: 2026-10-07T11:13:35.977Z)
 - [x] Kontakta Charlotta Willstedt kring presentation av prototyp (id: 1791195436130-0nikw, done: 2026-10-08T06:43:15.952Z)
