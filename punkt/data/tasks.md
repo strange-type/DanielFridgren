@@ -19,8 +19,12 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
-- [ ] Gör en presentation med bara citat (id: 1791298777010-puad6, when: today)
-- [ ] Kontakta Charlotta Willstedt kring presentation av prototyp (id: 1791195436130-0nikw, when: -)
+- [ ] Förbered tänka högt (id: 1791442948803-hoscm, when: today, remind: 09:12)
+- [ ] förbered frågor til Stretch (id: 1791441878270-h8ewo, when: today)
+  > - typ vad av detta har de idag? Vad behöver de lägga till? Vad är ett ungefärligt estimat (med någon form av felmarginal)
+- [ ] Gör en prototyp som visar MVP (id: 1791441815215-6tr0x, when: today)
+- [x] Gör en presentation med bara citat (id: 1791298777010-puad6, done: 2026-10-07T11:13:35.977Z)
+- [x] Kontakta Charlotta Willstedt kring presentation av prototyp (id: 1791195436130-0nikw, done: 2026-10-08T06:43:15.952Z)
 - [ ] Kolla utbildningar framtidsveckan nu samt Kairos Future (id: 1791184925775-bf2ul, when: 2026-10-09)
 - [ ] Boka träning inför Bättre Utbildningsval (id: 1791173274167-xaj2o, when: 2026-10-07)
 - [x] Gå igenom kravlista MVP (id: 1790864700714-y9l9g, done: 2026-10-05T15:07:06.630Z)
@@ -45,7 +49,7 @@ inte skickas flera gånger samma dag.
 - [x] Ta ledigt 26-30/10 (höstlov) (id: 1789675381460-hza4s, done: 2026-09-18T12:28:07.510Z)
 - [ ] Kolla upp digitala studiebesök (id: 1789542287149-ylh5e, when: -)
   > https://www.skane.se/jobb-och-utbildning/jobba-hos-oss/att-jobba-i-region-skane/hang-med-pa-digitala-studiebesok/
-- [ ] Kolla upp denna på st Gertrud 9:e okt (id: 1789203141617-meexz, when: 2026-10-07)
+- [x] Kolla upp denna på st Gertrud 9:e okt (id: 1789203141617-meexz, done: 2026-10-07T15:21:34.712Z)
   > https://malmo.se/Aktuellt/Artiklar-Malmo-stad/2026-09-09-Valkomna-till-varldsdagen-for-psykisk-halsa.html
 - [x] Ta bild på limhamns bibliotek (id: 1788845636400-7qpwx, done: 2026-10-04T13:06:17.097Z)
 - [x] Gräv i samsjuklighetsreformen (id: 1789029448027-azjf0, done: 2026-09-11T13:31:59.668Z)
