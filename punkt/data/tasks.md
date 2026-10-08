@@ -19,7 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
-- [ ] Boka tid för utvecklingssamtal (id: 1791470768911-g5cj9, when: today)
+- [ ] Boka tid för utvecklingssamtal (id: 1791470768911-g5cj9, when: 2026-10-09)
   > Gå in via länken till bokningslistan och skriv ditt namn vid en tid som passar dig. Skicka sedan en Teams-inbjudan till mig för den bokade tiden. Boka en timme som onlinemöte och ge mötet titeln [Ditt namn] - medarbetarsamtal.
   > Nytt för i år är att du ansvarar för både förberedelserna och att leda samtalet.
   > Inför mötet förväntar jag mig att du har förberett dig och uppdaterat ditt material i kompetensplattformen. Det ska vara klart före mötet.
