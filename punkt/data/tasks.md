@@ -19,6 +19,7 @@ inte skickas flera gånger samma dag.
 
 ## Tasks
 
+- [ ] Gör en prototyp som visar MVP (id: 1791441815215-6tr0x, when: today)
 - [x] Gör en presentation med bara citat (id: 1791298777010-puad6, done: 2026-10-07T11:13:35.977Z)
 - [x] Kontakta Charlotta Willstedt kring presentation av prototyp (id: 1791195436130-0nikw, done: 2026-10-08T06:43:15.952Z)
 - [ ] Kolla utbildningar framtidsveckan nu samt Kairos Future (id: 1791184925775-bf2ul, when: 2026-10-09)
