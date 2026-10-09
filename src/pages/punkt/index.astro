@@ -1697,7 +1697,19 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
       <h1>Punkt</h1>
       <form id="gate-form">
         <input
+          id="gate-username"
+          name="username"
+          type="text"
+          value="punkt"
+          placeholder="Användarnamn"
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+          aria-label="Användarnamn"
+        />
+        <input
           id="gate-input"
+          name="password"
           type="password"
           placeholder="Åtkomstkod"
           autocomplete="current-password"
@@ -1705,6 +1717,7 @@ const vapidPublicKey = import.meta.env.PUBLIC_PUNKT_VAPID_KEY ?? "";
         />
         <input
           id="gate-totp-input"
+          name="totp"
           type="text"
           inputmode="numeric"
           placeholder="2FA-kod"
