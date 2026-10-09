@@ -14,12 +14,10 @@ export default defineConfig({
         {
           userAgent: ["*"],
           allow: "/",
-          disallow: ["/punkt"],
         },
       ],
     }),
     sitemap({
-      filter: (page) => !page.includes("/punkt"),
       customPages: [
         "https://fridgren.se/documents/examensarbete-daniel-johansson.pdf",
       ],
