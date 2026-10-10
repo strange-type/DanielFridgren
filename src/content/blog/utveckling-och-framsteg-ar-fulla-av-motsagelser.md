@@ -23,3 +23,5 @@ Samma mönster kan finnas även i reformer som uttryckligen syftar till helhet. 
 Hur kan vi undvika att en reform för helhet drar upp nya gränslinjer? Jag har inga bra svar själv, mer än att olika verksamheter behöver naturliga överlapp sinsemellan, och tänjbara gränser som ger möjlighet till beslut baserade på kontext och omdöme. Men det kan ju i sin tur leda till just de problem som standardisering försöker lösa.
 
 Utveckling och framsteg är fulla av motsägelser. Det vi väljer att förbättra är alltid med och formar det omkringliggande systemet. Och kanske behöver vår syn på framsteg också utvecklas? Så att vi inte bara blir bättre på att lösa isolerade problem, utan även odlar förmågan att förstå hur lösningarna samspelar med helheten, likt i kintsugi där man väljer att framhäva sprickorna.
+
+<img src="/images/blog-images/kintsugi.webp" alt="Händer som lagar en skål med kintsugi, guld i sprickorna" width="240" style="max-width: 100%; height: auto;" />
