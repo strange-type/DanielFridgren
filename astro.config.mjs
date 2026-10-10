@@ -8,5 +8,20 @@ import icon from "astro-icon";
 export default defineConfig({
   site: "https://fridgren.se",
   trailingSlash: "always",
-  integrations: [robots(), sitemap(), icon()],
+  integrations: [
+    robots({
+      policy: [
+        {
+          userAgent: ["*"],
+          allow: "/",
+        },
+      ],
+    }),
+    sitemap({
+      customPages: [
+        "https://fridgren.se/documents/examensarbete-daniel-johansson.pdf",
+      ],
+    }),
+    icon(),
+  ],
 });

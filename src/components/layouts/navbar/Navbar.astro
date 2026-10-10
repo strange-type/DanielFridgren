@@ -5,6 +5,7 @@ import MobileMenu from "./MobileMenu.astro";
 import { Icon } from "astro-icon/components";
 ---
 
+<div class="nav-scrim" aria-hidden="true"></div>
 <nav class="navbar" transition:persist>
   <div class="nav-left">
     <a href="/" aria-label="home" class="logo-link">
@@ -58,6 +59,57 @@ import { Icon } from "astro-icon/components";
   }
 
   .navbar.navbar-hidden {
+    transform: translateY(calc(-100% - 60px));
+  }
+
+  /*
+    Registering --scrim-alpha as a typed number makes it animatable, so
+    the `transition` below can smoothly interpolate it instead of the
+    gradient snapping instantly each time nav-scrim.ts updates it.
+  */
+  @property --scrim-alpha {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+  }
+
+  /*
+    Sits behind (and is a sibling of, not nested in) .navbar so its gradient
+    becomes part of the backdrop that .navbar's mix-blend-mode: difference
+    reads — nudging the invert away from the low-contrast midtone zone
+    without capping how much it still reacts to the real page content.
+
+    --scrim-alpha is written continuously by nav-scrim.ts, which samples
+    the actual rendered pixels/colors behind the nav (live, on scroll and
+    on an interval for autoplaying video) and derives an alpha from how
+    close the sampled luminance is to the 50%-grey dead zone where
+    difference-blended text loses contrast. Defaults to 0 so a JS failure
+    fails safe to "no scrim" rather than a wrong static guess.
+  */
+  .nav-scrim {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 140px;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: transform 0.4s ease-in-out, --scrim-alpha 0.3s ease-out;
+    --scrim-alpha: 0;
+  }
+
+  @media (prefers-color-scheme: light) {
+    .nav-scrim {
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, var(--scrim-alpha)),
+        rgba(0, 0, 0, 0)
+      );
+    }
+  }
+
+  .nav-scrim.navbar-hidden {
     transform: translateY(calc(-100% - 60px));
   }
 

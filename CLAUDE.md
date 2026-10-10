@@ -48,7 +48,6 @@ Both collections use MDX format and have frontmatter validation via Zod schemas.
   - `about.astro`: About page
   - `contact.astro`: Contact form page
   - `colophon.astro`: Site details/credits
-  - `newsletter.astro`: Newsletter signup
   - `blog/[slug].astro`: Dynamic blog post pages
   - `blog/index.astro`: Blog listing
   - `work/[slug].astro`: Dynamic case study pages
@@ -68,13 +67,11 @@ Core layout files in `src/layouts/`:
 Netlify functions in `netlify/functions/`:
 
 1. **contact.js**: Contact form handler
-   - Uses SendGrid for email delivery
+   - Uses Resend for email delivery
    - Implements rate limiting (3 submissions per minute per IP)
    - Anti-spam: honeypot field + minimum form fill time (3 seconds)
    - Validates name (2+ chars), email format, message (10+ chars)
-   - Environment variables: `SENDGRID_API_KEY`, `SENDGRID_FROM_EMAIL`, `CONTACT_EMAIL`
-
-2. **subscribe-email.js**: Newsletter subscription handler
+   - Environment variables: `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_EMAIL`
 
 ### Integrations
 
@@ -88,7 +85,7 @@ Configured in `astro.config.mjs`:
 ### Key Dependencies
 
 - **Video**: `@mux/mux-player` for video playback
-- **Email**: `@sendgrid/mail` for transactional emails
+- **Email**: Resend's HTTP API (plain `fetch`, no SDK dependency) for transactional emails
 - **Animations**: `gsap@^3.13.0` (local npm package, not CDN) for animations with ScrollTrigger plugin, `lottie-web` + `astro-integration-lottie` for Lottie animations
 - **SEO**: SEO component at `src/components/seo.astro`
 

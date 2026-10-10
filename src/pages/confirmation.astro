@@ -25,27 +25,11 @@ import PageWrapper from "../components/layouts/PageWrapper.astro";
 </PageWrapper>
 
 <script>
-    // Define content based on type - client-side
-    const content = {
-        newsletter: {
-            heading: "Thank You!",
-            message:
-                "You've successfully subscribed to the newsletter. Please check your email to confirm your subscription.",
-        },
-        contact: {
-            heading: "Message Sent!",
-            message:
-                "Thank you for reaching out. I will get back to you as soon as possible.",
-        },
+    const currentContent = {
+        heading: "Message Sent!",
+        message:
+            "Thank you for reaching out. I will get back to you as soon as possible.",
     };
-
-    // Get type from URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const type = urlParams.get("type") || "newsletter";
-
-    // Update content
-    const currentContent =
-        content[type as keyof typeof content] || content.newsletter;
 
     const headingEl = document.getElementById("confirmation-heading");
     const messageEl = document.getElementById("confirmation-message");
@@ -53,9 +37,7 @@ import PageWrapper from "../components/layouts/PageWrapper.astro";
     if (headingEl) headingEl.textContent = currentContent.heading;
     if (messageEl) messageEl.textContent = currentContent.message;
 
-    // Update document title
-    document.title =
-        type === "contact" ? "Message Sent" : "Subscription Confirmed";
+    document.title = "Message Sent";
 </script>
 
 <style>
