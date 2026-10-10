@@ -24,11 +24,12 @@ export function initNavbar() {
     const menuToggle = document.getElementById("menu-toggle");
     const mobileMenu = document.getElementById("mobile-menu");
     const navbar = document.querySelector(".navbar");
+    const navScrim = document.querySelector(".nav-scrim");
 
-    // Fade in navbar only on first load
+    // Fade in navbar (and its scrim) only on first load
     if (!sessionStorage.getItem('navbarFaded')) {
         if (window.gsap) {
-            window.gsap.fromTo(navbar,
+            window.gsap.fromTo([navbar, navScrim],
                 { opacity: 0 },
                 { opacity: 1, duration: 0.5, delay: 0.2 }
             );
@@ -38,6 +39,9 @@ export function initNavbar() {
         // Already faded in before, make sure it's visible
         if (navbar instanceof HTMLElement) {
             navbar.style.opacity = '1';
+        }
+        if (navScrim instanceof HTMLElement) {
+            navScrim.style.opacity = '1';
         }
     }
 
@@ -81,6 +85,7 @@ export function initNavbar() {
         // Don't hide navbar at the very top of the page
         if (scrollTop <= 100) {
             navbar?.classList.remove("navbar-hidden");
+            navScrim?.classList.remove("navbar-hidden");
             lastScrollTop = scrollTop;
             return;
         }
@@ -88,10 +93,12 @@ export function initNavbar() {
         // Scrolling down
         if (scrollTop > lastScrollTop && scrollTop > 100) {
             navbar?.classList.add("navbar-hidden");
+            navScrim?.classList.add("navbar-hidden");
         }
         // Scrolling up
         else if (scrollTop < lastScrollTop) {
             navbar?.classList.remove("navbar-hidden");
+            navScrim?.classList.remove("navbar-hidden");
         }
 
         lastScrollTop = scrollTop;

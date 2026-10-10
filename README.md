@@ -56,7 +56,7 @@ The build command runs `astro build` followed by `scripts/submit-indexnow.js` wh
 
 ```
 scripts/              # Build scripts (IndexNow submission)
-netlify/functions/    # Serverless functions (contact, newsletter)
+netlify/functions/    # Serverless functions (contact)
 src/
   components/         # Reusable UI components (.astro)
   content/
@@ -74,8 +74,8 @@ public/               # Static assets (fonts, images)
 
 Required for full functionality:
 
-- `SENDGRID_API_KEY` - SendGrid API key for contact form
-- `SENDGRID_FROM_EMAIL` - Verified sender email
+- `RESEND_API_KEY` - Resend API key for contact form
+- `CONTACT_FROM_EMAIL` - Verified sender email
 - `CONTACT_EMAIL` - Recipient email for contact form
 - `INDEXNOW_KEY` - Key for IndexNow API (optional)
 
@@ -83,7 +83,7 @@ Required for full functionality:
 
 Deployed on **Netlify** with:
 - Automatic builds on push
-- Serverless functions for contact/newsletter
+- Serverless functions for contact
 - Redirects: www → non-www, http → https
 - Build command: `pnpm build`
 
