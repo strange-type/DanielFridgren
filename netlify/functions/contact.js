@@ -9,6 +9,18 @@ const MIN_FORM_TIME = 3000; // 3 seconds
 const { RESEND_API_KEY, CONTACT_FROM_EMAIL, CONTACT_EMAIL } = process.env;
 
 /**
+ * Escape user input before placing it in the HTML email
+ */
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+/**
  * Clean and validate rate limiting
  */
 function checkRateLimit(ip) {
@@ -34,16 +46,16 @@ function validateFormData(data) {
     const errors = [];
 
     // Check required fields
-    if (!data.get('name') || data.get('name').trim().length < 2) {
-        errors.push('A name is required and must be at least 2 characters');
+    if (!data.get('name') || data.get('name').trim().length < 2 || data.get('name').length > 100) {
+        errors.push('A name is required and must be 2 to 100 characters');
     }
 
-    if (!data.get('email') || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.get('email'))) {
+    if (!data.get('email') || data.get('email').length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.get('email'))) {
         errors.push('A valid email is required');
     }
 
-    if (!data.get('message') || data.get('message').trim().length < 10) {
-        errors.push('Message is required and must be at least 10 characters');
+    if (!data.get('message') || data.get('message').trim().length < 10 || data.get('message').length > 5000) {
+        errors.push('Message is required and must be 10 to 5000 characters');
     }
 
     // Check honeypot
@@ -131,7 +143,7 @@ export const handler = async (event, context) => {
             to: CONTACT_EMAIL || CONTACT_FROM_EMAIL,
             from: CONTACT_FROM_EMAIL, // Must be a verified sender/domain in Resend
             reply_to: email,
-            subject: `New contact from ${name}`,
+            subject: `New contact from ${name.replace(/[\r\n]+/g, ' ')}`,
             text: `
 Name: ${name}
 Email: ${email}
@@ -146,10 +158,10 @@ Time: ${new Date().toISOString()}
             `.trim(),
             html: `
 <h2>New Contact Form Submission</h2>
-<p><strong>Name:</strong> ${name}</p>
-<p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+<p><strong>Name:</strong> ${escapeHtml(name)}</p>
+<p><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>
 <p><strong>Message:</strong></p>
-<p>${message.replace(/\n/g, '<br>')}</p>
+<p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
 <hr>
 <p style="color: #666; font-size: 12px;">
     Sent from contact form at fridgren.se<br>
