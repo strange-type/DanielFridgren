@@ -73,6 +73,12 @@ Netlify functions in `netlify/functions/`:
    - Validates name (2+ chars), email format, message (10+ chars)
    - Environment variables: `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_EMAIL`
 
+2. **blog.js**: Blog editing API used by Inkflow
+   - `GET` lists posts, `GET ?file=x.md` reads one, `PUT {file, content, sha?}` creates/updates one via the GitHub contents API (one commit per save, Netlify rebuilds)
+   - Only touches `src/content/blog/*.md(x)`; rejects content without `title`/`pubDate` frontmatter so the build can't break
+   - Auth: `Authorization: Bearer <BLOG_API_TOKEN>` can list, read and write drafts only (never touching a post that is already public); changing anything public (publish, unpublish, edit a public post) also needs `X-Publish-Token: <BLOG_PUBLISH_TOKEN>`. Writes are `.md` only. CORS limited to `INKFLOW_ORIGIN`
+   - Environment variables: `BLOG_API_TOKEN`, `BLOG_PUBLISH_TOKEN`, `GITHUB_TOKEN` (fine-grained PAT, Contents read/write on this repo only), `INKFLOW_ORIGIN`; optional `GITHUB_REPO`, `GITHUB_BRANCH`
+
 ### Integrations
 
 Configured in `astro.config.mjs`:
