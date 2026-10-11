@@ -78,7 +78,8 @@ Netlify functions in `netlify/functions/`:
 Blog posts can be edited at `/keystatic/` (configured in `keystatic.config.ts`, blog collection only).
 
 - **Dev**: local storage, writes straight to `src/content/blog/`
-- **Production**: GitHub storage. Saves are committed to `content/*` branches of `strange-type/danielfridgren`, never to `main`; publishing means merging the PR. Access is limited to GitHub users with write access to the repo
+- **Production**: GitHub storage. Each save is a commit to the branch selected in the Keystatic branch picker, which is `main` by default, so saving a published post deploys it as soon as Netlify has built. To review first, create a branch in the picker (prefixed `content/`, set by `branchPrefix`) and open a PR from it. With branch protection requiring PRs on `main`, saves to `main` are blocked and branches become the only route. Access is limited to GitHub users with write access to the repo
+- New posts start as `draft: true`
 - Posts are `.md` (Markdoc field with `extension: 'md'`), so no MDX/JS can be authored through the UI
 - `/keystatic/` and `/api/keystatic/` are server routes (`@astrojs/netlify` adapter), disallowed in robots.txt and excluded from the sitemap; the rest of the site stays static
 - `trailingSlash` is `"ignore"` because Keystatic calls its API without a trailing slash
