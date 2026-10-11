@@ -11,7 +11,7 @@ import netlify from "@astrojs/netlify";
 export default defineConfig({
   site: "https://fridgren.se",
   trailingSlash: "ignore",
-  adapter: netlify(),
+  adapter: netlify({ devFeatures: false }),
   integrations: [
     robots({
       policy: [
