@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
 
-const { BLOG_API_TOKEN, GITHUB_TOKEN, INKFLOW_ORIGIN } = process.env;
+const { BLOG_API_TOKEN, BLOG_PUBLISH_TOKEN, GITHUB_TOKEN, INKFLOW_ORIGIN } = process.env;
 const GITHUB_REPO = process.env.GITHUB_REPO || 'strange-type/danielfridgren';
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
 
@@ -17,7 +17,7 @@ function corsHeaders() {
     return {
         'Access-Control-Allow-Origin': INKFLOW_ORIGIN || '',
         'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
-        'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+        'Access-Control-Allow-Headers': 'Authorization, Content-Type, X-Publish-Token',
         'Access-Control-Max-Age': '86400',
         Vary: 'Origin',
     };
@@ -35,14 +35,21 @@ function respond(statusCode, body) {
 }
 
 /**
- * Compare the bearer token against BLOG_API_TOKEN without leaking timing
+ * Compare a given secret against the expected one without leaking timing
+ */
+function matches(given, expected) {
+    if (!given || !expected) return false;
+    const a = Buffer.from(given);
+    const b = Buffer.from(expected);
+    return a.length === b.length && timingSafeEqual(a, b);
+}
+
+/**
+ * Check the bearer token against BLOG_API_TOKEN
  */
 function isAuthorized(header) {
     const match = /^Bearer (.+)$/.exec(header || '');
-    if (!match) return false;
-    const given = Buffer.from(match[1]);
-    const expected = Buffer.from(BLOG_API_TOKEN);
-    return given.length === expected.length && timingSafeEqual(given, expected);
+    return match ? matches(match[1], BLOG_API_TOKEN) : false;
 }
 
 /**
@@ -75,6 +82,15 @@ function summarize(content) {
         pubDate: field('pubDate'),
         draft: field('draft').toLowerCase() === 'true',
     };
+}
+
+/**
+ * True when the frontmatter has exactly one draft line and it says true.
+ * A duplicated key is rejected rather than guessed at, since parsers disagree on it.
+ */
+function isSafeDraft(content) {
+    const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---/.exec(content)?.[1] ?? '';
+    return (frontmatter.match(/^draft:/gim) || []).length === 1 && summarize(content).draft;
 }
 
 /**
@@ -125,12 +141,35 @@ async function readPost(file) {
 }
 
 /**
+ * Response telling the client to retry with the publish token
+ */
+function needsPublishToken() {
+    return respond(403, {
+        error: 'This change affects the public site. The publish token is needed.',
+        needsPublishToken: true,
+    });
+}
+
+/**
  * Create a post (no sha) or update one (sha of the version being edited).
  * GitHub refuses a stale or missing sha, which surfaces as a conflict.
  */
-async function writePost(file, content, sha) {
+async function writePost(file, content, sha, canPublish) {
     const invalid = validateContent(content);
     if (invalid) return respond(400, { error: invalid });
+
+    if (!canPublish) {
+        // Without the publish token only drafts may be written, and a post that
+        // is already public may not be touched.
+        const existing = await github(`${BLOG_DIR}/${file}?ref=${GITHUB_BRANCH}`);
+        if (existing.ok) {
+            const current = Buffer.from((await existing.json()).content, 'base64').toString('utf8');
+            if (!isSafeDraft(current)) return needsPublishToken();
+        } else if (existing.status !== 404) {
+            return respond(502, { error: 'Could not check the existing post' });
+        }
+        if (!isSafeDraft(content)) return needsPublishToken();
+    }
 
     const response = await github(`${BLOG_DIR}/${file}`, {
         method: 'PUT',
@@ -183,7 +222,12 @@ export const handler = async (event) => {
             if (sha !== undefined && typeof sha !== 'string') {
                 return respond(400, { error: 'Invalid sha' });
             }
-            return await writePost(file, content, sha);
+
+            const given = event.headers['x-publish-token'];
+            if (given && !matches(given, BLOG_PUBLISH_TOKEN)) {
+                return respond(401, { error: 'The publish token is wrong or publishing is not set up.' });
+            }
+            return await writePost(file, content, sha, Boolean(given));
         }
 
         return respond(405, { error: 'Method not allowed' });
