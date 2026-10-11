@@ -73,6 +73,17 @@ Netlify functions in `netlify/functions/`:
    - Validates name (2 to 100 chars), email format, message (10 to 5000 chars); user input is HTML-escaped in the email
    - Environment variables: `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_EMAIL`, `TURNSTILE_SECRET_KEY` (server) and `PUBLIC_TURNSTILE_SITE_KEY` (build time, public). Without the secret the captcha check is skipped with a warning; without the site key the widget is not rendered
 
+### Keystatic CMS
+
+Blog posts can be edited at `/keystatic/` (configured in `keystatic.config.ts`, blog collection only).
+
+- **Dev**: local storage, writes straight to `src/content/blog/`
+- **Production**: GitHub storage. Saves are committed to `content/*` branches of `strange-type/danielfridgren`, never to `main`; publishing means merging the PR. Access is limited to GitHub users with write access to the repo
+- Posts are `.md` (Markdoc field with `extension: 'md'`), so no MDX/JS can be authored through the UI
+- `/keystatic/` and `/api/keystatic/` are server routes (`@astrojs/netlify` adapter), disallowed in robots.txt and excluded from the sitemap; the rest of the site stays static
+- `trailingSlash` is `"ignore"` because Keystatic calls its API without a trailing slash
+- Environment variables (Netlify, from the Keystatic GitHub App): `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET` (random 32+ chars), `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG`
+
 ### Integrations
 
 Configured in `astro.config.mjs`:
