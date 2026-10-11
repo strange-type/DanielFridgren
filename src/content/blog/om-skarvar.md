@@ -1,5 +1,5 @@
 ---
-title: Utveckling och framsteg är fulla av motsägelser
+title: Om skarvar och framsteg
 description: >-
   Att göra delarna i ett system bättre är inte detsamma som att förbättra
   helheten. Om hur vi lätt gör helheten sämre när vi suboptimerar. 
