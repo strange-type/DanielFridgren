@@ -10,12 +10,16 @@ const toBoolean = z.preprocess((val) => {
     return val;
 }, z.boolean());
 
+/** Keystatic writes dates unquoted, which YAML parses as Date objects; convert back to YYYY-MM-DD. */
+const toDateString = (val: unknown) =>
+    val instanceof Date ? val.toISOString().slice(0, 10) : val;
+
 const blogCollection = defineCollection({
     loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
     schema: z.object({
         title: z.string(),
         description: z.string().optional(),
-        pubDate: z.string(),
+        pubDate: z.preprocess(toDateString, z.string()),
         tags: z.array(z.string()).optional(),
         draft: toBoolean.optional(),
         author: z.string().optional(),
