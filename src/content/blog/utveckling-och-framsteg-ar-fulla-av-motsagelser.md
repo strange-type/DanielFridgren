@@ -13,9 +13,9 @@ tags:
   - standardisering
   - helhet
 ---
-Framsteg. Utveckling. Orden ger en bild av rörelse framåt där allt successivt blir bättre.
+När vi löser problem tenderar vi att ingenjörsmässigt bryta ner dem till hanterbara enheter och lösa dem isolerat. Vi brukar kalla det utveckling. Men det som blir bättre i delarna återspeglas inte alltid i helheten.
 
-Ta bilismen, ett stort utvecklingssteg i samhället. Innan bilen var gatorna i våra städer ofta skitiga och belagda med lera eller grus. Många var tvungna att arbeta med att städa upp hästbajs. Med bilens intåg blev vägarna gradvis bättre. Men efter hand började hela städer planeras utifrån bilens förutsättningar. En av konsekvenserna var att gator som tidigare varit livfulla platser där människor både arbetade och socialiserade istället blev rena transportsträckor.
+Ta bilismen. Innan bilen var gatorna i våra städer ofta skitiga och belagda med lera eller grus. Många var tvungna att arbeta med att städa upp hästbajs. Med bilens intåg blev vägarna gradvis bättre. Men efter hand började hela städer planeras utifrån bilens förutsättningar. En av konsekvenserna var att gator som tidigare varit livfulla platser där människor både arbetade och socialiserade istället blev rena transportsträckor.
 
 Något liknande kan man se inom sjukvården, där försök att lösa verkligt viktiga problem ibland förändrar förutsättningarna för vården i stort. För ungefär tio år sedan började standardiserade vårdförlopp införas, bland annat för att patienter ska få rätt vård inom rimlig tid. Först i cancervården och sedan i liknande former inom andra vårdområden. Det är inte svårt att förstå ambitionen: ökad förutsägbarhet och kortare väntan är alltid önskvärt.
 
@@ -27,6 +27,6 @@ Samma mönster kan finnas även i reformer som uttryckligen syftar till helhet. 
 
 Hur kan vi undvika att en reform för helhet drar upp nya gränslinjer? Jag har inga bra svar själv, mer än att olika verksamheter behöver naturliga överlapp sinsemellan, och tänjbara gränser som ger möjlighet till beslut baserade på kontext och omdöme. Men det kan ju i sin tur leda till just de problem som standardisering försöker lösa.
 
-Utveckling och framsteg är fulla av motsägelser. Det vi väljer att förbättra är alltid med och formar det omkringliggande systemet. Och kanske behöver vår syn på framsteg också utvecklas? Så att vi inte bara blir bättre på att lösa isolerade problem, utan även odlar förmågan att förstå hur lösningarna samspelar med helheten, likt i kintsugi där man väljer att framhäva sprickorna.
+Utveckling och framsteg är fulla av motsägelser. Det vi väljer att förbättra är alltid med och formar det omkringliggande systemet. Och kanske behöver vår syn på framsteg också utvecklas? Så att vi inte bara blir bättre på att lösa isolerade problem, utan även odlar förmågan att förstå hur lösningarna samspelar med helheten, som i kintsugi, där skarvarna inte döljs utan får mest omsorg.
 
 <img src="/images/blog-images/kintsugi.webp" alt="Händer som lagar en skål med kintsugi, guld i sprickorna" width="240" style="max-width: 100%; height: auto;" />
