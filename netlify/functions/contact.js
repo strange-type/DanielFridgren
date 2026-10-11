@@ -6,7 +6,9 @@ const MAX_SUBMISSIONS = 3;
 // Minimum time to fill form (in milliseconds) to prevent instant bot submissions
 const MIN_FORM_TIME = 3000; // 3 seconds
 
-const { RESEND_API_KEY, CONTACT_FROM_EMAIL, CONTACT_EMAIL } = process.env;
+const { RESEND_API_KEY, CONTACT_FROM_EMAIL, CONTACT_EMAIL, TURNSTILE_SECRET_KEY } = process.env;
+
+const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 /**
  * Escape user input before placing it in the HTML email
@@ -18,6 +20,36 @@ function escapeHtml(value) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+}
+
+/**
+ * Verify the Cloudflare Turnstile token. Skipped with a warning while
+ * TURNSTILE_SECRET_KEY is unset, so the form keeps working until the key is
+ * added in Netlify; once it is set, a missing or invalid token is rejected.
+ */
+async function verifyCaptcha(token, ip) {
+    if (!TURNSTILE_SECRET_KEY) {
+        console.warn('TURNSTILE_SECRET_KEY is not set, skipping captcha check');
+        return true;
+    }
+    if (!token) return false;
+
+    const params = new URLSearchParams({ secret: TURNSTILE_SECRET_KEY, response: token });
+    if (ip && ip !== 'unknown') params.set('remoteip', ip);
+
+    try {
+        const response = await fetch(TURNSTILE_VERIFY_URL, {
+            method: 'POST',
+            body: params,
+            signal: AbortSignal.timeout(8000)
+        });
+        if (!response.ok) return false;
+        const result = await response.json();
+        return result.success === true;
+    } catch (error) {
+        console.error('Captcha verification failed:', error);
+        return false;
+    }
 }
 
 /**
@@ -64,12 +96,9 @@ function validateFormData(data) {
     }
 
     // Check form submission time
-    const formStartTime = data.get('form-start-time');
-    if (formStartTime) {
-        const timeTaken = Date.now() - parseInt(formStartTime, 10);
-        if (timeTaken < MIN_FORM_TIME) {
-            errors.push('Form submitted too quickly');
-        }
+    const timeTaken = Date.now() - parseInt(data.get('form-start-time') || '', 10);
+    if (!Number.isFinite(timeTaken) || timeTaken < MIN_FORM_TIME) {
+        errors.push('Form submitted too quickly');
     }
 
     return errors;
@@ -115,6 +144,15 @@ export const handler = async (event, context) => {
                 body: JSON.stringify({
                     error: 'Validation failed',
                     details: validationErrors
+                })
+            };
+        }
+
+        if (!(await verifyCaptcha(data.get('cf-turnstile-response'), clientIp))) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({
+                    error: 'Captcha check failed. Please reload the page and try again.'
                 })
             };
         }
