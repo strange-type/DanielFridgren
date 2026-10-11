@@ -6,6 +6,8 @@ const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
 
 const BLOG_DIR = 'src/content/blog';
 const FILE_NAME = /^[a-z0-9][a-z0-9-]*\.mdx?$/;
+// MDX can run code at build time, so posts can only be written as plain Markdown
+const WRITABLE_FILE_NAME = /^[a-z0-9][a-z0-9-]*\.md$/;
 const MAX_CONTENT_BYTES = 200 * 1024;
 
 /**
@@ -175,7 +177,7 @@ export const handler = async (event) => {
 
         if (event.httpMethod === 'PUT') {
             const { file, content, sha } = JSON.parse(event.body || '{}');
-            if (typeof file !== 'string' || !FILE_NAME.test(file)) {
+            if (typeof file !== 'string' || !WRITABLE_FILE_NAME.test(file)) {
                 return respond(400, { error: 'Invalid file name' });
             }
             if (sha !== undefined && typeof sha !== 'string') {
