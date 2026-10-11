@@ -26,6 +26,19 @@
   status = 301
   force = true
 
+# Short entry point for the Keystatic editor
+[[redirects]]
+  from = "/edit"
+  to = "/keystatic/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/edit/"
+  to = "/keystatic/"
+  status = 302
+  force = true
+
 # Security headers
 [[headers]]
   for = "/*"

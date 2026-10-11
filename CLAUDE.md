@@ -82,6 +82,7 @@ Blog posts can be edited at `/keystatic/` (configured in `keystatic.config.ts`, 
 - New posts start as `draft: true`
 - Posts are `.md` (Markdoc field with `extension: 'md'`), so no MDX/JS can be authored through the UI
 - `/keystatic/` and `/api/keystatic/` are server routes (`@astrojs/netlify` adapter), disallowed in robots.txt and excluded from the sitemap; the rest of the site stays static
+- `/edit` redirects (302, in `netlify.toml`) to `/keystatic/`. The Keystatic path is hardcoded in its client code and cannot be moved
 - `trailingSlash` is `"ignore"` because Keystatic calls its API without a trailing slash
 - Environment variables (Netlify, from the Keystatic GitHub App): `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET` (random 32+ chars), `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG`
 
