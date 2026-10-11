@@ -1,13 +1,18 @@
 ---
-title: "Utveckling och framsteg är fulla av motsägelser"
-description: "Att göra delarna i ett system bättre är inte detsamma som att förbättra helheten. Om bilismen, standardiserade vårdförlopp och reformer som drar upp nya gränslinjer."
-pubDate: "2026-10-10"
+title: Utveckling och framsteg är fulla av motsägelser
+description: >-
+  Att göra delarna i ett system bättre är inte detsamma som att förbättra
+  helheten. Om hur vi lätt gör helheten sämre när vi suboptimerar. 
+pubDate: 2026-10-10
 draft: false
-tags: ["systemtänkande", "framsteg", "sjukvård", "standardisering", "helhet"]
-author: "Daniel Fridgren"
-heroImage: "/images/blog-images/kintsugi.webp"
+author: Daniel Fridgren
+tags:
+  - systemtänkande
+  - framsteg
+  - sjukvård
+  - standardisering
+  - helhet
 ---
-
 Framsteg. Utveckling. Orden ger en bild av rörelse framåt där allt successivt blir bättre.
 
 Ta bilismen, ett stort utvecklingssteg i samhället. Innan bilen var gatorna i våra städer ofta skitiga och belagda med lera eller grus. Många var tvungna att arbeta med att städa upp hästbajs. Med bilens intåg blev vägarna gradvis bättre. Men efter hand började hela städer planeras utifrån bilens förutsättningar. En av konsekvenserna var att gator som tidigare varit livfulla platser där människor både arbetade och socialiserade istället blev rena transportsträckor.
