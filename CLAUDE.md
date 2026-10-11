@@ -69,9 +69,9 @@ Netlify functions in `netlify/functions/`:
 1. **contact.js**: Contact form handler
    - Uses Resend for email delivery
    - Implements rate limiting (3 submissions per minute per IP)
-   - Anti-spam: honeypot field + minimum form fill time (3 seconds)
-   - Validates name (2+ chars), email format, message (10+ chars)
-   - Environment variables: `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_EMAIL`
+   - Anti-spam: Cloudflare Turnstile (verified server side), honeypot field + minimum form fill time (3 seconds, required)
+   - Validates name (2 to 100 chars), email format, message (10 to 5000 chars); user input is HTML-escaped in the email
+   - Environment variables: `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_EMAIL`, `TURNSTILE_SECRET_KEY` (server) and `PUBLIC_TURNSTILE_SITE_KEY` (build time, public). Without the secret the captcha check is skipped with a warning; without the site key the widget is not rendered
 
 ### Integrations
 

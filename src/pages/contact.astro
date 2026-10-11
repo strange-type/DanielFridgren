@@ -9,6 +9,8 @@ interface Props {
     desc?: string;
 }
 
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+
 const {
     title = "Contact Daniel Fridgren - UX and service design",
     desc = "Get in touch about UX, service design, digital products or complex service challenges.",
@@ -103,6 +105,15 @@ const {
                                 rows="4"></textarea>
                         </div>
 
+                        {
+                            turnstileSiteKey && (
+                                <div
+                                    id="turnstile-widget"
+                                    data-sitekey={turnstileSiteKey}
+                                />
+                            )
+                        }
+
                         <button
                             type="submit"
                             class="button"
@@ -125,6 +136,17 @@ const {
             </div>
         </main>
     </PageWrapper>
+
+    {
+        turnstileSiteKey && (
+            <script
+                is:inline
+                src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+                async
+                defer
+            />
+        )
+    }
 
     <style>
         .contact-text {
@@ -168,6 +190,22 @@ const {
                 formStartTime.value = Date.now().toString();
             }
 
+            // Explicit rendering, because a soft navigation to this page
+            // never runs the script's automatic render.
+            const widget = document.getElementById("turnstile-widget");
+            let widgetId: string | undefined;
+            const renderWidget = (attempt = 0) => {
+                const turnstile = (window as any).turnstile;
+                if (turnstile) {
+                    widgetId = turnstile.render(widget, {
+                        sitekey: widget?.dataset.sitekey,
+                    });
+                } else if (attempt < 100) {
+                    window.setTimeout(() => renderWidget(attempt + 1), 100);
+                }
+            };
+            if (widget) renderWidget();
+
             // Handle form submission
             const form = document.getElementById(
                 "contact-form",
@@ -183,6 +221,12 @@ const {
                 console.error("Form elements not found");
                 return;
             }
+
+            // A Turnstile token works once, so a failed send needs a new one.
+            const resetWidget = () => {
+                const turnstile = (window as any).turnstile;
+                if (turnstile && widgetId !== undefined) turnstile.reset(widgetId);
+            };
 
             form.addEventListener("submit", async (e) => {
                 e.preventDefault();
@@ -228,6 +272,7 @@ const {
                         statusMessage.style.color = "var(--color-red)";
                         submitButton.disabled = false;
                         submitButton.textContent = "Send Message";
+                        resetWidget();
                     }
                 } catch (error) {
                     console.error("Form submission error:", error);
@@ -237,6 +282,7 @@ const {
                     statusMessage.style.color = "var(--color-red)";
                     submitButton.disabled = false;
                     submitButton.textContent = "Send Message";
+                    resetWidget();
                 }
             });
         });
