@@ -13,6 +13,7 @@ tags:
   - design
   - innovation
 heroImage: /images/blog-images/fingeravtryck.jpg
+heroImageCaption: Bild av Javier Jaén
 ---
 Som designer var min första reaktion lite busigt lycklig när jag såg Crafting Apps underdog take på Adobe Creative Cloud: Att ett litet team med AI-agenter kan skapa open source-applikationer som kan ersätta Photoshop, Illustrator, Lightroom, AfterEffects, osv är smått fantastiskt..
 
