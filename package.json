@@ -9,19 +9,19 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^8.2.9",
-    "@astrojs/react": "^7.0.1",
+    "@astrojs/netlify": "^8.2.10",
+    "@astrojs/react": "^7.1.0",
     "@astrojs/sitemap": "^3.7.4",
     "@iconify-json/heroicons": "^1.2.3",
     "@keystatic/astro": "^6.0.0",
     "@keystatic/core": "^0.6.9",
     "@mux/mux-player": "^3.14.0",
-    "astro": "^7.3.8",
+    "astro": "^7.4.0",
     "astro-icon": "^1.2.0",
     "astro-robots": "^2.3.1",
     "gsap": "^3.15.0",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
