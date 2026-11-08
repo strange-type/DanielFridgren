@@ -29,8 +29,13 @@ function escapeHtml(value) {
  */
 async function verifyCaptcha(token, ip) {
     if (!TURNSTILE_SECRET_KEY) {
-        console.warn('TURNSTILE_SECRET_KEY is not set, skipping captcha check');
-        return true;
+        // Fail closed: only skip the check under `netlify dev`.
+        if (process.env.NETLIFY_DEV === 'true') {
+            console.warn('TURNSTILE_SECRET_KEY is not set, skipping captcha check (local dev)');
+            return true;
+        }
+        console.error('TURNSTILE_SECRET_KEY is not set, rejecting submission');
+        return false;
     }
     if (!token) return false;
 
