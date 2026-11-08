@@ -15,7 +15,7 @@ This is a personal website built with Astro, TypeScript, and MDX. The site featu
 ```bash
 # Development
 pnpm install          # Install dependencies
-pnpm dev              # Start dev server at http://localhost:4321 (with --host flag)
+pnpm dev              # Start dev server at http://localhost:4321
 pnpm build            # Build for production + submit URLs to IndexNow
 pnpm preview          # Preview production build
 
