@@ -3,16 +3,25 @@ import { getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 import type { CollectionEntry } from 'astro:content';
 
+// Drafts are only built in dev. In production they must not get a page, a
+// sitemap entry or a prev/next link. (getStaticPaths is isolated, so the
+// filter is repeated below instead of shared.)
 export async function getStaticPaths() {
-  const posts = (await getCollection('blog')) as CollectionEntry<'blog'>[];
+  const posts = (await getCollection(
+    'blog',
+    ({ data }) => import.meta.env.DEV || !data.draft
+  )) as CollectionEntry<'blog'>[];
   return posts.map((p) => ({ params: { slug: p.id } }));
 }
 
 const slug = Astro.params.slug;
 if (!slug) throw new Error('Missing slug param');
 
-// Load all posts in the collection
-const posts = (await getCollection('blog')) as CollectionEntry<'blog'>[];
+// Load all published posts in the collection
+const posts = (await getCollection(
+  'blog',
+  ({ data }) => import.meta.env.DEV || !data.draft
+)) as CollectionEntry<'blog'>[];
 
 // Sort posts by date desc (newest first). Adjust if your frontmatter uses a different field name.
 const getDate = (p: CollectionEntry<'blog'>) => {

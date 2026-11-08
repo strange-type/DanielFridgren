@@ -34,7 +34,7 @@ My personal website built with Astro, featuring a blog, case studies portfolio, 
 # Install dependencies
 pnpm install
 
-# Start dev server (with --host flag)
+# Start dev server
 pnpm dev
 
 # Visit http://localhost:4321
