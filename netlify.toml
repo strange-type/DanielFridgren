@@ -48,3 +48,21 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+# Content Security Policy for the Keystatic editor only. The public site loads
+# third-party scripts (analytics, Turnstile); the editor must not, because it
+# holds the GitHub token in a cookie readable by scripts.
+[[headers]]
+  for = "/keystatic"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.githubusercontent.com; font-src 'self' data:; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self'; form-action 'self' https://github.com; frame-ancestors 'none'"
+
+[[headers]]
+  for = "/keystatic/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.githubusercontent.com; font-src 'self' data:; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self'; form-action 'self' https://github.com; frame-ancestors 'none'"
+
+[[headers]]
+  for = "/api/keystatic/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'none'; frame-ancestors 'none'"
